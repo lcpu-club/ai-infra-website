@@ -24,7 +24,7 @@ export default defineConfig({
       'meta',
       {
         name: 'theme-color',
-        content: '#111318',
+        content: '#202228',
         media: '(prefers-color-scheme: dark)'
       }
     ],

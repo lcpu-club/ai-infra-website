@@ -72,25 +72,25 @@
 
 .dark {
   color-scheme: dark;
-  --site-bg: #111318;
-  --site-surface: #181b22;
-  --site-surface-2: #20242c;
-  --site-surface-3: #292e38;
+  --site-bg: #202228;
+  --site-surface: #282b32;
+  --site-surface-2: #30343c;
+  --site-surface-3: #393e48;
   --site-text: #f1efed;
-  --site-text-2: #b7bac2;
-  --site-text-3: #888e99;
-  --site-line: #303540;
-  --site-line-strong: #444b58;
+  --site-text-2: #c2c4cb;
+  --site-text-3: #999ea9;
+  --site-line: #444a55;
+  --site-line-strong: #59616f;
   --site-brand: #e26473;
   --site-brand-hover: #f07b88;
   --site-brand-soft: rgba(226, 100, 115, 0.12);
   --site-brand-contrast: #190d10;
   --site-link: #8ab4ec;
-  --site-nav-bg: rgba(17, 19, 24, 0.9);
-  --site-shadow: 0 18px 42px rgba(0, 0, 0, 0.23);
-  --site-code-bg: #0d0f13;
-  --site-code-surface: #181b22;
-  --site-code-line: #303540;
+  --site-nav-bg: rgba(32, 34, 40, 0.94);
+  --site-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+  --site-code-bg: #181a1f;
+  --site-code-surface: #282b32;
+  --site-code-line: #444a55;
   --site-code-text: #e1e4e8;
   --site-code-muted: #8f98a6;
 
