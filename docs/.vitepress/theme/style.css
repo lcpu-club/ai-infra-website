@@ -23,11 +23,11 @@
   --site-link: #315f9c;
   --site-nav-bg: rgba(251, 250, 249, 0.9);
   --site-shadow: 0 14px 35px rgba(40, 29, 25, 0.07);
-  --site-code-bg: #20232a;
-  --site-code-surface: #2a2e36;
-  --site-code-line: #3a404a;
-  --site-code-text: #e1e4e8;
-  --site-code-muted: #9aa3b0;
+  --site-code-bg: #f3f3f2;
+  --site-code-surface: #ffffff;
+  --site-code-line: #d8d8d6;
+  --site-code-text: #24272d;
+  --site-code-muted: #686d76;
 
   --topic-kernel: #396ab5;
   --topic-kernel-soft: #edf3fb;
@@ -55,7 +55,7 @@
   --vp-code-block-bg: var(--site-code-bg);
   --vp-code-block-divider-color: var(--site-code-line);
   --vp-code-lang-color: var(--site-code-muted);
-  --vp-code-line-highlight-color: rgba(255, 255, 255, 0.08);
+  --vp-code-line-highlight-color: rgba(143, 29, 44, 0.07);
   --vp-code-line-number-color: var(--site-code-muted);
   --vp-code-copy-code-border-color: var(--site-code-line);
   --vp-code-copy-code-bg: var(--site-code-surface);
@@ -125,7 +125,12 @@ body {
 }
 
 html:not(.dark) .vp-code span {
-  color: var(--shiki-dark, inherit);
+  color: var(--shiki-light, var(--site-code-text));
+}
+
+html:not(.dark) .vp-doc div[class*='language-'] {
+  border: 1px solid var(--site-code-line);
+  box-shadow: 0 1px 2px rgba(25, 27, 34, 0.04);
 }
 
 ::selection {
@@ -284,7 +289,7 @@ a {
 
 .section-heading-row > p {
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.75;
 }
 
@@ -326,7 +331,7 @@ a {
   max-width: 710px;
   margin-top: 26px !important;
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.8;
 }
 
@@ -406,7 +411,7 @@ a {
 .about-copy p {
   margin-top: 16px;
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.85;
 }
 
@@ -416,7 +421,7 @@ a {
 
 .about-copy .about-lead {
   color: var(--site-text);
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 540;
   line-height: 1.8;
 }
@@ -462,7 +467,7 @@ a {
 .course-info dd {
   margin: 0;
   color: var(--site-text-2);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -500,7 +505,7 @@ a {
 
 .topic-row-copy > p:first-child {
   color: var(--site-text-2);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
@@ -545,7 +550,7 @@ a {
 .format-steps p {
   margin-top: 6px;
   color: var(--site-text-3);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.65;
 }
 
@@ -604,7 +609,7 @@ a {
   border-bottom: 1px solid var(--site-line-strong);
   color: var(--site-text-2);
   background: var(--site-surface-2);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
   line-height: 1.4;
   text-align: left;
@@ -635,7 +640,7 @@ a {
   border-bottom: 1px solid var(--site-line);
   color: var(--site-text-2);
   background: transparent;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
   text-align: left;
@@ -724,7 +729,7 @@ a {
 
 .schedule-session-cell li {
   margin-top: 3px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.55;
 }
@@ -779,7 +784,7 @@ a {
 .join-section p {
   margin-top: 9px;
   color: var(--site-text-2);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .join-section > a {
@@ -852,7 +857,7 @@ a {
   max-width: 680px;
   margin-top: 13px;
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.75;
 }
 
@@ -870,12 +875,22 @@ a {
 }
 
 .VPSidebarItem .text {
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .VPSidebarItem.is-active > .item .link > .text,
 .VPDocAsideOutline .outline-link.active {
   color: var(--site-brand) !important;
+}
+
+.VPDocAsideOutline .outline-title {
+  font-size: 15px;
+}
+
+.VPDocAsideOutline .outline-link {
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .VPDoc .container {
@@ -888,7 +903,7 @@ a {
 
 .vp-doc {
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .vp-doc h1,
@@ -925,7 +940,7 @@ a {
 .vp-doc table {
   display: table;
   width: 100%;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .vp-doc th {
@@ -956,7 +971,7 @@ a {
 .session-banner .section-index {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
@@ -974,7 +989,7 @@ a {
   max-width: 680px;
   margin: 18px 0 0;
   color: var(--site-text-2);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.8;
 }
 
@@ -986,7 +1001,7 @@ a {
   color: var(--site-text-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px 18px;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -1013,14 +1028,14 @@ a {
 .takeaway > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .takeaway strong {
   display: block;
   margin-top: 22px;
   color: var(--site-text);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
 }
 
@@ -1042,20 +1057,20 @@ a {
 .learning-path span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .learning-path strong {
   display: block;
   margin-top: 29px;
   color: var(--site-text);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .learning-path p {
   margin: 8px 0 0;
   color: var(--site-text-3);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.65;
 }
 
@@ -1089,19 +1104,19 @@ a {
 .reading-card > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 8px;
+  font-size: 10px;
 }
 
 .reading-card strong {
   margin-top: 18px;
   color: var(--site-text);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .reading-card small {
   margin-top: 8px;
   color: var(--site-text-3);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.65;
 }
 
@@ -1109,7 +1124,7 @@ a {
   margin-top: auto;
   padding-top: 13px;
   color: var(--site-link);
-  font-size: 9px;
+  font-size: 12px;
   font-style: normal;
 }
 
@@ -1124,7 +1139,7 @@ a {
 .assignment-card > span {
   color: var(--topic-comm);
   font-family: var(--vp-font-family-mono);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -1183,7 +1198,7 @@ a {
   }
 
   .hero-lead {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.75;
   }
 
@@ -1238,7 +1253,7 @@ a {
   }
 
   .topic-row-copy > p:first-child {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .format-steps {
