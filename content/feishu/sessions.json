@@ -1,7 +1,7 @@
 {
   "$schema": "./sessions.schema.json",
   "timezone": "Asia/Shanghai",
-  "calendarId": "",
+  "calendarId": "feishu.cn_clwru5ESzQtYBVxy2rwowh@group.calendar.feishu.cn",
   "calendarRange": {
     "start": "2026-07-01",
     "end": "2026-10-01"
