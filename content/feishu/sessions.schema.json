@@ -24,6 +24,27 @@
       }
     },
     "publishMeetingUrl": { "type": "boolean" },
+    "wiki": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rootNodeToken", "sourceBaseUrl"],
+      "properties": {
+        "rootNodeToken": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "sourceBaseUrl": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://[^?#]+/wiki/?$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
     "sessions": {
       "type": "array",
       "items": {

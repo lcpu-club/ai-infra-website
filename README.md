@@ -13,7 +13,7 @@ npm run dev
 
 飞书是动态课程内容的来源：
 
-- Wiki 文档负责讲义正文。
+- Wiki 集合负责整棵讲义目录，Session 映射可继续覆盖单节讲义正文。
 - 课程共享日历负责标题、日期、时间、地点和取消状态。
 - `docs/.vitepress/data/program.ts` 保留 Topic、讲者、提纲等网站策划字段。
 - 腾讯会议链接默认不发布，只有将
@@ -49,9 +49,31 @@ node scripts/feishu/register-app.mjs
 - `calendar:calendar.event:read`
 - `calendar:calendar.acl:read`
 
+API Scope 之外，应用还必须拥有目标知识空间的资源权限。进入知识空间的
+「设置 → 权限设置/成员设置」把应用加入可查看成员；如果界面不能直接选择
+应用，可以先把应用作为机器人加入一个飞书群，再把该群加入知识空间成员。
+否则整库遍历会返回 `131006 wiki space permission denied`。
+
 ### 内容映射
 
-编辑 `content/feishu/sessions.json`，为每节课配置：
+编辑 `content/feishu/sessions.json`。`wiki` 配置用于递归同步一个完整知识库
+目录：
+
+```json
+{
+  "wiki": {
+    "rootNodeToken": "Bzqww95pBiox3Tkszkncphw6nBh",
+    "sourceBaseUrl": "https://lcpu-club.feishu.cn/wiki",
+    "title": "AI Infra 小组"
+  }
+}
+```
+
+同步器会识别飞书 `<sub-page-list>` 目录块，递归获取所有后代页面，保留层级并
+生成 `/wiki/` 导航。页面 URL 使用稳定的 Wiki node token，移动或改名不会
+破坏外部链接。
+
+`sessions` 列表用于为单节课程配置：
 
 - `wikiNodeToken`：Wiki URL 中 `/wiki/` 后的 token。
 - `calendarEventId`：共享日历中对应日程的 ID。
@@ -77,8 +99,10 @@ npm run sync:feishu
 生成文件包括：
 
 - `docs/sessions/<session-id>.md`
+- `docs/wiki/index.md` 与 `docs/wiki/<wiki-node-token>.md`
 - `docs/.vitepress/data/generated/feishu.json`
 - `docs/public/feishu/<session-id>/`
+- `docs/public/feishu/wiki/<wiki-node-token>/`
 
 不要直接修改这些生成文件；请在飞书 Wiki 或日历中修改。
 

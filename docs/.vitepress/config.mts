@@ -1,8 +1,23 @@
 import { defineConfig } from 'vitepress'
 import { sessions, topics } from './data/program'
+import feishuSnapshot from './data/generated/feishu.json'
+
+interface WikiPage {
+  wikiNodeToken: string
+  parentWikiNodeToken: string | null
+  title: string
+  route: string
+  order: number
+}
+
+interface WikiSnapshot {
+  title: string
+  pages: WikiPage[]
+}
 
 const base = '/ai-infra-website/'
 const firstPublishedSession = sessions.find(({ href }) => href)
+const wiki = (feishuSnapshot as { wiki?: WikiSnapshot }).wiki
 const sessionSidebar = topics.map((topic) => ({
   text: `Topic ${topic.number} · ${topic.title}`,
   collapsed: topic.number !== '01',
@@ -13,6 +28,18 @@ const sessionSidebar = topics.map((topic) => ({
       link: session.href || `/schedule#session-${session.id}`
     }))
 }))
+const wikiSidebarItems = (parentWikiNodeToken: string | null): any[] =>
+  (wiki?.pages ?? [])
+    .filter((page) => page.parentWikiNodeToken === parentWikiNodeToken)
+    .sort((left, right) => left.order - right.order)
+    .map((page) => {
+      const items = wikiSidebarItems(page.wikiNodeToken)
+      return {
+        text: page.title,
+        link: page.route,
+        ...(items.length > 0 ? { items, collapsed: false } : {})
+      }
+    })
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -57,6 +84,7 @@ export default defineConfig({
     nav: [
       { text: '课程介绍', link: '/' },
       { text: '课程日程', link: '/schedule' },
+      ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
       ...(firstPublishedSession
         ? [
             {
@@ -68,6 +96,7 @@ export default defineConfig({
       {
         text: '课程资料',
         items: [
+          ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
           ...sessions
             .filter(({ href }) => href)
             .map((session) => ({
@@ -79,7 +108,19 @@ export default defineConfig({
       }
     ],
     sidebar: {
-      '/sessions/': sessionSidebar
+      '/sessions/': sessionSidebar,
+      ...(wiki
+        ? {
+            '/wiki/': [
+              {
+                text: wiki.title,
+                link: '/wiki/',
+                collapsed: false,
+                items: wikiSidebarItems(null)
+              }
+            ]
+          }
+        : {})
     },
     outline: {
       level: [2, 3],

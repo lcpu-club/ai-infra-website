@@ -75,6 +75,49 @@ export async function readSyncConfig(repoRoot) {
       process.env.FEISHU_CALENDAR_ID?.trim() || config.calendarId?.trim() || '',
     calendarRange: config.calendarRange,
     publishMeetingUrl: config.publishMeetingUrl === true,
+    wiki: readWikiConfig(config.wiki),
     sessions: config.sessions
+  }
+}
+
+function readWikiConfig(value) {
+  if (value === undefined) return null
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('Feishu sync config wiki must be an object')
+  }
+  if (!TOKEN_PATTERN.test(value.rootNodeToken ?? '')) {
+    throw new Error('Feishu sync config wiki requires a valid rootNodeToken')
+  }
+  if (
+    value.title !== undefined &&
+    (typeof value.title !== 'string' ||
+      value.title.length === 0 ||
+      value.title.length > 100 ||
+      /[\u0000-\u001f\u007f]/.test(value.title))
+  ) {
+    throw new Error('Feishu sync config wiki.title must be 1-100 safe characters')
+  }
+
+  let sourceBaseUrl
+  try {
+    sourceBaseUrl = new URL(value.sourceBaseUrl)
+  } catch {
+    throw new Error('Feishu sync config wiki.sourceBaseUrl must be a valid URL')
+  }
+  if (
+    sourceBaseUrl.protocol !== 'https:' ||
+    sourceBaseUrl.search ||
+    sourceBaseUrl.hash ||
+    sourceBaseUrl.pathname.replace(/\/+$/, '') !== '/wiki'
+  ) {
+    throw new Error(
+      'Feishu sync config wiki.sourceBaseUrl must be an HTTPS /wiki URL'
+    )
+  }
+
+  return {
+    rootNodeToken: value.rootNodeToken,
+    title: value.title,
+    sourceBaseUrl: sourceBaseUrl.href.replace(/\/+$/, '')
   }
 }

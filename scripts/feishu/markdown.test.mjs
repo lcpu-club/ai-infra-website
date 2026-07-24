@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { normalizeFeishuMarkdown } from './markdown.mjs'
+import {
+  extractSubPageListReferences,
+  normalizeFeishuMarkdown
+} from './markdown.mjs'
 
 test('strips the leading title and fixes URL escapes for web rendering', async () => {
   const source =
@@ -62,6 +65,26 @@ test('converts common Feishu extension blocks', async () => {
 
   assert.match(output, /::: info 💡\n\n重点\n\n:::/)
   assert.match(output, /- \[x\] 完成练习/)
+})
+
+test('renders Feishu sub-page-list blocks with the discovered Wiki directory', async () => {
+  const source =
+    '# Wiki\n\n' +
+    '<sub-page-list space-id="space_1" wiki-token="root_1"></sub-page-list>\n'
+  const references = extractSubPageListReferences(source)
+  const output = await normalizeFeishuMarkdown(source, {
+    contextLabel: 'Wiki page Wiki',
+    wikiRoutes: new Map(),
+    renderSubPageList({ 'wiki-token': wikiToken }) {
+      assert.equal(wikiToken, 'root_1')
+      return '- [Child](/wiki/child_1)'
+    }
+  })
+
+  assert.deepEqual(references, [
+    { wikiNodeToken: 'root_1', spaceId: 'space_1' }
+  ])
+  assert.equal(output, '- [Child](/wiki/child_1)\n')
 })
 
 test('fails closed for unknown or unsafe embedded blocks', async () => {

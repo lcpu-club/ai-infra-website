@@ -59,7 +59,7 @@ jobs:
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "push" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "should_deploy=true" >> "$GITHUB_OUTPUT"
-          elif [[ -z "$(git status --porcelain --untracked-files=all -- docs/sessions docs/.vitepress/data/generated docs/public/feishu)" ]]; then
+          elif [[ -z "$(git status --porcelain --untracked-files=all -- docs/sessions docs/wiki docs/.vitepress/data/generated docs/public/feishu)" ]]; then
             echo "should_deploy=false" >> "$GITHUB_OUTPUT"
           else
             echo "should_deploy=true" >> "$GITHUB_OUTPUT"
@@ -73,7 +73,7 @@ jobs:
         if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' && env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}
         shell: bash
         run: |
-          git add -- docs/sessions docs/.vitepress/data/generated docs/public/feishu
+          git add -- docs/sessions docs/wiki docs/.vitepress/data/generated docs/public/feishu
           if git diff --cached --quiet; then
             exit 0
           fi

@@ -2,35 +2,44 @@ const ATTRIBUTE_PATTERN = /([A-Za-z_:][-A-Za-z0-9_:.]*)\s*=\s*"([^"]*)"/g
 const DANGEROUS_TAG_PATTERN =
   /(?<!\\)<\s*\/?\s*(script|iframe|object|embed|style|link|meta|form|input|video|audio)\b/i
 const REMAINING_TAG_PATTERN = /(?<!\\)<\/?([A-Za-z][A-Za-z0-9_-]*)\b[^>]*>/
+const SUB_PAGE_LIST_PATTERN =
+  /<sub-page-list\b([^>]*?)(?:\/>|>\s*<\/sub-page-list>)/gi
 
 export async function normalizeFeishuMarkdown(
   input,
-  { sessionId, downloadAsset, wikiRoutes = new Map() }
+  {
+    sessionId,
+    contextLabel,
+    downloadAsset,
+    wikiRoutes = new Map(),
+    renderSubPageList
+  }
 ) {
   if (typeof input !== 'string') {
     throw new TypeError('Feishu Markdown input must be a string')
   }
+  const context = contextLabel || `Session ${sessionId}`
 
   let markdown = input.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
   markdown = stripFrontmatter(markdown)
   markdown = stripLeadingTitle(markdown)
 
   if (DANGEROUS_TAG_PATTERN.test(markdown)) {
-    throw new Error(`Session ${sessionId} contains unsafe raw HTML`)
+    throw new Error(`${context} contains unsafe raw HTML`)
   }
 
   markdown = await replaceMediaTags(markdown, {
-    sessionId,
+    context,
     downloadAsset
   })
-  markdown = convertSupportedXml(markdown)
+  markdown = convertSupportedXml(markdown, { renderSubPageList })
   markdown = rewriteWikiLinks(markdown, wikiRoutes)
   markdown = normalizeRenderedUrls(markdown)
 
   const unsupported = markdown.match(REMAINING_TAG_PATTERN)
   if (unsupported) {
     throw new Error(
-      `Session ${sessionId} contains unsupported Feishu block <${unsupported[1]}>`
+      `${context} contains unsupported Feishu block <${unsupported[1]}>`
     )
   }
 
@@ -55,7 +64,7 @@ async function replaceMediaTags(markdown, options) {
   const matches = [...markdown.matchAll(tagPattern)]
   if (matches.length === 0) return markdown
   if (typeof options.downloadAsset !== 'function') {
-    throw new Error(`Session ${options.sessionId} contains media but no downloader`)
+    throw new Error(`${options.context} contains media but no downloader`)
   }
 
   let output = ''
@@ -68,7 +77,7 @@ async function replaceMediaTags(markdown, options) {
 
     if (!token || !/^[A-Za-z0-9_-]+$/.test(token)) {
       throw new Error(
-        `Session ${options.sessionId} has a Feishu <${tagName}> without a valid media token`
+        `${options.context} has a Feishu <${tagName}> without a valid media token`
       )
     }
 
@@ -100,9 +109,13 @@ function parseAttributes(source) {
   return attributes
 }
 
-function convertSupportedXml(markdown) {
+function convertSupportedXml(markdown, { renderSubPageList }) {
   let output = markdown
 
+  output = output.replace(SUB_PAGE_LIST_PATTERN, (tag, source) => {
+    if (typeof renderSubPageList !== 'function') return tag
+    return renderSubPageList(parseAttributes(source))
+  })
   output = output.replace(
     /<callout\b([^>]*)>/gi,
     (_, source) => {
@@ -142,6 +155,26 @@ function convertSupportedXml(markdown) {
   output = output.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/gi, '$1')
 
   return output.replace(/\n{3,}/g, '\n\n')
+}
+
+export function extractSubPageListReferences(markdown) {
+  if (typeof markdown !== 'string') return []
+
+  const references = []
+  for (const match of markdown.matchAll(SUB_PAGE_LIST_PATTERN)) {
+    const attributes = parseAttributes(match[1])
+    if (!attributes['wiki-token']) {
+      throw new Error('Feishu sub-page-list is missing wiki-token')
+    }
+    if (!/^[A-Za-z0-9_-]+$/.test(attributes['wiki-token'])) {
+      throw new Error('Feishu sub-page-list has an invalid wiki-token')
+    }
+    references.push({
+      wikiNodeToken: attributes['wiki-token'],
+      spaceId: attributes['space-id']
+    })
+  }
+  return references
 }
 
 function stripInlineTags(value) {

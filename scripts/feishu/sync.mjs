@@ -17,13 +17,21 @@ import {
   createFeishuClient,
   downloadDocumentMedia,
   fetchWikiMarkdown,
-  listCalendarEvents
+  listCalendarEvents,
+  listWikiNodes,
+  resolveWikiNode
 } from './client.mjs'
 import { readSyncConfig } from './config.mjs'
 import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
 import { normalizeFeishuMarkdown } from './markdown.mjs'
-import { renderSessionPage } from './render.mjs'
+import { renderSessionPage, renderWikiPage } from './render.mjs'
 import { dateRangeToUnixSeconds, eventToPublicData } from './time.mjs'
+import {
+  breadcrumbsForWikiPage,
+  discoverWikiCollection,
+  renderWikiDirectoryMarkdown,
+  wikiRouteForToken
+} from './wiki.mjs'
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(scriptDir, '../..')
@@ -38,8 +46,10 @@ const credentials = requireFeishuCredentials()
 const config = await readSyncConfig(repoRoot)
 const client = createFeishuClient(credentials)
 const stagingRoot = await mkdtemp(path.join(repoRoot, '.feishu-sync-'))
-const stagedPages = path.join(stagingRoot, 'sessions')
-const stagedAssets = path.join(stagingRoot, 'public/feishu')
+const stagedSessionPages = path.join(stagingRoot, 'sessions')
+const stagedSessionAssets = path.join(stagingRoot, 'public/feishu/sessions')
+const stagedWikiPages = path.join(stagingRoot, 'wiki')
+const stagedWikiAssets = path.join(stagingRoot, 'public/feishu/wiki')
 const stagedSnapshot = path.join(stagingRoot, 'feishu.json')
 const operations = []
 
@@ -47,6 +57,7 @@ try {
   const snapshot = await readExistingSnapshot()
   const calendarEvents = await fetchConfiguredCalendar()
   applyCalendarData(snapshot, calendarEvents)
+  const wikiCollection = await discoverConfiguredWiki()
 
   const wikiRoutes = new Map(
     config.sessions
@@ -56,11 +67,23 @@ try {
         `/sessions/${id}`
       ])
   )
+  if (wikiCollection) {
+    for (const token of wikiCollection.rootAliases) {
+      wikiRoutes.set(token, '/wiki/')
+    }
+    for (const { node } of wikiCollection.pages) {
+      wikiRoutes.set(node.node_token, wikiRouteForToken(node.node_token))
+    }
+  }
 
   for (const session of config.sessions) {
     if (!session.wikiNodeToken) continue
     await stageWikiSession({ session, snapshot, wikiRoutes })
   }
+  const wikiDocumentCount = wikiCollection
+    ? await stageWikiCollection({ collection: wikiCollection, snapshot, wikiRoutes })
+    : 0
+  if (!wikiCollection) delete snapshot.wiki
 
   await mkdir(path.dirname(stagedSnapshot), { recursive: true })
   await writeFile(stagedSnapshot, stableJson(snapshot), 'utf8')
@@ -87,7 +110,7 @@ try {
             ? { id: config.calendarId, eventCount: calendarEvents.length }
             : { skipped: true },
           documents: config.sessions.filter(({ wikiNodeToken }) => wikiNodeToken)
-            .length,
+            .length + wikiDocumentCount,
           changed: changedOperations.map(({ label }) => label)
         },
         null,
@@ -135,6 +158,19 @@ async function fetchConfiguredCalendar() {
   })
 }
 
+async function discoverConfiguredWiki() {
+  if (!config.wiki) return null
+
+  console.log(`Discovering Wiki collection ${config.wiki.rootNodeToken}…`)
+  return discoverWikiCollection({
+    rootNodeToken: config.wiki.rootNodeToken,
+    fetchDocument: (token) => fetchWikiMarkdown(client, token),
+    resolveNode: (token) => resolveWikiNode(client, token),
+    listNodes: ({ spaceId, parentNodeToken }) =>
+      listWikiNodes(client, { spaceId, parentNodeToken })
+  })
+}
+
 function applyCalendarData(snapshot, events) {
   if (!config.calendarId) return
   const eventById = new Map(events.map((event) => [event.event_id, event]))
@@ -172,40 +208,17 @@ async function stageWikiSession({ session, snapshot, wikiRoutes }) {
     )
   }
 
-  const assetDirectory = path.join(stagedAssets, session.id)
+  const assetDirectory = path.join(stagedSessionAssets, session.id)
   await mkdir(assetDirectory, { recursive: true })
-  const mediaCache = new Map()
-  let lastMediaRequest = 0
 
   const body = await normalizeFeishuMarkdown(document.markdown, {
     sessionId: session.id,
     wikiRoutes,
-    async downloadAsset({ token, name, kind }) {
-      if (mediaCache.has(token)) return mediaCache.get(token)
-
-      const elapsed = Date.now() - lastMediaRequest
-      if (elapsed < 220) await delay(220 - elapsed)
-      const media = await downloadDocumentMedia(client, token)
-      lastMediaRequest = Date.now()
-
-      if (media.contentType.split(';', 1)[0].trim() === 'image/svg+xml') {
-        throw new Error(
-          `Session ${session.id} contains an SVG asset; convert it to PNG ` +
-            'before publishing to avoid active content'
-        )
-      }
-      const extension = safeExtension(name, media.contentType, kind)
-      const digest = createHash('sha256').update(media.buffer).digest('hex')
-      const fileName = `${digest.slice(0, 24)}${extension}`
-      const filePath = path.join(assetDirectory, fileName)
-      await writeFile(filePath, media.buffer)
-
-      const result = {
-        publicPath: `/feishu/${session.id}/${fileName}`
-      }
-      mediaCache.set(token, result)
-      return result
-    }
+    downloadAsset: createMediaDownloader({
+      assetDirectory,
+      publicBasePath: `/feishu/${session.id}`,
+      contextLabel: `Session ${session.id}`
+    })
   })
 
   const calendarTitle = snapshot.sessions[session.id]?.calendar?.summary
@@ -216,7 +229,7 @@ async function stageWikiSession({ session, snapshot, wikiRoutes }) {
     },
     body
   })
-  const pagePath = path.join(stagedPages, `${session.id}.md`)
+  const pagePath = path.join(stagedSessionPages, `${session.id}.md`)
   await mkdir(path.dirname(pagePath), { recursive: true })
   await writeFile(pagePath, page, 'utf8')
 
@@ -242,6 +255,176 @@ async function stageWikiSession({ session, snapshot, wikiRoutes }) {
     target: path.join(repoRoot, `docs/public/feishu/${session.id}`),
     label: `Session ${session.id} assets`
   })
+}
+
+async function stageWikiCollection({ collection, snapshot, wikiRoutes }) {
+  const collectionTitle =
+    config.wiki.title || collection.rootDocument.node.title || 'Wiki 讲义'
+  const pages = []
+  await mkdir(stagedWikiPages, { recursive: true })
+  await mkdir(stagedWikiAssets, { recursive: true })
+
+  function renderSubPageList(attributes) {
+    const referenceToken = attributes['wiki-token']
+    const directoryToken =
+      collection.directoryAliases.get(referenceToken) || referenceToken
+    if (!directoryToken || !collection.directoryChildren.has(directoryToken)) {
+      throw new Error(
+        `Wiki directory block references undiscovered node ` +
+          `${referenceToken || '(missing)'}`
+      )
+    }
+
+    return (
+      renderWikiDirectoryMarkdown({
+        directoryToken,
+        directoryChildren: collection.directoryChildren,
+        pageByToken: collection.pageByToken
+      }) || '_暂无子页面_'
+    )
+  }
+
+  const rootDetails = await stageWikiCollectionPage({
+    document: collection.rootDocument,
+    wikiNodeToken: config.wiki.rootNodeToken,
+    outputPath: path.join(stagedWikiPages, 'index.md'),
+    breadcrumbs: [],
+    collectionTitle,
+    wikiRoutes,
+    renderSubPageList
+  })
+
+  for (const page of collection.pages) {
+    await delay(220)
+    const document = await fetchWikiMarkdown(client, page.node.node_token)
+    const details = await stageWikiCollectionPage({
+      document,
+      wikiNodeToken: page.node.node_token,
+      outputPath: path.join(stagedWikiPages, `${page.node.node_token}.md`),
+      breadcrumbs: breadcrumbsForWikiPage(page, collection.pageByToken),
+      collectionTitle,
+      wikiRoutes,
+      renderSubPageList
+    })
+    pages.push({
+      wikiNodeToken: page.node.node_token,
+      parentWikiNodeToken: page.parentWikiNodeToken,
+      title: details.sourceTitle,
+      route: wikiRouteForToken(page.node.node_token),
+      depth: page.depth,
+      order: page.order,
+      documentId: details.documentId,
+      objectType: details.objectType,
+      revisionId: details.revisionId
+    })
+  }
+
+  snapshot.wiki = {
+    title: collectionTitle,
+    rootNodeToken: config.wiki.rootNodeToken,
+    sourceUrl: `${config.wiki.sourceBaseUrl}/${config.wiki.rootNodeToken}`,
+    documentId: rootDetails.documentId,
+    objectType: rootDetails.objectType,
+    revisionId: rootDetails.revisionId,
+    pages
+  }
+
+  operations.push({
+    staged: stagedWikiPages,
+    target: path.join(repoRoot, 'docs/wiki'),
+    label: 'Wiki collection pages'
+  })
+  operations.push({
+    staged: stagedWikiAssets,
+    target: path.join(repoRoot, 'docs/public/feishu/wiki'),
+    label: 'Wiki collection assets'
+  })
+
+  return pages.length + 1
+}
+
+async function stageWikiCollectionPage({
+  document,
+  wikiNodeToken,
+  outputPath,
+  breadcrumbs,
+  collectionTitle,
+  wikiRoutes,
+  renderSubPageList
+}) {
+  const sourceTitle = document.node.title || '未命名页面'
+  const contextLabel = `Wiki page ${sourceTitle}`
+  if (referenceCount(document.referenceMap) > 0) {
+    throw new Error(
+      `${contextLabel} contains unresolved Feishu references; ` +
+        'support must be added before publishing it safely'
+    )
+  }
+
+  const assetDirectory = path.join(stagedWikiAssets, wikiNodeToken)
+  await mkdir(assetDirectory, { recursive: true })
+  const body = await normalizeFeishuMarkdown(document.markdown, {
+    contextLabel,
+    wikiRoutes,
+    renderSubPageList,
+    downloadAsset: createMediaDownloader({
+      assetDirectory,
+      publicBasePath: `/feishu/wiki/${wikiNodeToken}`,
+      contextLabel
+    })
+  })
+  const page = renderWikiPage({
+    title: sourceTitle,
+    body,
+    breadcrumbs,
+    collectionTitle,
+    sourceUrl: `${config.wiki.sourceBaseUrl}/${wikiNodeToken}`
+  })
+  await mkdir(path.dirname(outputPath), { recursive: true })
+  await writeFile(outputPath, page, 'utf8')
+
+  return {
+    sourceTitle,
+    documentId: document.node.obj_token,
+    objectType: document.node.obj_type,
+    revisionId: document.revisionId
+  }
+}
+
+function createMediaDownloader({
+  assetDirectory,
+  publicBasePath,
+  contextLabel
+}) {
+  const mediaCache = new Map()
+  let lastMediaRequest = 0
+
+  return async function downloadAsset({ token, name, kind }) {
+    if (mediaCache.has(token)) return mediaCache.get(token)
+
+    const elapsed = Date.now() - lastMediaRequest
+    if (elapsed < 220) await delay(220 - elapsed)
+    const media = await downloadDocumentMedia(client, token)
+    lastMediaRequest = Date.now()
+
+    if (media.contentType.split(';', 1)[0].trim() === 'image/svg+xml') {
+      throw new Error(
+        `${contextLabel} contains an SVG asset; convert it to PNG ` +
+          'before publishing to avoid active content'
+      )
+    }
+    const extension = safeExtension(name, media.contentType, kind)
+    const digest = createHash('sha256').update(media.buffer).digest('hex')
+    const fileName = `${digest.slice(0, 24)}${extension}`
+    const filePath = path.join(assetDirectory, fileName)
+    await writeFile(filePath, media.buffer)
+
+    const result = {
+      publicPath: `${publicBasePath}/${fileName}`
+    }
+    mediaCache.set(token, result)
+    return result
+  }
 }
 
 function referenceCount(referenceMap) {
@@ -359,7 +542,12 @@ function stableJson(value) {
       left.localeCompare(right)
     )
   )
-  return `${JSON.stringify({ version: value.version, sessions: orderedSessions }, null, 2)}\n`
+  const output = {
+    version: value.version,
+    sessions: orderedSessions,
+    ...(value.wiki ? { wiki: value.wiki } : {})
+  }
+  return `${JSON.stringify(output, null, 2)}\n`
 }
 
 function delay(milliseconds) {
