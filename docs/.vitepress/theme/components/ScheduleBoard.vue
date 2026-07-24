@@ -1,0 +1,19 @@
+<script setup lang="ts">
+import { withBase } from 'vitepress'
+import ScheduleTable from './ScheduleTable.vue'
+</script>
+
+<template>
+  <main class="course-site schedule-page-shell">
+    <header class="inner-page-hero">
+      <span>AI INFRA SEMINARS · SUMMER 2026</span>
+      <h1>完整课程日程</h1>
+      <p>
+        2026 年 7 月 23 日至 9 月 6 日，共七周、四个 Topic、十四场
+        Session。具体开始时间和会议入口以活动群通知为准。
+      </p>
+      <a :href="withBase('/')">← 返回课程首页</a>
+    </header>
+    <ScheduleTable id="full-schedule" />
+  </main>
+</template>
