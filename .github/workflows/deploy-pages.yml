@@ -4,10 +4,20 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/10 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - feishu-content-changed
+
+env:
+  FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+  FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+  FEISHU_CALENDAR_ID: ${{ secrets.FEISHU_CALENDAR_ID }}
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -18,6 +28,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.deployment-decision.outputs.should_deploy }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
@@ -34,10 +46,44 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test Feishu content converter
+        run: npm run test:feishu
+
+      - name: Sync course content from Feishu
+        if: ${{ env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}
+        run: npm run sync:feishu
+
+      - name: Decide whether a deployment is needed
+        id: deployment-decision
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "push" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+          elif [[ -z "$(git status --porcelain --untracked-files=all -- docs/sessions docs/.vitepress/data/generated docs/public/feishu)" ]]; then
+            echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build VitePress site
+        if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' }}
         run: npm run build
 
+      - name: Persist synchronized content snapshot
+        if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' && env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}
+        shell: bash
+        run: |
+          git add -- docs/sessions docs/.vitepress/data/generated docs/public/feishu
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(content): sync from Feishu"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: Upload Pages artifact
+        if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: docs/.vitepress/dist
@@ -46,6 +92,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    if: ${{ needs.build.outputs.should_deploy == 'true' }}
     runs-on: ubuntu-latest
     needs: build
     steps:

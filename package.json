@@ -6,10 +6,17 @@
   "scripts": {
     "dev": "vitepress dev docs --host 0.0.0.0",
     "build": "vitepress build docs",
-    "preview": "vitepress preview docs --host 0.0.0.0"
+    "preview": "vitepress preview docs --host 0.0.0.0",
+    "sync:feishu": "node scripts/feishu/sync.mjs",
+    "sync:feishu:dry": "node scripts/feishu/sync.mjs --dry-run",
+    "inspect:feishu": "node scripts/feishu/inspect.mjs",
+    "test:feishu": "node --test scripts/feishu/*.test.mjs"
   },
   "devDependencies": {
     "vitepress": "^1.6.4",
     "vue": "^3.5.13"
+  },
+  "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.71.1"
   }
 }

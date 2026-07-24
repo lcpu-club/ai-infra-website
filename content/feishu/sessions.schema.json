@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feishu course sync configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["timezone", "sessions"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "timezone": { "type": "string", "minLength": 1 },
+    "calendarId": { "type": "string" },
+    "calendarRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        }
+      }
+    },
+    "publishMeetingUrl": { "type": "boolean" },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^\\d{2}$" },
+          "wikiNodeToken": { "type": "string" },
+          "calendarEventId": { "type": "string" },
+          "pageTitle": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  }
+}

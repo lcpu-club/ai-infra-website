@@ -1,0 +1,19 @@
+{
+  "$schema": "./sessions.schema.json",
+  "timezone": "Asia/Shanghai",
+  "calendarId": "",
+  "calendarRange": {
+    "start": "2026-07-01",
+    "end": "2026-10-01"
+  },
+  "publishMeetingUrl": false,
+  "sessions": [
+    {
+      "id": "01",
+      "wikiNodeToken": "VIJPw24sqiPOhXkfEwXcEvVInhg",
+      "calendarEventId": "",
+      "pageTitle": "GPU 与 GPU 编程模型",
+      "description": "从 SIMD / SIMT 与 CUDA Programming Model，到 Triton / TileLang 的 tile abstraction"
+    }
+  ]
+}

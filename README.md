@@ -9,12 +9,104 @@ npm install
 npm run dev
 ```
 
-## 构建
+## 飞书同步
+
+飞书是动态课程内容的来源：
+
+- Wiki 文档负责讲义正文。
+- 课程共享日历负责标题、日期、时间、地点和取消状态。
+- `docs/.vitepress/data/program.ts` 保留 Topic、讲者、提纲等网站策划字段。
+- 腾讯会议链接默认不发布，只有将
+  `content/feishu/sessions.json` 中的 `publishMeetingUrl` 显式设为
+  `true` 才会进入公开网站。
+
+同步使用飞书官方 Node SDK。生产环境只需要应用身份，不需要保存个人登录
+token。
+
+### 本地凭据
+
+凭据通过环境变量提供：
+
+```text
+FEISHU_APP_ID=cli_xxx
+FEISHU_APP_SECRET=xxx
+FEISHU_CALENDAR_ID=xxx
+```
+
+本地可放在仓库根目录的 `.env.feishu.local`；该文件已被 Git 忽略且应保持
+`0600` 权限。创建新的只读应用可运行：
 
 ```bash
+node scripts/feishu/register-app.mjs
+```
+
+应用运行期权限：
+
+- `wiki:wiki:readonly`
+- `docx:document:readonly`
+- `docs:document.media:download`
+- `calendar:calendar:read`
+- `calendar:calendar.event:read`
+- `calendar:calendar.acl:read`
+
+### 内容映射
+
+编辑 `content/feishu/sessions.json`，为每节课配置：
+
+- `wikiNodeToken`：Wiki URL 中 `/wiki/` 后的 token。
+- `calendarEventId`：共享日历中对应日程的 ID。
+- `pageTitle` 和 `description`：日历尚未配置时使用的页面元数据。
+
+先查看应用可见的日历、日程 ID 和 Wiki 版本：
+
+```bash
+npm run inspect:feishu
+```
+
+预演和正式同步：
+
+```bash
+npm run sync:feishu:dry
+npm run sync:feishu
+```
+
+同步器会先在临时目录生成完整结果，所有远端读取和格式校验成功后才替换正式
+文件。未知飞书 XML Block、危险 HTML、丢失的日程或下载失败都会中止整批更新。
+图片与附件下载到 `docs/public/feishu/<session-id>/`，文件名由内容哈希生成。
+
+生成文件包括：
+
+- `docs/sessions/<session-id>.md`
+- `docs/.vitepress/data/generated/feishu.json`
+- `docs/public/feishu/<session-id>/`
+
+不要直接修改这些生成文件；请在飞书 Wiki 或日历中修改。
+
+### GitHub Actions
+
+部署工作流在以下时机先同步、再构建：
+
+- `main` 分支 push
+- 每 10 分钟定时轮询
+- 手动触发
+- `repository_dispatch` 的 `feishu-content-changed` 事件
+
+在 GitHub 仓库中配置 Actions secrets：
+
+- `FEISHU_APP_ID`
+- `FEISHU_APP_SECRET`
+- `FEISHU_CALENDAR_ID`（共享日历准备好后配置）
+
+如果前两个 secret 尚未配置，工作流会使用仓库内最后一次成功同步的快照构建，
+不会让现有网站失效。同步或构建失败时，Pages 部署步骤不会运行，线上版本保持
+不变。同步后的生成文件会由 `github-actions[bot]` 在构建成功后提交到
+`main`，定时轮询发现结果没有变化时会跳过构建与部署。如果 `main` 禁止
+GitHub Actions 直接推送，需要在分支保护规则中放行该机器人，或改为自动 PR。
+
+## 验证
+
+```bash
+npm run test:feishu
 npm run build
 npm run preview
 ```
-
-课程内容位于 `docs/`，日程数据集中维护在
-`docs/.vitepress/data/program.ts`。

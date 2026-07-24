@@ -633,6 +633,10 @@ a {
   box-shadow: inset 3px 0 var(--site-brand);
 }
 
+.course-schedule-table tbody tr.is-cancelled {
+  opacity: 0.62;
+}
+
 .course-schedule-table tbody td,
 .course-schedule-table tbody th {
   padding: 16px 11px;
@@ -1007,6 +1011,11 @@ a {
 
 .session-banner-meta span:first-child {
   color: var(--site-brand);
+}
+
+.session-banner-meta a {
+  color: var(--site-brand);
+  font-weight: 650;
 }
 
 .takeaway-grid {

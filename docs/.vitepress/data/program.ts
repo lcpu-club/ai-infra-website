@@ -1,3 +1,5 @@
+import feishuSnapshot from './generated/feishu.json'
+
 export type TopicKey = 'kernel' | 'comm' | 'serving' | 'rl'
 
 export interface Topic {
@@ -21,6 +23,12 @@ export interface Session {
   owners: string[]
   href?: string
   note?: string
+  startAt?: string
+  endAt?: string
+  timeLabel?: string
+  location?: string
+  meetingUrl?: string
+  calendarStatus?: 'tentative' | 'confirmed' | 'cancelled'
 }
 
 export const topics: Topic[] = [
@@ -62,7 +70,7 @@ export const topics: Topic[] = [
   }
 ]
 
-export const sessions: Session[] = [
+const staticSessions: Session[] = [
   {
     id: '01',
     date: '2026-07-23',
@@ -275,6 +283,44 @@ export const sessions: Session[] = [
     owners: ['黄翟']
   }
 ]
+
+interface SyncedSession {
+  calendar?: {
+    summary?: string
+    date?: string
+    startAt?: string
+    endAt?: string
+    timeLabel?: string
+    location?: string
+    meetingUrl?: string
+    status?: 'tentative' | 'confirmed' | 'cancelled'
+  }
+  document?: {
+    wikiNodeToken: string
+  }
+}
+
+const syncedSessions = feishuSnapshot.sessions as Record<string, SyncedSession>
+
+export const sessions: Session[] = staticSessions.map((session) => {
+  const synced = syncedSessions[session.id]
+  const calendar = synced?.calendar
+  const date = calendar?.date || session.date
+
+  return {
+    ...session,
+    date,
+    dateLabel: date.slice(5).replace('-', '.'),
+    title: calendar?.summary || session.title,
+    href: synced?.document ? `/sessions/${session.id}` : session.href,
+    startAt: calendar?.startAt,
+    endAt: calendar?.endAt,
+    timeLabel: calendar?.timeLabel,
+    location: calendar?.location,
+    meetingUrl: calendar?.meetingUrl,
+    calendarStatus: calendar?.status
+  }
+})
 
 export function topicFor(key: TopicKey): Topic {
   return topics.find((topic) => topic.key === key) ?? topics[0]

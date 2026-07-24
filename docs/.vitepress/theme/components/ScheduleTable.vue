@@ -17,17 +17,22 @@ onMounted(() => {
 })
 
 const nextSessionId = computed(
-  () => sessions.find((session) => session.date >= today.value)?.id
+  () =>
+    sessions.find(
+      (session) =>
+        session.calendarStatus !== 'cancelled' && session.date >= today.value
+    )?.id
 )
 
 function topicFor(key: string) {
   return topics.find((topic) => topic.key === key)!
 }
 
-function statusFor(date: string, id: string) {
-  if (date < today.value) return 'past'
-  if (date === today.value) return 'today'
-  if (id === nextSessionId.value) return 'next'
+function statusFor(session: (typeof sessions)[number]) {
+  if (session.calendarStatus === 'cancelled') return 'cancelled'
+  if (session.date < today.value) return 'past'
+  if (session.date === today.value) return 'today'
+  if (session.id === nextSessionId.value) return 'next'
   return 'upcoming'
 }
 
@@ -36,6 +41,7 @@ function statusLabel(status: string) {
     past: '已结束',
     today: '今天',
     next: '下一场',
+    cancelled: '已取消',
     upcoming: ''
   }[status]
 }
@@ -66,12 +72,15 @@ function statusLabel(status: string) {
           v-for="session in sessions"
           :id="`session-${session.id}`"
           :key="session.id"
-          :class="`is-${statusFor(session.date, session.id)}`"
+          :class="`is-${statusFor(session)}`"
         >
           <td class="schedule-date-cell">
             <time :datetime="session.date">
               <strong>{{ session.dateLabel }}</strong>
-              <span>{{ session.week }}</span>
+              <span>
+                {{ session.week }}
+                <template v-if="session.timeLabel"> · {{ session.timeLabel }}</template>
+              </span>
             </time>
           </td>
           <td class="schedule-topic-cell">
@@ -82,10 +91,10 @@ function statusLabel(status: string) {
             <div class="schedule-session-meta">
               <span>Session {{ session.id }}</span>
               <span
-                v-if="statusLabel(statusFor(session.date, session.id))"
+                v-if="statusLabel(statusFor(session))"
                 class="schedule-session-state"
               >
-                {{ statusLabel(statusFor(session.date, session.id)) }}
+                {{ statusLabel(statusFor(session)) }}
               </span>
             </div>
             <h4>

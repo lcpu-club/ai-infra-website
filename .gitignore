@@ -4,3 +4,5 @@ docs/.vitepress/dist
 .openai/
 .DS_Store
 *.log
+.env.feishu.local
+.feishu-sync-*

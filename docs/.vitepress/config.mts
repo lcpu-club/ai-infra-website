@@ -1,6 +1,18 @@
 import { defineConfig } from 'vitepress'
+import { sessions, topics } from './data/program'
 
 const base = '/ai-infra-website/'
+const firstPublishedSession = sessions.find(({ href }) => href)
+const sessionSidebar = topics.map((topic) => ({
+  text: `Topic ${topic.number} · ${topic.title}`,
+  collapsed: topic.number !== '01',
+  items: sessions
+    .filter((session) => session.topic === topic.key)
+    .map((session) => ({
+      text: `${session.id} · ${session.title}`,
+      link: session.href || `/schedule#session-${session.id}`
+    }))
+}))
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -45,54 +57,29 @@ export default defineConfig({
     nav: [
       { text: '课程介绍', link: '/' },
       { text: '课程日程', link: '/schedule' },
-      { text: 'Session 01', link: '/sessions/01' },
+      ...(firstPublishedSession
+        ? [
+            {
+              text: `Session ${firstPublishedSession.id}`,
+              link: firstPublishedSession.href!
+            }
+          ]
+        : []),
       {
         text: '课程资料',
         items: [
-          { text: 'GPU & GPU Programming', link: '/sessions/01' },
+          ...sessions
+            .filter(({ href }) => href)
+            .map((session) => ({
+              text: session.title,
+              link: session.href!
+            })),
           { text: '完整课程日程', link: '/schedule#full-schedule' }
         ]
       }
     ],
     sidebar: {
-      '/sessions/': [
-        {
-          text: 'Topic 01 · Kernel & Compiler',
-          collapsed: false,
-          items: [
-            {
-              text: '01 · GPU & GPU Programming',
-              link: '/sessions/01'
-            },
-            {
-              text: '02 · Memory Abstraction',
-              link: '/schedule#session-02'
-            },
-            {
-              text: '03 · Tensor Core',
-              link: '/schedule#session-03'
-            },
-            {
-              text: '04 · Pipeline Ordering',
-              link: '/schedule#session-04'
-            },
-            {
-              text: '05 · DSL & ML Compiler',
-              link: '/schedule#session-05'
-            },
-            {
-              text: '06 · Hardware & SoL Kernel',
-              link: '/schedule#session-06'
-            }
-          ]
-        },
-        {
-          text: '其他 Topic',
-          items: [
-            { text: '完整课程日程', link: '/schedule' }
-          ]
-        }
-      ]
+      '/sessions/': sessionSidebar
     },
     outline: {
       level: [2, 3],
