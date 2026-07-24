@@ -674,9 +674,9 @@ a {
   display: block;
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .schedule-topic-cell strong {
@@ -694,9 +694,9 @@ a {
   gap: 10px;
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .schedule-session-state {
