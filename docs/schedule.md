@@ -1,7 +1,7 @@
 ---
 layout: page
-title: 课程日程
-description: 七周、四个 Topic、十四场 Session
+title: 活动日历
+description: 从 AI Infra 共享飞书日历自动同步的活动安排
 pageClass: schedule-page
 aside: false
 lastUpdated: false

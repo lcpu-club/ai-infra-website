@@ -16,25 +16,57 @@ export function eventToPublicData(event, timezone, publishMeetingUrl = false) {
 
   const start = formatEventTime(event.start_time, timezone)
   const end = formatEventTime(event.end_time, timezone)
+  const description = normalizeMultilineText(event.description)
   const location = [event.location?.name, event.location?.address]
     .map((value) => value?.trim())
     .filter((value, index, values) => value && values.indexOf(value) === index)
     .join(' · ')
+  const status = ['tentative', 'confirmed', 'cancelled'].includes(event.status)
+    ? event.status
+    : 'confirmed'
+  const sourceUrl = safeHttpsUrl(event.app_link)
+  const meetingUrl = safeHttpsUrl(event.vchat?.meeting_url)
 
   return {
     eventId: event.event_id,
     summary: event.summary?.trim() || '',
+    ...(description ? { description } : {}),
     date: start.date,
+    endDate: end.date,
     startAt: start.iso,
     endAt: end.iso,
+    allDay: start.allDay,
     timeLabel: start.allDay ? '全天' : `${start.time}–${end.time}`,
     timezone: start.timezone,
-    status: event.status || 'confirmed',
+    status,
     ...(location ? { location } : {}),
-    ...(publishMeetingUrl && event.vchat?.meeting_url
-      ? { meetingUrl: event.vchat.meeting_url }
+    ...(sourceUrl ? { sourceUrl } : {}),
+    ...(publishMeetingUrl && meetingUrl
+      ? { meetingUrl }
       : {})
   }
+}
+
+export function calendarEventsToPublicData(
+  events,
+  timezone,
+  publishMeetingUrl = false
+) {
+  const seen = new Set()
+  const normalized = events.map((event) => {
+    const output = eventToPublicData(event, timezone, publishMeetingUrl)
+    if (seen.has(output.eventId)) {
+      throw new Error(`Calendar returned duplicate event ${output.eventId}`)
+    }
+    seen.add(output.eventId)
+    return output
+  })
+
+  return normalized.sort(
+    (left, right) =>
+      calendarSortKey(left).localeCompare(calendarSortKey(right)) ||
+      left.eventId.localeCompare(right.eventId)
+  )
 }
 
 function formatEventTime(value, fallbackTimezone) {
@@ -43,7 +75,7 @@ function formatEventTime(value, fallbackTimezone) {
       date: value.date,
       iso: value.date,
       time: '',
-      timezone: value.timezone || fallbackTimezone,
+      timezone: fallbackTimezone || value.timezone,
       allDay: true
     }
   }
@@ -52,7 +84,7 @@ function formatEventTime(value, fallbackTimezone) {
   if (!Number.isFinite(timestamp)) {
     throw new Error(`Invalid Feishu event timestamp: ${value.timestamp}`)
   }
-  const timezone = value.timezone || fallbackTimezone
+  const timezone = fallbackTimezone || value.timezone
   const instant = new Date(timestamp * 1000)
   const parts = dateTimeParts(instant, timezone)
 
@@ -62,6 +94,30 @@ function formatEventTime(value, fallbackTimezone) {
     time: `${parts.hour}:${parts.minute}`,
     timezone,
     allDay: false
+  }
+}
+
+function calendarSortKey(event) {
+  return `${event.date}T${
+    event.allDay ? '00:00' : event.timeLabel.slice(0, 5)
+  }`
+}
+
+function normalizeMultilineText(value) {
+  if (typeof value !== 'string') return ''
+  return value
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '')
+    .trim()
+}
+
+function safeHttpsUrl(value) {
+  if (typeof value !== 'string' || !value) return ''
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' ? url.href : ''
+  } catch {
+    return ''
   }
 }
 

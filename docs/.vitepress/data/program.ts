@@ -1,6 +1,7 @@
 import feishuSnapshot from './generated/feishu.json'
 
 export type TopicKey = 'kernel' | 'comm' | 'serving' | 'rl'
+export type CalendarStatus = 'tentative' | 'confirmed' | 'cancelled'
 
 export interface Topic {
   key: TopicKey
@@ -28,7 +29,27 @@ export interface Session {
   timeLabel?: string
   location?: string
   meetingUrl?: string
-  calendarStatus?: 'tentative' | 'confirmed' | 'cancelled'
+  calendarStatus?: CalendarStatus
+}
+
+export interface CalendarEvent {
+  eventId: string
+  summary: string
+  description?: string
+  date: string
+  endDate: string
+  dateLabel: string
+  startAt: string
+  endAt: string
+  allDay: boolean
+  timeLabel: string
+  timezone: string
+  status: CalendarStatus
+  location?: string
+  sourceUrl?: string
+  meetingUrl?: string
+  sessionId?: string
+  href?: string
 }
 
 export const topics: Topic[] = [
@@ -286,6 +307,7 @@ const staticSessions: Session[] = [
 
 interface SyncedSession {
   calendar?: {
+    eventId?: string
     summary?: string
     date?: string
     startAt?: string
@@ -293,14 +315,70 @@ interface SyncedSession {
     timeLabel?: string
     location?: string
     meetingUrl?: string
-    status?: 'tentative' | 'confirmed' | 'cancelled'
+    status?: CalendarStatus
   }
   document?: {
     wikiNodeToken: string
   }
 }
 
-const syncedSessions = feishuSnapshot.sessions as Record<string, SyncedSession>
+interface SyncedCalendarEvent {
+  eventId: string
+  summary: string
+  description?: string
+  date: string
+  endDate: string
+  startAt: string
+  endAt: string
+  allDay: boolean
+  timeLabel: string
+  timezone: string
+  status: CalendarStatus
+  location?: string
+  sourceUrl?: string
+  meetingUrl?: string
+}
+
+interface SyncedCalendar {
+  timezone: string
+  range?: {
+    start: string
+    end: string
+  }
+  events: SyncedCalendarEvent[]
+}
+
+interface FeishuSnapshot {
+  sessions: Record<string, SyncedSession>
+  calendar?: SyncedCalendar
+}
+
+const snapshot = feishuSnapshot as FeishuSnapshot
+const syncedSessions = snapshot.sessions
+
+export const calendarTimezone =
+  snapshot.calendar?.timezone || 'Asia/Shanghai'
+export const calendarRange = snapshot.calendar?.range
+
+export const calendarEvents: CalendarEvent[] = (
+  snapshot.calendar?.events ?? []
+).map((event) => {
+  const linkedSession = Object.entries(syncedSessions).find(
+    ([, session]) => session.calendar?.eventId === event.eventId
+  )?.[0]
+
+  return {
+    ...event,
+    summary: event.summary || '未命名活动',
+    dateLabel: event.date.slice(5).replace('-', '.'),
+    ...(linkedSession
+      ? {
+          sessionId: linkedSession,
+          href: `/sessions/${linkedSession}`
+        }
+      : {})
+  }
+})
 
 export const sessions: Session[] = staticSessions.map((session) => {
   const synced = syncedSessions[session.id]

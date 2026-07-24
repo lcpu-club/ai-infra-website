@@ -14,7 +14,8 @@ npm run dev
 飞书是动态课程内容的来源：
 
 - Wiki 集合负责整棵讲义目录，Session 映射可继续覆盖单节讲义正文。
-- 课程共享日历负责标题、日期、时间、地点和取消状态。
+- 课程共享日历中的全部事件直接生成首页和 `/schedule` 活动日历，负责标题、
+  说明、日期、时间、地点和状态。
 - `docs/.vitepress/data/program.ts` 保留 Topic、讲者、提纲等网站策划字段。
 - 腾讯会议链接默认不发布，只有将
   `content/feishu/sessions.json` 中的 `publishMeetingUrl` 显式设为
@@ -78,8 +79,13 @@ API Scope 之外，应用还必须拥有目标知识空间的资源权限。进�
 `sessions` 列表用于为单节课程配置：
 
 - `wikiNodeToken`：Wiki URL 中 `/wiki/` 后的 token。
-- `calendarEventId`：共享日历中对应日程的 ID。
+- `calendarEventId`：可选。填写后会把共享日历中的该事件链接到对应讲义页；
+  不填写也不影响事件出现在活动日历中。
 - `pageTitle` 和 `description`：日历尚未配置时使用的页面元数据。
+
+共享日历时间范围内的所有事件都会写入生成快照，并按日期与时间排序。定时
+事件、全天事件、描述、地点、待确认/已确认/已取消状态都会自动反映到网站；
+腾讯会议链接仍受 `publishMeetingUrl` 开关保护。
 
 先查看应用可见的日历、日程 ID 和 Wiki 版本：
 

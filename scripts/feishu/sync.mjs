@@ -25,7 +25,11 @@ import { readSyncConfig } from './config.mjs'
 import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
 import { normalizeFeishuMarkdown } from './markdown.mjs'
 import { renderSessionPage, renderWikiPage } from './render.mjs'
-import { dateRangeToUnixSeconds, eventToPublicData } from './time.mjs'
+import { stableSnapshotJson } from './snapshot.mjs'
+import {
+  calendarEventsToPublicData,
+  dateRangeToUnixSeconds
+} from './time.mjs'
 import {
   breadcrumbsForWikiPage,
   discoverWikiCollection,
@@ -86,7 +90,7 @@ try {
   if (!wikiCollection) delete snapshot.wiki
 
   await mkdir(path.dirname(stagedSnapshot), { recursive: true })
-  await writeFile(stagedSnapshot, stableJson(snapshot), 'utf8')
+  await writeFile(stagedSnapshot, stableSnapshotJson(snapshot), 'utf8')
 
   operations.push({
     staged: stagedSnapshot,
@@ -172,8 +176,24 @@ async function discoverConfiguredWiki() {
 }
 
 function applyCalendarData(snapshot, events) {
-  if (!config.calendarId) return
-  const eventById = new Map(events.map((event) => [event.event_id, event]))
+  if (!config.calendarId) {
+    delete snapshot.calendar
+    return
+  }
+
+  const publicEvents = calendarEventsToPublicData(
+    events,
+    config.timezone,
+    config.publishMeetingUrl
+  )
+  snapshot.calendar = {
+    timezone: config.timezone,
+    range: config.calendarRange,
+    events: publicEvents
+  }
+  const eventById = new Map(
+    publicEvents.map((event) => [event.eventId, event])
+  )
 
   for (const session of config.sessions) {
     if (!session.calendarEventId) continue
@@ -188,11 +208,7 @@ function applyCalendarData(snapshot, events) {
     const current = snapshot.sessions[session.id] ?? {}
     snapshot.sessions[session.id] = {
       ...current,
-      calendar: eventToPublicData(
-        event,
-        config.timezone,
-        config.publishMeetingUrl
-      )
+      calendar: event
     }
   }
 }
@@ -534,20 +550,6 @@ async function pathExists(inputPath) {
   } catch {
     return false
   }
-}
-
-function stableJson(value) {
-  const orderedSessions = Object.fromEntries(
-    Object.entries(value.sessions).sort(([left], [right]) =>
-      left.localeCompare(right)
-    )
-  )
-  const output = {
-    version: value.version,
-    sessions: orderedSessions,
-    ...(value.wiki ? { wiki: value.wiki } : {})
-  }
-  return `${JSON.stringify(output, null, 2)}\n`
 }
 
 function delay(milliseconds) {

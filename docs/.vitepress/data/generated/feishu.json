@@ -11,6 +11,42 @@
       }
     }
   },
+  "calendar": {
+    "timezone": "Asia/Shanghai",
+    "range": {
+      "start": "2026-07-01",
+      "end": "2026-10-01"
+    },
+    "events": [
+      {
+        "eventId": "3b4d3e17-ee6c-43c0-a088-229be6043c12_0",
+        "summary": "测试日程1",
+        "date": "2026-07-24",
+        "endDate": "2026-07-24",
+        "startAt": "2026-07-23T23:00:00.000Z",
+        "endAt": "2026-07-24T03:15:00.000Z",
+        "allDay": false,
+        "timeLabel": "07:00–11:15",
+        "timezone": "Asia/Shanghai",
+        "status": "tentative",
+        "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=3b4d3e17-ee6c-43c0-a088-229be6043c12&originalTime=0&startTime=1784847600"
+      },
+      {
+        "eventId": "c74ecf79-0ac2-489d-8417-086eea9a947a_0",
+        "summary": "测试日程2",
+        "description": "内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试",
+        "date": "2026-07-25",
+        "endDate": "2026-07-26",
+        "startAt": "2026-07-25",
+        "endAt": "2026-07-26",
+        "allDay": true,
+        "timeLabel": "全天",
+        "timezone": "Asia/Shanghai",
+        "status": "tentative",
+        "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=c74ecf79-0ac2-489d-8417-086eea9a947a&originalTime=0&startTime=1784937600"
+      }
+    ]
+  },
   "wiki": {
     "title": "AI Infra Wiki",
     "rootNodeToken": "SURAw8B4riKkhRkUKPYc43k7nHf",

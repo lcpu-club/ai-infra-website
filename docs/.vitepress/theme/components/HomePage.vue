@@ -15,7 +15,7 @@ import ScheduleTable from './ScheduleTable.vue'
         从 GPU 编程、分布式通信到模型推理与强化学习系统，一起理解一次 API 调用背后的计算。
       </p>
       <div class="hero-actions">
-        <a href="#schedule">查看课程日程 <span>↓</span></a>
+        <a href="#schedule">查看活动日历 <span>↓</span></a>
         <a :href="withBase('/sessions/01')">阅读 Session 01 <span>→</span></a>
       </div>
 
@@ -118,13 +118,16 @@ import ScheduleTable from './ScheduleTable.vue'
       <div class="section-heading section-heading-row">
         <div>
           <span>SCHEDULE</span>
-          <h2>课程日程</h2>
+          <h2>活动日历</h2>
         </div>
         <p>
-          日程与讲者可能根据准备情况微调。会议入口、作业与评测平台随各 Session 发布。
+          以下内容直接来自 AI Infra 共享飞书日历，时间、地点、说明与活动状态会自动更新。
         </p>
       </div>
-      <ScheduleTable />
+      <ScheduleTable compact :limit="4" />
+      <p class="schedule-more-link">
+        <a :href="withBase('/schedule')">查看完整活动日历 →</a>
+      </p>
     </section>
 
     <section class="join-section" id="registration">

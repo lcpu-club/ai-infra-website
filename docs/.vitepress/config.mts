@@ -22,12 +22,12 @@ const sessionSidebar = topics.map((topic) => ({
   text: `Topic ${topic.number} · ${topic.title}`,
   collapsed: topic.number !== '01',
   items: sessions
-    .filter((session) => session.topic === topic.key)
+    .filter((session) => session.topic === topic.key && session.href)
     .map((session) => ({
       text: `${session.id} · ${session.title}`,
-      link: session.href || `/schedule#session-${session.id}`
+      link: session.href!
     }))
-}))
+})).filter(({ items }) => items.length > 0)
 const wikiSidebarItems = (parentWikiNodeToken: string | null): any[] =>
   (wiki?.pages ?? [])
     .filter((page) => page.parentWikiNodeToken === parentWikiNodeToken)
@@ -83,7 +83,7 @@ export default defineConfig({
     siteTitle: 'AI Infra Seminars',
     nav: [
       { text: '课程介绍', link: '/' },
-      { text: '课程日程', link: '/schedule' },
+      { text: '活动日历', link: '/schedule' },
       ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
       ...(firstPublishedSession
         ? [
@@ -103,7 +103,7 @@ export default defineConfig({
               text: session.title,
               link: session.href!
             })),
-          { text: '完整课程日程', link: '/schedule#full-schedule' }
+          { text: '完整活动日历', link: '/schedule#full-schedule' }
         ]
       }
     ],
