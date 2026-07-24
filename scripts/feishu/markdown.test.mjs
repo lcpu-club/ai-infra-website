@@ -22,7 +22,8 @@ test('strips the leading title and fixes URL escapes for web rendering', async (
 test('does not alter escaped URLs inside inline or fenced code', async () => {
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n`https://example.com/\\~inline`\n\n' +
-      '```text\nhttps://example.com/\\~fenced\n```\n',
+      '```text\nhttps://example.com/\\~fenced\n#include <stdio.h>\n' +
+      'kernel<<<grid, block>>>(data);\n```\n',
     {
       sessionId: '01',
       wikiRoutes: new Map()
@@ -31,6 +32,39 @@ test('does not alter escaped URLs inside inline or fenced code', async () => {
 
   assert.match(output, /`https:\/\/example\.com\/\\~inline`/)
   assert.match(output, /https:\/\/example\.com\/\\~fenced/)
+  assert.match(output, /#include <stdio\.h>/)
+  assert.match(output, /kernel<<<grid, block>>>\(data\);/)
+})
+
+test('does not confuse mathematical comparisons with Feishu XML tags', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '# Title\n\n$a_{n}=\\sum_{i<n}1/(a_i+n)$\n',
+    {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.equal(output, '$a_{n}=\\sum_{i<n}1/(a_i+n)$\n')
+})
+
+test('keeps bold Feishu labels valid when immediately followed by text', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '# Title\n\n**活动频率：**半周一次\n\n' +
+      '| **推送** | **时间** | **负责人** |\n' +
+      '|-|-|-|\n',
+    {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.equal(
+    output,
+    '**活动频率：**&ZeroWidthSpace;半周一次\n\n' +
+      '| **推送** | **时间** | **负责人** |\n' +
+      '|-|-|-|\n'
+  )
 })
 
 test('downloads Feishu image tags and turns them into local Markdown assets', async () => {
@@ -87,6 +121,69 @@ test('renders Feishu sub-page-list blocks with the discovered Wiki directory', a
   assert.equal(output, '- [Child](/wiki/child_1)\n')
 })
 
+test('preserves sanitized Feishu tables and renders user citations', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '# Title\n\n' +
+      '<table><colgroup><col/><col/></colgroup><tbody><tr>' +
+      '<td rowspan="2" vertical-align="middle"><b>负责人</b><br/>' +
+      '<cite type="user" user-id="ou_123" user-name="魏睿辰"></cite></td>' +
+      '<td colspan="2"><ul><li>编译器</li></ul></td>' +
+      '</tr></tbody></table>\n',
+    {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.match(
+    output,
+    /<td rowspan="2" style="vertical-align: middle">/
+  )
+  assert.match(output, /<b>负责人<\/b><br \/>@魏睿辰/)
+  assert.match(output, /<td colspan="2"><ul><li>编译器<\/li><\/ul><\/td>/)
+})
+
+test('converts Feishu title, task list, chat card, and document citation blocks', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '<title>飞书导出标题</title>\n\n' +
+      '<chat_card name="AI Infra学习小组" chat-id="oc_123"></chat_card>\n\n' +
+      '<readonly-block token="task_123" type="task_list"></readonly-block>\n\n' +
+      '<cite doc-id="Wiki_123" file-type="wiki" title="会议议程" type="doc"></cite>\n',
+    {
+      contextLabel: 'Wiki page 示例',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.doesNotMatch(output, /飞书导出标题/)
+  assert.match(output, /\*\*飞书群：\*\* AI Infra学习小组/)
+  assert.match(output, /> 飞书任务列表请在原文中查看。/)
+  assert.match(output, /《会议议程》/)
+})
+
+test('rejects unsafe attributes and unsupported markup inside tables', async () => {
+  await assert.rejects(
+    normalizeFeishuMarkdown(
+      '# Title\n\n<table><tbody><tr><td onclick="alert(1)">x</td></tr></tbody></table>',
+      {
+        sessionId: '01',
+        wikiRoutes: new Map()
+      }
+    ),
+    /unsupported attribute onclick/
+  )
+  await assert.rejects(
+    normalizeFeishuMarkdown(
+      '# Title\n\n<table><tbody><tr><svg></svg></tr></tbody></table>',
+      {
+        sessionId: '01',
+        wikiRoutes: new Map()
+      }
+    ),
+    /unsupported tag <svg>/
+  )
+})
+
 test('fails closed for unknown or unsafe embedded blocks', async () => {
   await assert.rejects(
     normalizeFeishuMarkdown('# Title\n\n<whiteboard token="x"/>', {
@@ -101,5 +198,12 @@ test('fails closed for unknown or unsafe embedded blocks', async () => {
       wikiRoutes: new Map()
     }),
     /unsafe raw HTML/
+  )
+  await assert.rejects(
+    normalizeFeishuMarkdown('# Title\n\n`<whiteboard token="code"/>`\n\n<canvas/>', {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }),
+    /unsupported Feishu block <canvas>/
   )
 })

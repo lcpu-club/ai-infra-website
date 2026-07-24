@@ -52,19 +52,21 @@ node scripts/feishu/register-app.mjs
 API Scope 之外，应用还必须拥有目标知识空间的资源权限。进入知识空间的
 「设置 → 权限设置/成员设置」把应用加入可查看成员；如果界面不能直接选择
 应用，可以先把应用作为机器人加入一个飞书群，再把该群加入知识空间成员。
-否则整库遍历会返回 `131006 wiki space permission denied`。
+否则列举知识空间顶层节点会返回 `131006 wiki space permission denied`。
+只把单篇页面共享给应用时，应用可能可以读取该页面及其后代，但这不等于拥有
+整个知识空间的遍历权限。
 
 ### 内容映射
 
-编辑 `content/feishu/sessions.json`。`wiki` 配置用于递归同步一个完整知识库
-目录：
+编辑 `content/feishu/sessions.json`。`wiki` 配置用于递归同步一个根页面及其
+全部后代：
 
 ```json
 {
   "wiki": {
-    "rootNodeToken": "Bzqww95pBiox3Tkszkncphw6nBh",
+    "rootNodeToken": "SURAw8B4riKkhRkUKPYc43k7nHf",
     "sourceBaseUrl": "https://lcpu-club.feishu.cn/wiki",
-    "title": "AI Infra 小组"
+    "title": "AI Infra Wiki"
   }
 }
 ```
