@@ -16,16 +16,13 @@ onMounted(() => {
   today.value = dateFormatter.format(new Date())
 })
 
-const groups = computed(() =>
-  topics.map((topic) => ({
-    topic,
-    sessions: sessions.filter((session) => session.topic === topic.key)
-  }))
-)
-
 const nextSessionId = computed(
   () => sessions.find((session) => session.date >= today.value)?.id
 )
+
+function topicFor(key: string) {
+  return topics.find((topic) => topic.key === key)!
+}
 
 function statusFor(date: string, id: string) {
   if (date < today.value) return 'past'
@@ -45,43 +42,48 @@ function statusLabel(status: string) {
 </script>
 
 <template>
-  <div class="schedule-groups">
-    <section
-      v-for="group in groups"
-      :key="group.topic.key"
-      class="schedule-group"
-      :data-topic="group.topic.key"
-    >
-      <header class="schedule-group-header">
-        <span class="schedule-group-index">{{ group.topic.number }}</span>
-        <div>
-          <p>TOPIC {{ group.topic.number }}</p>
-          <h3>{{ group.topic.title }}</h3>
-        </div>
-        <span class="schedule-count">
-          {{ group.sessions.length }} SESSIONS
-        </span>
-      </header>
-
-      <div class="session-rows">
-        <article
-          v-for="session in group.sessions"
+  <div class="schedule-table-wrap">
+    <table class="course-schedule-table">
+      <caption>AI Infrastructure Seminars 2026 课程日程</caption>
+      <colgroup>
+        <col class="schedule-col-date" />
+        <col class="schedule-col-topic" />
+        <col class="schedule-col-session" />
+        <col class="schedule-col-owner" />
+        <col class="schedule-col-material" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">日期</th>
+          <th scope="col">主题</th>
+          <th scope="col">Session 内容</th>
+          <th scope="col">分享</th>
+          <th scope="col">资料</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="session in sessions"
           :id="`session-${session.id}`"
           :key="session.id"
-          class="session-row"
           :class="`is-${statusFor(session.date, session.id)}`"
         >
-          <time class="session-row-date" :datetime="session.date">
-            <strong>{{ session.dateLabel }}</strong>
-            <span>{{ session.week }}</span>
-          </time>
-
-          <div class="session-row-main">
-            <div class="session-row-meta">
-              <span>SESSION {{ session.id }}</span>
+          <td class="schedule-date-cell">
+            <time :datetime="session.date">
+              <strong>{{ session.dateLabel }}</strong>
+              <span>{{ session.week }}</span>
+            </time>
+          </td>
+          <td class="schedule-topic-cell">
+            <span>Topic {{ topicFor(session.topic).number }}</span>
+            <strong>{{ topicFor(session.topic).shortTitle }}</strong>
+          </td>
+          <th class="schedule-session-cell" scope="row">
+            <div class="schedule-session-meta">
+              <span>Session {{ session.id }}</span>
               <span
                 v-if="statusLabel(statusFor(session.date, session.id))"
-                class="session-state"
+                class="schedule-session-state"
               >
                 {{ statusLabel(statusFor(session.date, session.id)) }}
               </span>
@@ -93,16 +95,25 @@ function statusLabel(status: string) {
             <ul>
               <li v-for="item in session.items" :key="item">{{ item }}</li>
             </ul>
-          </div>
-
-          <aside class="session-row-aside">
-            <span>分享</span>
-            <strong>{{ session.owners.join(' · ') }}</strong>
-            <a v-if="session.href" :href="withBase(session.href)">查看资料 →</a>
-            <small v-else>资料准备中</small>
-          </aside>
-        </article>
-      </div>
-    </section>
+            <div class="schedule-session-mobile-meta">
+              <span>
+                Topic {{ topicFor(session.topic).number }} ·
+                {{ topicFor(session.topic).shortTitle }}
+              </span>
+              <span>分享：{{ session.owners.join(' · ') }}</span>
+              <a v-if="session.href" :href="withBase(session.href)">查看资料</a>
+              <span v-else>资料准备中</span>
+            </div>
+          </th>
+          <td class="schedule-owner-cell">
+            {{ session.owners.join(' · ') }}
+          </td>
+          <td class="schedule-material-cell">
+            <a v-if="session.href" :href="withBase(session.href)">查看资料</a>
+            <span v-else>准备中</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>

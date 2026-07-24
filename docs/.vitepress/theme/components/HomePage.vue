@@ -1,47 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { withBase } from 'vitepress'
-import { sessions, topics } from '../../data/program'
+import { topics } from '../../data/program'
 import ScheduleTable from './ScheduleTable.vue'
-
-const topicSessionCounts = computed(() =>
-  Object.fromEntries(
-    topics.map((topic) => [
-      topic.key,
-      sessions.filter((session) => session.topic === topic.key).length
-    ])
-  )
-)
 </script>
 
 <template>
   <main class="course-site">
     <header class="course-hero">
-      <div class="hero-kicker">PKU · SUMMER 2026 · OPEN COURSE</div>
+      <p class="hero-kicker">Weiming HPC Training Camp × LCPU</p>
       <h1>AI Infrastructure Seminars</h1>
       <p class="hero-title-cn">从 Kernel 到大模型系统</p>
       <p class="hero-lead">
-        北京大学未名超算队与北京大学学生 Linux
-        俱乐部共同组织的暑期课程。从 GPU 编程、分布式通信到模型推理与强化学习系统，一起理解一次 API
-        调用背后的计算。
+        北京大学未名超算队与北京大学学生 Linux 俱乐部共同组织的暑期课程。
+        从 GPU 编程、分布式通信到模型推理与强化学习系统，一起理解一次 API 调用背后的计算。
       </p>
       <div class="hero-actions">
-        <a class="site-button site-button-primary" href="#schedule">查看课程日程</a>
-        <a class="site-button site-button-secondary" :href="withBase('/sessions/01')">阅读 Session 01</a>
+        <a href="#schedule">查看课程日程 <span>↓</span></a>
+        <a :href="withBase('/sessions/01')">阅读 Session 01 <span>→</span></a>
       </div>
 
       <dl class="hero-facts">
-        <div><dt>周期</dt><dd>7 周</dd></div>
-        <div><dt>主题</dt><dd>4 Topics</dd></div>
-        <div><dt>课程</dt><dd>14 Sessions</dd></div>
-        <div><dt>时间</dt><dd>07.23 — 09.06</dd></div>
+        <div><dt>日期</dt><dd>07.23 — 09.06</dd></div>
+        <div><dt>频率</dt><dd>每周两次 · 1–2 小时</dd></div>
+        <div><dt>地点</dt><dd>腾讯会议 · 燕园大厦 308</dd></div>
       </dl>
     </header>
 
     <section class="site-section about-section" id="about">
       <div class="section-heading">
-        <span>01 · ABOUT</span>
-        <h2>模型背后的系统，<br />究竟怎样运作？</h2>
+        <span>ABOUT</span>
+        <h2>模型背后的系统，究竟怎样运作？</h2>
       </div>
 
       <div class="about-layout">
@@ -63,15 +51,11 @@ const topicSessionCounts = computed(() =>
         <aside class="course-info">
           <h3>Course Information</h3>
           <dl>
-            <div><dt>Meetings</dt><dd>每周两次，每次约 1–2 小时</dd></div>
-            <div><dt>Online</dt><dd>腾讯会议</dd></div>
-            <div><dt>In person</dt><dd>燕园大厦 308</dd></div>
+            <div><dt>Period</dt><dd>2026.07.23 — 09.06</dd></div>
+            <div><dt>Format</dt><dd>预习、分享、讨论与实践</dd></div>
             <div><dt>Language</dt><dd>中文分享，英文技术资料</dd></div>
+            <div><dt>Organizers</dt><dd>未名超算队 × LCPU</dd></div>
           </dl>
-          <div class="organized-by">
-            <span>ORGANIZED BY</span>
-            <strong>未名超算队 × LCPU</strong>
-          </div>
         </aside>
       </div>
     </section>
@@ -79,29 +63,27 @@ const topicSessionCounts = computed(() =>
     <section class="site-section topics-section" id="topics">
       <div class="section-heading section-heading-row">
         <div>
-          <span>02 · TOPICS</span>
-          <h2>四个主题，<span class="keep-together">一条系统路径</span></h2>
+          <span>TOPICS</span>
+          <h2>四个主题，一条系统路径</h2>
         </div>
         <p>
           从单卡上的 Kernel 出发，沿着通信与服务系统向上，最后进入训练、推理和环境同时运行的分布式 RL 系统。
         </p>
       </div>
 
-      <div class="topic-grid">
+      <div class="topic-list">
         <article
           v-for="topic in topics"
           :key="topic.key"
-          class="topic-card"
-          :data-topic="topic.key"
+          class="topic-row"
         >
-          <div class="topic-card-top">
-            <span>TOPIC {{ topic.number }}</span>
-            <span>{{ topicSessionCounts[topic.key] }} SESSIONS</span>
+          <span class="topic-row-index">{{ topic.number }}</span>
+          <div class="topic-row-title">
+            <h3>{{ topic.title }}</h3>
           </div>
-          <h3>{{ topic.title }}</h3>
-          <p>{{ topic.description }}</p>
-          <div class="topic-tags">
-            <span v-for="tag in topic.tags" :key="tag">{{ tag }}</span>
+          <div class="topic-row-copy">
+            <p>{{ topic.description }}</p>
+            <p class="topic-keywords">{{ topic.tags.join(' · ') }}</p>
           </div>
         </article>
       </div>
@@ -109,7 +91,7 @@ const topicSessionCounts = computed(() =>
 
     <section class="site-section format-section">
       <div class="section-heading">
-        <span>03 · FORMAT</span>
+        <span>FORMAT</span>
         <h2>每次活动如何进行</h2>
       </div>
       <ol class="format-steps">
@@ -135,7 +117,7 @@ const topicSessionCounts = computed(() =>
     <section class="site-section schedule-section" id="schedule">
       <div class="section-heading section-heading-row">
         <div>
-          <span>04 · SCHEDULE</span>
+          <span>SCHEDULE</span>
           <h2>课程日程</h2>
         </div>
         <p>
@@ -147,11 +129,11 @@ const topicSessionCounts = computed(() =>
 
     <section class="join-section" id="registration">
       <div>
-        <span>READY TO JOIN?</span>
+        <span>JOIN US</span>
         <h2>这个暑假，一起把系统跑起来。</h2>
         <p>报名问卷、活动群二维码和腾讯会议入口将在确认后更新。</p>
       </div>
-      <a class="site-button site-button-primary" :href="withBase('/sessions/01')">先阅读课程资料</a>
+      <a :href="withBase('/sessions/01')">先阅读课程资料 <span>→</span></a>
     </section>
 
     <section class="partners-section">
