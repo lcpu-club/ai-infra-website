@@ -69,6 +69,38 @@ const scheduleItems: ScheduleItem[] = [
     }))
 ].sort((left, right) => left.date.localeCompare(right.date))
 
+function hourBoundary(hour: number) {
+  return `${String(Math.min(24, Math.max(0, hour))).padStart(2, '0')}:00`
+}
+
+function getScheduleDayBoundaries(items: ScheduleItem[]) {
+  const timedItems = items.filter((item) => !item.allDay)
+
+  if (timedItems.length === 0) {
+    return { start: '09:00', end: '20:00' }
+  }
+
+  const starts = timedItems.map((item) =>
+    Temporal.Instant.from(item.startAt).toZonedDateTimeISO(calendarTimezone)
+  )
+  const ends = timedItems.map((item) =>
+    Temporal.Instant.from(item.endAt).toZonedDateTimeISO(calendarTimezone)
+  )
+  const earliestHour = Math.min(...starts.map((dateTime) => dateTime.hour))
+  const latestHour = Math.max(
+    ...ends.map((dateTime) =>
+      dateTime.hour + (dateTime.minute || dateTime.second ? 1 : 0)
+    )
+  )
+
+  return {
+    start: hourBoundary(earliestHour - 1),
+    end: hourBoundary(Math.max(earliestHour + 2, latestHour + 1))
+  }
+}
+
+const scheduleDayBoundaries = getScheduleDayBoundaries(scheduleItems)
+
 function readableDate(iso: string) {
   const [year, month, day] = iso.split('-').map(Number)
   return `${year} 年 ${month} 月 ${day} 日`
@@ -113,6 +145,8 @@ export default function CalendarPage() {
     locale: 'zh-CN',
     timezone: calendarTimezone,
     firstDayOfWeek: 1,
+    // 由同步到的定时日程自动收窄日/周视图，全天事项不影响小时轴。
+    dayBoundaries: scheduleDayBoundaries,
     // 以月历作为所有断点的初始视图，避免窄屏自动切到按小时视图。
     isResponsive: false,
     monthGridOptions: { nEventsPerDay: 3 },
@@ -167,6 +201,7 @@ export default function CalendarPage() {
         onOpenChange={setIsDetailOpen}
         placement="center"
         scrollBehavior="inside"
+        classNames={{ wrapper: 'z-[200]', backdrop: 'z-[200]' }}
       >
         <ModalContent>
           {(onClose) => selectedItem ? (
