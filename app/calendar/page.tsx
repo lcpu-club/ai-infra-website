@@ -152,9 +152,9 @@ export default function CalendarPage() {
     monthGridOptions: { nEventsPerDay: 3 },
     calendars: {
       event: {
-        colorName: 'Calendar event',
-        lightColors: { main: '#8f1d2c', container: '#f7eaec', onContainer: '#5d101b' },
-        darkColors: { main: '#e26473', container: '#552730', onContainer: '#ffe8eb' }
+        colorName: 'event',
+        lightColors: { main: '#8f1d2c', container: '#8f1d2c', onContainer: '#ffffff' },
+        darkColors: { main: '#e26473', container: '#e26473', onContainer: '#190d10' }
       }
     },
     callbacks: {
