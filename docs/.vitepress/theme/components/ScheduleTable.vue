@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { withBase } from 'vitepress'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Temporal } from 'temporal-polyfill'
 import {
   calendarEvents,
   type CalendarEvent
 } from '../../data/program'
+import {
+  localizeCalendarEvent,
+  useSiteLocale
+} from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
 
+const { locale, copy, href } = useSiteLocale()
+const displayedEvents = computed(() =>
+  calendarEvents.map((event) => localizeCalendarEvent(event, locale.value))
+)
 const now = ref(Date.now())
 let clock: number | undefined
 
@@ -32,7 +39,7 @@ function inclusiveEndDate(event: CalendarEvent) {
 function dateLabel(event: CalendarEvent) {
   const endDate = inclusiveEndDate(event)
   if (endDate === event.date) return event.date
-  return `${event.date} 至 ${endDate}`
+  return `${event.date} ${copy.value.schedule.dateRangeSeparator} ${endDate}`
 }
 
 function eventBoundary(event: CalendarEvent, boundary: 'start' | 'end') {
@@ -53,11 +60,7 @@ function phaseFor(event: CalendarEvent) {
 }
 
 function phaseLabel(event: CalendarEvent) {
-  return {
-    upcoming: '待开始',
-    ongoing: '进行中',
-    ended: '已结束'
-  }[phaseFor(event)]
+  return copy.value.schedule.phases[phaseFor(event)]
 }
 </script>
 
@@ -66,17 +69,14 @@ function phaseLabel(event: CalendarEvent) {
     <table class="schedule-table">
       <thead>
         <tr>
-          <th scope="col">日期</th>
-          <th scope="col">安排</th>
-          <th scope="col">活动内容</th>
-          <th scope="col">讲者</th>
-          <th scope="col">作业</th>
-          <th scope="col">时间</th>
+          <th v-for="header in copy.schedule.headers" :key="header" scope="col">
+            {{ header }}
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="event in calendarEvents"
+          v-for="event in displayedEvents"
           :id="`event-${event.eventId}`"
           :key="event.eventId"
         >
@@ -92,7 +92,7 @@ function phaseLabel(event: CalendarEvent) {
             </div>
           </td>
           <td>
-            <a v-if="event.href" :href="withBase(event.href)">
+            <a v-if="event.href" :href="href(event.href)">
               {{ event.summary }}
             </a>
             <span v-else>{{ event.summary }}</span>
@@ -102,18 +102,18 @@ function phaseLabel(event: CalendarEvent) {
           </td>
           <td class="schedule-content">
             <span v-if="event.description">{{ event.description }}</span>
-            <span v-else class="is-empty">暂无活动说明</span>
+            <span v-else class="is-empty">{{ copy.schedule.noDescription }}</span>
           </td>
           <td class="schedule-speakers">
             <span v-if="event.speakers?.length">
-              {{ event.speakers.join('、') }}
+              {{ event.speakers.join(locale === 'en' ? ', ' : '、') }}
             </span>
-            <span v-else class="is-empty">待定</span>
+            <span v-else class="is-empty">{{ copy.schedule.speakerTbd }}</span>
           </td>
           <td>
             <a
               v-if="event.assignment?.href"
-              :href="withBase(event.assignment.href)"
+              :href="href(event.assignment.href)"
             >
               {{ event.assignment.title }}
             </a>
@@ -128,7 +128,7 @@ function phaseLabel(event: CalendarEvent) {
   </div>
 
   <div v-else class="calendar-empty-state">
-    <h3>共享日历中暂时没有活动</h3>
-    <p>在 AI Infra 共享日历中新建日程后，网站会在下一次同步时自动更新。</p>
+    <h3>{{ copy.schedule.emptyTitle }}</h3>
+    <p>{{ copy.schedule.emptyDescription }}</p>
   </div>
 </template>

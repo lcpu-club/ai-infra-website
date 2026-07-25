@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useSiteLocale } from '../../data/site-i18n'
 import CalendarTimelineClient from './CalendarTimelineClient.vue'
 
 const mounted = ref(false)
+const { copy } = useSiteLocale()
 
 onMounted(() => {
   mounted.value = true
@@ -13,7 +15,7 @@ onMounted(() => {
   <section
     id="calendar-timeline"
     class="calendar-timeline-section"
-    aria-label="交互式课程日历"
+    :aria-label="copy.schedule.calendarAria"
   >
     <div class="calendar-timeline-shell">
       <CalendarTimelineClient v-if="mounted" />
@@ -23,8 +25,8 @@ onMounted(() => {
         role="status"
         aria-live="polite"
       >
-        <strong>正在加载交互日历…</strong>
-        <p>下方日程列表会始终保留。</p>
+        <strong>{{ copy.schedule.loading }}</strong>
+        <p>{{ copy.schedule.loadingHint }}</p>
       </div>
     </div>
   </section>

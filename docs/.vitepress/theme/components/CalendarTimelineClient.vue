@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useData, withBase } from 'vitepress'
+import { useData } from 'vitepress'
 import { ScheduleXCalendar } from '@schedule-x/vue'
 import {
   createCalendar,
@@ -16,18 +16,28 @@ import {
   calendarTimezone,
   type CalendarEvent
 } from '../../data/program'
+import {
+  localizeCalendarEvent,
+  useSiteLocale
+} from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
 
 const { isDark } = useData()
+const { locale, copy, href } = useSiteLocale()
+const displayedEvents = calendarEvents.map((event) =>
+  localizeCalendarEvent(event, locale.value)
+)
 const selectedEvent = ref<CalendarEvent | null>(null)
-const eventById = new Map(calendarEvents.map((event) => [event.eventId, event]))
+const eventById = new Map(
+  displayedEvents.map((event) => [event.eventId, event])
+)
 
 function hourBoundary(hour: number) {
   return `${String(Math.min(24, Math.max(0, hour))).padStart(2, '0')}:00`
 }
 
 function visibleDayBoundaries() {
-  const timedEvents = calendarEvents.filter((event) => !event.allDay)
+  const timedEvents = displayedEvents.filter((event) => !event.allDay)
   if (timedEvents.length === 0) return { start: '09:00', end: '20:00' }
 
   const starts = timedEvents.map((event) =>
@@ -56,7 +66,7 @@ function allDayEnd(event: CalendarEvent) {
   return Temporal.PlainDate.from(event.endDate).subtract({ days: 1 })
 }
 
-const timelineEvents: ScheduleXEvent[] = calendarEvents.map((event) => ({
+const timelineEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
   id: event.eventId,
   title: event.summary,
   start: event.allDay
@@ -80,10 +90,10 @@ const calendarApp = createCalendar({
   views: [viewMonthGrid, viewMonthAgenda, viewWeek, viewDay],
   defaultView: viewMonthGrid.name,
   selectedDate: Temporal.PlainDate.from(
-    calendarEvents[0]?.date ?? new Date().toISOString().slice(0, 10)
+    displayedEvents[0]?.date ?? new Date().toISOString().slice(0, 10)
   ),
   events: timelineEvents,
-  locale: 'zh-CN',
+  locale: locale.value === 'en' ? 'en-US' : 'zh-CN',
   timezone: calendarTimezone,
   firstDayOfWeek: 1,
   dayBoundaries: visibleDayBoundaries(),
@@ -132,11 +142,11 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 function openFirstEvent() {
-  selectedEvent.value = calendarEvents[0] ?? null
+  selectedEvent.value = displayedEvents[0] ?? null
 }
 
 function readableDate(date: string) {
-  return new Intl.DateTimeFormat('zh-CN', {
+  return new Intl.DateTimeFormat(locale.value === 'en' ? 'en-US' : 'zh-CN', {
     timeZone: 'UTC',
     year: 'numeric',
     month: 'long',
@@ -146,9 +156,7 @@ function readableDate(date: string) {
 }
 
 function statusLabel(status: CalendarEvent['status']) {
-  if (status === 'cancelled') return '已取消'
-  if (status === 'confirmed') return '已确认'
-  return '待确认'
+  return copy.value.schedule.statuses[status]
 }
 
 onMounted(() => {
@@ -184,7 +192,7 @@ onBeforeUnmount(() => {
         <button
           class="calendar-dialog-close"
           type="button"
-          aria-label="关闭日程详情"
+          :aria-label="copy.schedule.dialogClose"
           @click="closeDialog"
         >
           ×
@@ -204,7 +212,7 @@ onBeforeUnmount(() => {
 
         <dl v-if="selectedEvent.location" class="calendar-dialog-details">
           <div>
-            <dt>地点</dt>
+            <dt>{{ copy.schedule.location }}</dt>
             <dd>
               <EventLocation :location="selectedEvent.location" />
             </dd>
@@ -212,8 +220,8 @@ onBeforeUnmount(() => {
         </dl>
 
         <footer class="calendar-dialog-actions">
-          <a v-if="selectedEvent.href" :href="withBase(selectedEvent.href)">
-            查看讲义
+          <a v-if="selectedEvent.href" :href="href(selectedEvent.href)">
+            {{ copy.schedule.viewNotes }}
           </a>
           <a
             v-if="selectedEvent.meetingUrl"
@@ -221,7 +229,7 @@ onBeforeUnmount(() => {
             target="_blank"
             rel="noreferrer"
           >
-            进入会议 ↗
+            {{ copy.schedule.joinMeeting }}
           </a>
           <a
             v-if="selectedEvent.sourceUrl"
@@ -229,7 +237,7 @@ onBeforeUnmount(() => {
             target="_blank"
             rel="noreferrer"
           >
-            飞书日历 ↗
+            {{ copy.schedule.sourceCalendar }}
           </a>
         </footer>
       </section>

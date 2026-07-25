@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { sessions, topicFor } from '../../data/program'
+import {
+  localizedTopics,
+  useSiteLocale
+} from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
 
 const props = defineProps<{
@@ -19,43 +23,48 @@ const dateFormatter = new Intl.DateTimeFormat('en-CA', {
   day: '2-digit'
 })
 const today = ref(dateFormatter.format(new Date()))
+const { locale, copy } = useSiteLocale()
 
 onMounted(() => {
   today.value = dateFormatter.format(new Date())
 })
 
 const status = computed(() => {
-  if (session.calendarStatus === 'cancelled') return '已取消'
-  if (session.date < today.value) return '已结束'
-  if (session.date === today.value) return '今天'
-  return '即将开始'
+  if (session.calendarStatus === 'cancelled') {
+    return copy.value.session.statuses.cancelled
+  }
+  if (session.date < today.value) return copy.value.session.statuses.ended
+  if (session.date === today.value) return copy.value.session.statuses.today
+  return copy.value.session.statuses.upcoming
 })
 
-const topic = topicFor(session.topic)
+const topic = computed(
+  () => localizedTopics([topicFor(session.topic)], locale.value)[0]
+)
 </script>
 
 <template>
   <header class="session-banner">
     <span class="section-index">
-      主题 {{ topic.number }} · 第 {{ session.id }} 讲 · {{ session.dateLabel }}
+      {{ copy.session.topic }} {{ topic.number }} · {{ copy.session.lecture }} {{ session.id }} · {{ session.dateLabel }}
       <template v-if="session.timeLabel"> · {{ session.timeLabel }}</template>
     </span>
     <h1>{{ session.title }}</h1>
     <p>{{ session.items.join('；') }}</p>
     <div class="session-banner-meta">
-      <span>状态 · {{ status }}</span>
-      <span>分享 · {{ session.owners.join(' · ') }}</span>
+      <span>{{ copy.session.status }} · {{ status }}</span>
+      <span>{{ copy.session.speakers }} · {{ session.owners.join(' · ') }}</span>
       <span v-if="session.location">
-        地点 · <EventLocation :location="session.location" />
+        {{ copy.session.location }} · <EventLocation :location="session.location" />
       </span>
-      <span v-else>形式 · 预习 + 分享 + 讨论</span>
+      <span v-else>{{ copy.session.format }} · {{ copy.session.formatValue }}</span>
       <a
         v-if="session.meetingUrl"
         :href="session.meetingUrl"
         target="_blank"
         rel="noreferrer"
       >
-        加入会议 ↗
+        {{ copy.session.joinMeeting }}
       </a>
     </div>
   </header>

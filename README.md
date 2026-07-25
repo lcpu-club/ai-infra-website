@@ -2,6 +2,19 @@
 
 Weiming HPC Training Camp × LCPU AI Infra Seminars 课程网站。
 
+## 中英双语
+
+- 中文页面保留原有路径；英文页面使用 `/en/` 前缀，并通过导航栏语言菜单切换。
+- 首页、活动日历和共用组件的静态文案集中在
+  `docs/.vitepress/data/site-i18n.ts`。
+- 飞书同步继续生成中文 `docs/wiki/` 和日历快照；人工翻译维护在
+  `docs/en/wiki/`，同步时不会被覆盖。
+- 新增或改名 Wiki 页面时，在 `docs/.vitepress/config.mts` 的
+  `englishWikiTitles` 中补充英文导航标题，并在 `docs/en/wiki/` 创建同 token
+  的英文页面。
+- 新增日历活动时，在 `site-i18n.ts` 的 `eventTranslations` 中按 `eventId`
+  补充英文标题、说明、地点和讲者；缺少翻译时英文页面会显示飞书原文。
+
 ## 本地开发
 
 ```bash
