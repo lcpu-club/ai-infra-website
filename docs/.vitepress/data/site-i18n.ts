@@ -104,7 +104,8 @@ export const siteCopy = {
       keywords: '关键词',
       formatTitle: '如何进行',
       supportAria: '支持单位与版权信息',
-      supportTitle: '赞助商与合作伙伴',
+      sponsorsTitle: '赞助商',
+      partnersTitle: '合作伙伴',
       coOrganizers: '联合发起',
       visitWebsite: '访问官网',
       logoSuffix: '标志'
@@ -188,7 +189,8 @@ export const siteCopy = {
       keywords: 'keywords',
       formatTitle: 'How It Works',
       supportAria: 'Sponsors, partners, organizers, and copyright',
-      supportTitle: 'Sponsors & Partners',
+      sponsorsTitle: 'Sponsors',
+      partnersTitle: 'Partners',
       coOrganizers: 'Co-organized by',
       visitWebsite: 'Visit website',
       logoSuffix: ' logo'

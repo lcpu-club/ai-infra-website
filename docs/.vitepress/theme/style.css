@@ -792,10 +792,23 @@ a {
   line-height: 1.5;
 }
 
+.home-support-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
 .home-support-logo-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+}
+
+.home-support-logo-grid-sponsors {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.home-support-logo-grid-partners {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .home-support-logo-card {
@@ -958,6 +971,11 @@ a {
 
   .home-support-inner {
     width: min(100% - 32px, 1140px);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .home-support-panel {
     grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }

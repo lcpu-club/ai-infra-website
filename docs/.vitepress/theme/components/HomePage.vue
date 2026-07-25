@@ -192,38 +192,52 @@ const hrefFor = href
 
   <footer class="home-support-footer" :aria-label="home.supportAria">
     <div class="home-support-inner">
-      <section class="home-support-panel" aria-labelledby="home-support-title">
-        <h2 id="home-support-title" class="home-support-heading">
-          {{ home.supportTitle }}
-        </h2>
+      <section
+        class="home-support-panel"
+        aria-labelledby="home-sponsors-title home-partners-title"
+      >
+        <div class="home-support-group">
+          <h2 id="home-sponsors-title" class="home-support-heading">
+            {{ home.sponsorsTitle }}
+          </h2>
 
-        <div class="home-support-logo-grid">
-          <div
-            v-for="sponsor in sponsors"
-            :key="sponsor.name.zh"
-            class="home-support-logo-card"
-          >
-            <img
-              :src="withBase(sponsor.logo)"
-              :alt="`${sponsor.name[locale]}${home.logoSuffix}`"
-              loading="lazy"
+          <div class="home-support-logo-grid home-support-logo-grid-sponsors">
+            <div
+              v-for="sponsor in sponsors"
+              :key="sponsor.name.zh"
+              class="home-support-logo-card"
             >
+              <img
+                :src="withBase(sponsor.logo)"
+                :alt="`${sponsor.name[locale]}${home.logoSuffix}`"
+                loading="lazy"
+              >
+            </div>
           </div>
-          <a
-            v-for="partner in partners"
-            :key="partner.name"
-            class="home-support-logo-card"
-            :href="partner.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            :aria-label="`${home.visitWebsite}: ${partner.name}`"
-          >
-            <img
-              :src="withBase(partner.logo)"
-              :alt="`${partner.name}${home.logoSuffix}`"
-              loading="lazy"
+        </div>
+
+        <div class="home-support-group">
+          <h2 id="home-partners-title" class="home-support-heading">
+            {{ home.partnersTitle }}
+          </h2>
+
+          <div class="home-support-logo-grid home-support-logo-grid-partners">
+            <a
+              v-for="partner in partners"
+              :key="partner.name"
+              class="home-support-logo-card"
+              :href="partner.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              :aria-label="`${home.visitWebsite}: ${partner.name}`"
             >
-          </a>
+              <img
+                :src="withBase(partner.logo)"
+                :alt="`${partner.name}${home.logoSuffix}`"
+                loading="lazy"
+              >
+            </a>
+          </div>
         </div>
       </section>
 
