@@ -1,6 +1,6 @@
 ---
-title: "Weiming HPC Training Camp x LCPU AI Infrga Seminars Wiki"
-description: "Weiming HPC Training Camp x LCPU AI Infrga Seminars Wiki · AI Infra Wiki"
+title: "目录"
+description: "目录 · AI Infra Wiki"
 outline: deep
 lastUpdated: false
 ---
@@ -9,7 +9,7 @@ lastUpdated: false
 
 <header class="session-banner wiki-page-banner">
   <span class="section-index">课程资料</span>
-  <h1>Weiming HPC Training Camp x LCPU AI Infrga Seminars Wiki</h1>
+  <h1>目录</h1>
 </header>
 
 ## 文档目录
