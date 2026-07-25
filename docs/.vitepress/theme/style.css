@@ -412,7 +412,8 @@ a {
 .home-topic-card,
 .home-format-card,
 .home-schedule-card,
-.home-sponsor-card {
+.home-sponsor-card,
+.home-partner-card {
   border: 1px solid var(--site-line);
   border-radius: 16px;
   background: var(--site-surface);
@@ -489,7 +490,8 @@ a {
 
 .home-topic-card:hover,
 .home-format-card:hover,
-.home-schedule-card:hover {
+.home-schedule-card:hover,
+.home-partner-card:hover {
   border-color: color-mix(in srgb, var(--home-topic-color, var(--site-brand)) 42%, var(--site-line));
   transform: translateY(-2px);
 }
@@ -744,6 +746,30 @@ a {
   line-height: 1.85;
 }
 
+.home-partner-list {
+  display: flex;
+}
+
+.home-partner-card {
+  display: flex;
+  width: min(560px, 100%);
+  min-height: 190px;
+  padding: 20px 40px;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.home-partner-card img {
+  display: block;
+  width: min(100%, 360px);
+  height: 150px;
+  object-fit: contain;
+}
+
 @media (max-width: 900px) {
   .home-topic-card {
     grid-template-columns: 64px minmax(0, 1fr);
@@ -824,13 +850,23 @@ a {
   .home-sponsor-card > p {
     padding: 20px;
   }
+
+  .home-partner-card {
+    min-height: 160px;
+    padding: 18px 28px;
+  }
+
+  .home-partner-card img {
+    height: 124px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .home-button,
   .home-topic-card,
   .home-format-card,
-  .home-schedule-card {
+  .home-schedule-card,
+  .home-partner-card {
     transition: none;
   }
 }

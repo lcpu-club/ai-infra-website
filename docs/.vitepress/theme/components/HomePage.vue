@@ -50,6 +50,14 @@ const sponsors = [
   }
 ]
 
+const partners = [
+  {
+    name: 'vLLM',
+    logo: '/partners/vllm.svg',
+    href: 'https://vllm.ai/'
+  }
+]
+
 interface SchedulePreviewItem {
   key: string
   date: string
@@ -212,6 +220,31 @@ function scheduleHref(href?: string) {
           </div>
           <p>{{ sponsor.description }}</p>
         </article>
+      </div>
+    </section>
+
+    <section class="home-section home-partner-section" aria-labelledby="home-partner-title">
+      <div class="home-section-heading">
+        <p class="home-chip">合作支持</p>
+        <h2 id="home-partner-title">合作伙伴</h2>
+      </div>
+
+      <div class="home-partner-list">
+        <a
+          v-for="partner in partners"
+          :key="partner.name"
+          class="home-partner-card"
+          :href="partner.href"
+          target="_blank"
+          rel="noopener noreferrer"
+          :aria-label="`访问 ${partner.name} 官网`"
+        >
+          <img
+            :src="withBase(partner.logo)"
+            :alt="`${partner.name}标志`"
+            loading="lazy"
+          >
+        </a>
       </div>
     </section>
   </main>
