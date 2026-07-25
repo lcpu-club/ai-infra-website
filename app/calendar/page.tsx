@@ -25,6 +25,7 @@ import 'temporal-polyfill/global'
 import { useTheme } from 'next-themes'
 import {
   calendarEvents,
+  calendarTimezone,
   type CalendarStatus
 } from '@/docs/.vitepress/data/program'
 import { docHref } from '@/lib/site'
@@ -34,6 +35,9 @@ type ScheduleItem = {
   date: string
   title: string
   kind: 'event'
+  allDay: boolean
+  startAt: string
+  endAt: string
   timeLabel?: string
   owners?: string[]
   description?: string
@@ -52,6 +56,9 @@ const scheduleItems: ScheduleItem[] = [
       date: event.date,
       title: event.summary,
       kind: 'event' as const,
+      allDay: event.allDay,
+      startAt: event.startAt,
+      endAt: event.endAt,
       timeLabel: event.allDay ? '全天' : event.timeLabel,
       description: event.description,
       location: event.location,
@@ -76,13 +83,18 @@ export default function CalendarPage() {
 
   const calendarEvents = useMemo<CalendarEvent[]>(
     () => scheduleItems.map((item) => {
-      const start = Temporal.PlainDate.from(item.date)
+      const start = item.allDay
+        ? Temporal.PlainDate.from(item.date)
+        : Temporal.Instant.from(item.startAt).toZonedDateTimeISO(calendarTimezone)
+      const end = item.allDay
+        ? Temporal.PlainDate.from(item.date)
+        : Temporal.Instant.from(item.endAt).toZonedDateTimeISO(calendarTimezone)
 
       return {
         id: item.key,
         title: item.title,
         start,
-        end: start,
+        end,
         description: item.description,
         location: item.location,
         people: item.owners,
@@ -99,6 +111,7 @@ export default function CalendarPage() {
     selectedDate: Temporal.PlainDate.from(firstDate),
     events: calendarEvents,
     locale: 'zh-CN',
+    timezone: calendarTimezone,
     firstDayOfWeek: 1,
     // 以月历作为所有断点的初始视图，避免窄屏自动切到按小时视图。
     isResponsive: false,
