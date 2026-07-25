@@ -3,8 +3,7 @@ import { withBase } from 'vitepress'
 import {
   calendarEvents,
   sessions,
-  topics,
-  type TopicKey
+  topics
 } from '../../data/program'
 
 const facts = [
@@ -43,7 +42,6 @@ interface SchedulePreviewItem {
   dateLabel: string
   title: string
   href?: string
-  topic?: TopicKey
   label: string
 }
 
@@ -55,27 +53,15 @@ function previewDate(date: string) {
   }
 }
 
-const schedulePreview: SchedulePreviewItem[] = [
-  ...sessions.map((session) => ({
-    key: `session-${session.id}`,
-    date: session.date,
-    ...previewDate(session.date),
-    title: session.title,
-    href: session.href,
-    topic: session.topic,
-    label: '课程分享'
-  })),
-  ...calendarEvents
-    .filter((event) => !event.sessionId)
-    .map((event) => ({
-      key: `event-${event.eventId}`,
-      date: event.date,
-      ...previewDate(event.date),
-      title: event.summary,
-      href: event.href,
-      label: '日历活动'
-    }))
-]
+const schedulePreview: SchedulePreviewItem[] = calendarEvents
+  .map((event) => ({
+    key: `event-${event.eventId}`,
+    date: event.date,
+    ...previewDate(event.date),
+    title: event.summary,
+    href: event.href,
+    label: '日历活动'
+  }))
   .sort((left, right) => left.date.localeCompare(right.date))
   .slice(0, 5)
 
@@ -170,7 +156,6 @@ function scheduleHref(href?: string) {
           v-for="item in schedulePreview"
           :key="item.key"
           class="home-schedule-card"
-          :class="item.topic ? `home-topic-${item.topic}` : undefined"
           :href="scheduleHref(item.href)"
         >
           <time :datetime="item.date">
