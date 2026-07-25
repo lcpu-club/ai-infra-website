@@ -32,3 +32,26 @@ test('validates and normalizes the optional Wiki collection configuration', asyn
     await rm(root, { recursive: true, force: true })
   }
 })
+
+test('allows Wiki and calendar sync without individual session mappings', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'feishu-config-test-'))
+  try {
+    await mkdir(path.join(root, 'content/feishu'), { recursive: true })
+    await writeFile(
+      path.join(root, 'content/feishu/sessions.json'),
+      JSON.stringify({
+        timezone: 'Asia/Shanghai',
+        wiki: {
+          rootNodeToken: 'wiki_root_1',
+          sourceBaseUrl: 'https://example.feishu.cn/wiki'
+        },
+        sessions: []
+      })
+    )
+
+    const config = await readSyncConfig(root)
+    assert.deepEqual(config.sessions, [])
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

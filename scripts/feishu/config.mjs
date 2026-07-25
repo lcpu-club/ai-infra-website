@@ -22,8 +22,8 @@ export async function readSyncConfig(repoRoot) {
     throw new Error(`Invalid IANA timezone in Feishu sync config: ${config.timezone}`)
   }
 
-  if (!Array.isArray(config.sessions) || config.sessions.length === 0) {
-    throw new Error('Feishu sync config requires at least one session')
+  if (!Array.isArray(config.sessions)) {
+    throw new Error('Feishu sync config requires a sessions array')
   }
 
   const ids = new Set()

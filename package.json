@@ -17,6 +17,10 @@
     "vue": "^3.5.13"
   },
   "dependencies": {
-    "@larksuiteoapi/node-sdk": "^1.71.1"
+    "@larksuiteoapi/node-sdk": "^1.71.1",
+    "@schedule-x/calendar": "^4.6.1",
+    "@schedule-x/theme-default": "^4.6.1",
+    "@schedule-x/vue": "^4.1.0",
+    "temporal-polyfill": "^0.3.0"
   }
 }

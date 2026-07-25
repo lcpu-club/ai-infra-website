@@ -36,13 +36,13 @@ const topic = topicFor(session.topic)
 <template>
   <header class="session-banner">
     <span class="section-index">
-      TOPIC {{ topic.number }} / SESSION {{ session.id }} / {{ session.dateLabel }}
-      <template v-if="session.timeLabel"> / {{ session.timeLabel }}</template>
+      主题 {{ topic.number }} · 第 {{ session.id }} 讲 · {{ session.dateLabel }}
+      <template v-if="session.timeLabel"> · {{ session.timeLabel }}</template>
     </span>
     <h1>{{ session.title }}</h1>
     <p>{{ session.items.join('；') }}</p>
     <div class="session-banner-meta">
-      <span>STATUS · {{ status }}</span>
+      <span>状态 · {{ status }}</span>
       <span>分享 · {{ session.owners.join(' · ') }}</span>
       <span v-if="session.location">地点 · {{ session.location }}</span>
       <span v-else>形式 · 预习 + 分享 + 讨论</span>
