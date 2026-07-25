@@ -672,6 +672,30 @@ a {
   line-height: 1.5;
 }
 
+.home-schedule-empty {
+  padding: 24px;
+  border: 1px dashed var(--site-line-strong);
+  border-radius: 16px;
+  color: var(--site-text-2);
+  background: var(--site-surface);
+}
+
+.home-schedule-empty strong,
+.home-schedule-empty span {
+  display: block;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.home-schedule-empty strong {
+  color: var(--site-text);
+  font-weight: 680;
+}
+
+.home-schedule-empty span {
+  margin-top: 4px;
+}
+
 .home-schedule-arrow {
   color: var(--home-topic-color);
   font-size: 22px;

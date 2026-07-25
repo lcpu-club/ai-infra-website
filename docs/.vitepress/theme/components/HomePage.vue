@@ -54,6 +54,7 @@ function previewDate(date: string) {
 }
 
 const schedulePreview: SchedulePreviewItem[] = calendarEvents
+  .filter((event) => event.status !== 'cancelled')
   .map((event) => ({
     key: `event-${event.eventId}`,
     date: event.date,
@@ -151,7 +152,7 @@ function scheduleHref(href?: string) {
         <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
       </div>
 
-      <div class="home-schedule-list">
+      <div v-if="schedulePreview.length" class="home-schedule-list">
         <a
           v-for="item in schedulePreview"
           :key="item.key"
@@ -168,6 +169,10 @@ function scheduleHref(href?: string) {
           </div>
           <span class="home-schedule-arrow" aria-hidden="true">→</span>
         </a>
+      </div>
+      <div v-else class="home-schedule-empty">
+        <strong>近期暂无公开安排</strong>
+        <span>飞书日历新增活动后会自动显示在这里。</span>
       </div>
     </section>
   </main>
