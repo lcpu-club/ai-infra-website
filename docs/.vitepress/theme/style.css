@@ -452,7 +452,7 @@ a {
 }
 
 .home-section-heading h2 {
-  margin-top: 12px;
+  margin-top: 0;
   color: var(--site-text);
   font-size: clamp(29px, 3.5vw, 38px);
   font-weight: 730;

@@ -125,7 +125,6 @@ function scheduleHref(href?: string) {
 
     <section class="home-section" aria-labelledby="home-topics-title">
       <div class="home-section-heading">
-        <p class="home-chip">主题方向</p>
         <h2 id="home-topics-title">四条主线，一套系统视角</h2>
       </div>
 
@@ -153,7 +152,6 @@ function scheduleHref(href?: string) {
 
     <section class="home-section" aria-labelledby="home-format-title">
       <div class="home-section-heading">
-        <p class="home-chip">活动形式</p>
         <h2 id="home-format-title">如何进行</h2>
       </div>
 
@@ -169,7 +167,6 @@ function scheduleHref(href?: string) {
     <section class="home-section home-schedule-section" aria-labelledby="home-schedule-title">
       <div class="home-section-heading home-section-heading-row">
         <div>
-          <p class="home-chip">课程安排</p>
           <h2 id="home-schedule-title">近期安排</h2>
         </div>
         <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
@@ -201,7 +198,6 @@ function scheduleHref(href?: string) {
 
     <section class="home-section home-sponsor-section" aria-labelledby="home-sponsor-title">
       <div class="home-section-heading">
-        <p class="home-chip">赞助支持</p>
         <h2 id="home-sponsor-title">感谢赞助商支持</h2>
       </div>
 
@@ -225,7 +221,6 @@ function scheduleHref(href?: string) {
 
     <section class="home-section home-partner-section" aria-labelledby="home-partner-title">
       <div class="home-section-heading">
-        <p class="home-chip">合作支持</p>
         <h2 id="home-partner-title">合作伙伴</h2>
       </div>
 
