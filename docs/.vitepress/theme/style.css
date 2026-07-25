@@ -6,6 +6,8 @@
     sans-serif;
   --vp-font-family-mono:
     'SFMono-Regular', 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+  --site-label-font-size: 16px;
+  --site-ui-font-size: 14px;
 
   --site-bg: #fbfaf9;
   --site-surface: #ffffff;
@@ -175,7 +177,7 @@ a {
 .VPNavBarMenuLink,
 .VPNavBarMenuGroup .text {
   color: var(--site-text-2) !important;
-  font-size: 13px !important;
+  font-size: var(--site-ui-font-size) !important;
   font-weight: 500;
 }
 
@@ -208,7 +210,7 @@ a {
 .VPFooter .message,
 .VPFooter .copyright {
   color: var(--site-text-3) !important;
-  font-size: 12px !important;
+  font-size: var(--site-ui-font-size) !important;
 }
 
 .home-page .VPPage,
@@ -266,7 +268,7 @@ a {
 .section-heading-row > div > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.1em;
 }
@@ -304,7 +306,7 @@ a {
 .hero-kicker {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -389,14 +391,14 @@ a {
 .hero-facts dt {
   color: var(--site-text-3);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   letter-spacing: 0.08em;
 }
 
 .hero-facts dd {
   margin: 5px 0 0;
   color: var(--site-text);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 570;
   line-height: 1.5;
 }
@@ -437,7 +439,7 @@ a {
   padding: 15px 0 13px;
   border-bottom: 1px solid var(--site-line);
   color: var(--site-text);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 680;
 }
 
@@ -449,7 +451,7 @@ a {
   display: grid;
   padding: 11px 0;
   border-bottom: 1px solid var(--site-line);
-  grid-template-columns: 88px 1fr;
+  grid-template-columns: 120px 1fr;
   gap: 12px;
 }
 
@@ -460,7 +462,7 @@ a {
 .course-info dt {
   color: var(--site-text-3);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -469,7 +471,7 @@ a {
 .course-info dd {
   margin: 0;
   color: var(--site-text-2);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -492,7 +494,7 @@ a {
   padding-top: 4px;
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 12px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
 }
 
@@ -507,7 +509,7 @@ a {
 
 .topic-row-copy > p:first-child {
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
 }
 
@@ -515,7 +517,7 @@ a {
   margin-top: 9px;
   color: var(--site-text-3);
   font-family: var(--vp-font-family-mono);
-  font-size: 12px;
+  font-size: var(--site-label-font-size);
   letter-spacing: 0.01em;
 }
 
@@ -539,20 +541,20 @@ a {
 .format-steps li > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 12px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
 }
 
 .format-steps strong {
   color: var(--site-text);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 650;
 }
 
 .format-steps p {
   margin-top: 6px;
   color: var(--site-text-3);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.65;
 }
 
@@ -620,7 +622,7 @@ a {
 .calendar-event-date span {
   margin-top: 5px;
   color: var(--site-text-3);
-  font-size: 12px;
+  font-size: var(--site-ui-font-size);
   font-weight: 550;
 }
 
@@ -636,7 +638,7 @@ a {
   flex-wrap: wrap;
   gap: 6px 13px;
   font-family: var(--vp-font-family-mono);
-  font-size: 12px;
+  font-size: var(--site-label-font-size);
   font-weight: 680;
   letter-spacing: 0.015em;
 }
@@ -674,7 +676,7 @@ a {
   max-width: 760px;
   margin-top: 10px;
   color: var(--site-text-2);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.72;
   white-space: pre-line;
 }
@@ -690,7 +692,7 @@ a {
 .calendar-event-details > div {
   display: flex;
   gap: 10px;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -714,7 +716,7 @@ a {
 .calendar-event-actions a,
 .schedule-more-link a {
   color: var(--site-brand);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 620;
 }
 
@@ -762,7 +764,7 @@ a {
 .calendar-empty-state > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -776,7 +778,7 @@ a {
 .calendar-empty-state p {
   margin-top: 7px;
   color: var(--site-text-3);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* Registration and partners */
@@ -795,7 +797,7 @@ a {
 .join-section > div > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -811,12 +813,12 @@ a {
 .join-section p {
   margin-top: 9px;
   color: var(--site-text-2);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .join-section > a {
   color: var(--site-brand) !important;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 650;
   white-space: nowrap;
 }
@@ -843,13 +845,13 @@ a {
   width: 100%;
   color: var(--site-text-3);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
   letter-spacing: 0.08em;
 }
 
 .partners-section strong {
   color: var(--site-text-2);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 570;
 }
 
@@ -867,7 +869,7 @@ a {
 .inner-page-hero > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.07em;
 }
@@ -892,7 +894,7 @@ a {
   display: inline-block;
   margin-top: 17px;
   color: var(--site-brand);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .calendar-page-hero {
@@ -919,7 +921,7 @@ a {
 
 .calendar-sync-summary dt {
   color: var(--site-text-3);
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 540;
 }
 
@@ -927,7 +929,7 @@ a {
   margin-top: 4px;
   color: var(--site-text);
   font-family: var(--vp-font-family-mono);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 650;
 }
 
@@ -1034,7 +1036,7 @@ a {
 .session-banner .section-index {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 11px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
   letter-spacing: 0.06em;
 }
@@ -1064,7 +1066,7 @@ a {
   color: var(--site-text-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px 18px;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.55;
 }
 
@@ -1096,7 +1098,7 @@ a {
 .takeaway > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
 }
 
 .takeaway strong {
@@ -1125,7 +1127,7 @@ a {
 .learning-path span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
 }
 
 .learning-path strong {
@@ -1138,7 +1140,7 @@ a {
 .learning-path p {
   margin: 8px 0 0;
   color: var(--site-text-3);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.65;
 }
 
@@ -1172,7 +1174,7 @@ a {
 .reading-card > span {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
 }
 
 .reading-card strong {
@@ -1184,7 +1186,7 @@ a {
 .reading-card small {
   margin-top: 8px;
   color: var(--site-text-3);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.65;
 }
 
@@ -1192,7 +1194,7 @@ a {
   margin-top: auto;
   padding-top: 13px;
   color: var(--site-link);
-  font-size: 12px;
+  font-size: 15px;
   font-style: normal;
 }
 
@@ -1207,7 +1209,7 @@ a {
 .assignment-card > span {
   color: var(--topic-comm);
   font-family: var(--vp-font-family-mono);
-  font-size: 10px;
+  font-size: var(--site-label-font-size);
   font-weight: 700;
 }
 
@@ -1345,7 +1347,7 @@ a {
   }
 
   .calendar-event-date strong {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .calendar-event-body,
@@ -1355,11 +1357,11 @@ a {
 
   .calendar-event-meta {
     gap: 4px 9px;
-    font-size: 11px;
+    font-size: 15px;
   }
 
   .calendar-event-meta > span + span::before {
-    margin-right: 9px;
+    display: none;
   }
 
   .calendar-event h3,
@@ -1368,7 +1370,7 @@ a {
   }
 
   .calendar-event-description {
-    font-size: 13px;
+    font-size: 16px;
   }
 
   .calendar-event-actions {
