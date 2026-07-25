@@ -7,7 +7,7 @@
   --vp-font-family-mono:
     'SFMono-Regular', 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
   --site-label-font-size: 16px;
-  --site-ui-font-size: 14px;
+  --site-ui-font-size: 16px;
 
   --site-bg: #fbfaf9;
   --site-surface: #ffffff;
@@ -152,8 +152,11 @@ a {
 .section-heading > span,
 .section-heading-row > div > span,
 .inner-page-hero > span,
+.calendar-timeline-label,
+.calendar-list-heading > span,
 .calendar-event-meta > span,
 .calendar-empty-state > span,
+.calendar-dialog-labels > span,
 .session-banner .section-index,
 .takeaway > span,
 .learning-path span,
@@ -190,7 +193,7 @@ a {
 
 .VPNavBarTitle .title {
   color: var(--site-text) !important;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -849,7 +852,7 @@ a {
   padding-bottom: 2px;
   border-bottom: 1px solid var(--site-line-strong);
   color: var(--site-text) !important;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 620;
   transition:
     color 150ms ease,
@@ -1189,7 +1192,7 @@ a {
 .calendar-event-details > div {
   display: flex;
   gap: 10px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
@@ -1213,7 +1216,7 @@ a {
 .calendar-event-actions a,
 .schedule-more-link a {
   color: var(--site-brand);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 620;
 }
 
@@ -1315,7 +1318,7 @@ a {
 
 .join-section > a {
   color: var(--site-brand) !important;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 650;
   white-space: nowrap;
 }
@@ -1352,10 +1355,412 @@ a {
   font-weight: 570;
 }
 
+/* Interactive calendar timeline */
+
+.calendar-timeline-section {
+  padding: 0;
+}
+
+.calendar-timeline-heading {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+
+.calendar-timeline-heading h2,
+.calendar-list-heading h2 {
+  margin: 13px 0 0;
+  color: var(--site-text);
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 720;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.calendar-timeline-heading p {
+  max-width: 680px;
+  margin: 13px 0 0;
+  color: var(--site-text-2);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.calendar-timeline-shell {
+  --sx-color-primary: var(--site-brand);
+  --sx-color-on-primary: var(--site-brand-contrast);
+  --sx-color-primary-container: var(--site-brand-soft);
+  --sx-color-on-primary-container: var(--site-brand);
+  --sx-color-surface: var(--site-surface);
+  --sx-color-surface-dim: var(--site-surface-2);
+  --sx-color-surface-bright: var(--site-surface);
+  --sx-color-on-surface: var(--site-text);
+  --sx-color-surface-container: var(--site-surface-2);
+  --sx-color-surface-container-low: var(--site-surface);
+  --sx-color-surface-container-high: var(--site-surface-3);
+  --sx-color-background: var(--site-bg);
+  --sx-color-on-background: var(--site-text);
+  --sx-color-outline: var(--site-line-strong);
+  --sx-color-outline-variant: var(--site-line);
+  --sx-color-surface-tint: var(--site-brand);
+  --sx-font-extra-small: 1rem;
+  --sx-font-small: 1rem;
+  --sx-calendar-header-input-font-size: 1rem;
+  min-height: 720px;
+  border: 1px solid var(--site-line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--site-surface);
+  box-shadow: var(--site-shadow);
+}
+
+.calendar-timeline-shell .sx-vue-calendar-wrapper {
+  width: 100%;
+  height: 720px;
+}
+
+.calendar-timeline-shell .sx__calendar {
+  max-height: 100%;
+  color: var(--site-text);
+  background: var(--site-surface);
+  font-family: var(--vp-font-family-base);
+  font-size: 16px;
+}
+
+.calendar-timeline-shell .sx__month-grid-day__header-day-name,
+.calendar-timeline-shell .sx__month-grid-day__header-date,
+.calendar-timeline-shell .sx__month-grid-day__events-more,
+.calendar-timeline-shell .sx__week-grid__day-name,
+.calendar-timeline-shell .sx__week-grid__date-number,
+.calendar-timeline-shell .sx__week-grid__hour-text,
+.calendar-timeline-shell .sx__date-grid-event,
+.calendar-timeline-shell .sx__time-grid-event,
+.calendar-timeline-shell .sx__month-grid-event,
+.calendar-timeline-shell .sx__month-agenda-event {
+  font-size: 16px;
+}
+
+.calendar-timeline-shell .sx__month-grid-day__header-date {
+  width: 32px;
+  height: 32px;
+}
+
+.calendar-timeline-shell .sx__month-grid-event,
+.calendar-timeline-shell .sx__date-grid-event {
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.calendar-timeline-shell .sx__time-grid-event {
+  border-radius: 12px;
+}
+
+.calendar-timeline-shell .is-cancelled {
+  opacity: 0.58;
+  text-decoration: line-through;
+}
+
+.calendar-timeline-loading {
+  display: flex;
+  min-height: 718px;
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.calendar-timeline-loading strong {
+  color: var(--site-text);
+  font-size: 18px;
+}
+
+.calendar-timeline-loading p {
+  margin: 8px 0 0;
+  color: var(--site-text-3);
+  font-size: 16px;
+}
+
+.calendar-timeline-loading.is-error {
+  background: var(--site-brand-soft);
+}
+
+.calendar-list-section {
+  margin-top: 48px;
+  padding: 48px 0 0;
+  border-top: 1px solid var(--site-line);
+}
+
+.calendar-list-section > h2 {
+  margin: 0 0 18px;
+  color: var(--site-text);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+}
+
+.calendar-dialog-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, #11131a 68%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.calendar-dialog {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  padding: 30px;
+  border: 1px solid var(--site-line);
+  border-radius: 20px;
+  overflow-y: auto;
+  color: var(--site-text);
+  background: var(--site-surface);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.calendar-dialog-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--site-line);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: var(--site-text-2);
+  background: var(--site-surface-2);
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.calendar-dialog-labels {
+  display: flex;
+  padding-right: 46px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-dialog h2 {
+  margin: 22px 0 0;
+  color: var(--site-text);
+  font-size: clamp(27px, 4vw, 38px);
+  font-weight: 730;
+  letter-spacing: -0.035em;
+  line-height: 1.22;
+}
+
+.calendar-dialog-description {
+  margin: 18px 0 0;
+  color: var(--site-text-2);
+  font-size: 16px;
+  line-height: 1.78;
+  white-space: pre-line;
+}
+
+.calendar-dialog-details {
+  margin: 20px 0 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--site-line);
+  border-bottom: 1px solid var(--site-line);
+}
+
+.calendar-dialog-details > div {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.calendar-dialog-details dt {
+  color: var(--site-text-3);
+}
+
+.calendar-dialog-details dd {
+  margin: 0;
+  color: var(--site-text);
+}
+
+.calendar-dialog-actions {
+  display: flex;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.calendar-dialog-actions a {
+  display: inline-flex;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  align-items: center;
+  color: var(--site-brand) !important;
+  background: var(--site-brand-soft);
+  font-size: 16px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+body.has-calendar-dialog {
+  overflow: hidden;
+}
+
 /* Standalone schedule */
 
 .schedule-page-shell {
-  padding-bottom: 68px;
+  width: min(1140px, calc(100% - 48px));
+  padding: 48px 0 72px;
+}
+
+.schedule-page-header {
+  display: flex;
+  margin-bottom: 40px;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.schedule-page-header h1 {
+  margin: 0;
+  color: var(--site-text);
+  font-size: clamp(40px, 5vw, 52px);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.schedule-page-header button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--site-text-2);
+  background: var(--site-surface-2);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 620;
+  line-height: 1.5;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.schedule-page-header button:hover {
+  color: var(--site-brand);
+  background: var(--site-brand-soft);
+}
+
+.schedule-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.schedule-page .schedule-table {
+  display: table;
+  width: 100%;
+  min-width: 720px;
+  margin: 0;
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 16px;
+}
+
+.schedule-page .schedule-table th,
+.schedule-page .schedule-table td {
+  border: 0;
+  text-align: left;
+  line-height: 1.55;
+}
+
+.schedule-page .schedule-table th {
+  padding: 11px 13px;
+  color: var(--site-text);
+  background: var(--site-surface-2);
+  font-weight: 680;
+}
+
+.schedule-page .schedule-table th:first-child {
+  width: 29%;
+  border-radius: 11px 0 0 11px;
+}
+
+.schedule-page .schedule-table th:nth-child(2) {
+  width: 35%;
+}
+
+.schedule-page .schedule-table th:nth-child(3) {
+  width: 21%;
+}
+
+.schedule-page .schedule-table th:last-child {
+  width: 15%;
+  border-radius: 0 11px 11px 0;
+}
+
+.schedule-page .schedule-table td {
+  padding: 14px 13px;
+  border-bottom: 1px solid var(--site-line);
+  color: var(--site-text-2);
+  background: transparent;
+  vertical-align: top;
+}
+
+.schedule-page .schedule-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.schedule-page .schedule-table td:nth-child(2) {
+  color: var(--site-text);
+  font-weight: 600;
+}
+
+.schedule-page .schedule-table td a {
+  color: var(--site-brand);
+  text-decoration: none;
+}
+
+.schedule-page .schedule-table td small {
+  display: block;
+  margin-top: 4px;
+  color: var(--site-text-3);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.schedule-status {
+  display: inline-flex;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  align-items: center;
+  color: var(--site-brand);
+  background: var(--site-brand-soft);
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.schedule-status.is-confirmed {
+  color: var(--topic-serving);
+  background: var(--topic-serving-soft);
+}
+
+.schedule-status.is-cancelled {
+  color: var(--site-text-3);
+  background: var(--site-surface-3);
 }
 
 .inner-page-hero {
@@ -1391,7 +1796,7 @@ a {
   display: inline-block;
   margin-top: 17px;
   color: var(--site-brand);
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .calendar-page-hero {
@@ -1418,7 +1823,7 @@ a {
 
 .calendar-sync-summary dt {
   color: var(--site-text-3);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 540;
 }
 
@@ -1437,7 +1842,7 @@ a {
 }
 
 .VPSidebarItem .text {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -1447,11 +1852,11 @@ a {
 }
 
 .VPDocAsideOutline .outline-title {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .VPDocAsideOutline .outline-link {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -1502,7 +1907,7 @@ a {
 .vp-doc table {
   display: table;
   width: 100%;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .vp-doc th {
@@ -1563,7 +1968,7 @@ a {
   color: var(--site-text-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px 18px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -1691,7 +2096,7 @@ a {
   margin-top: auto;
   padding-top: 13px;
   color: var(--site-link);
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
 }
 
@@ -1821,7 +2226,7 @@ a {
   }
 
   .topic-row-copy > p:first-child {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .format-steps {
@@ -1854,7 +2259,7 @@ a {
 
   .calendar-event-meta {
     gap: 4px 9px;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .calendar-event-meta > span + span::before {
@@ -1897,6 +2302,53 @@ a {
 
   .calendar-sync-summary dd {
     margin-top: 0;
+  }
+
+  .calendar-list-section {
+    margin-top: 40px;
+    padding-top: 40px;
+  }
+
+  .schedule-page-shell {
+    padding: 36px 0 56px;
+  }
+
+  .schedule-page-header {
+    margin-bottom: 32px;
+  }
+
+  .schedule-page-header h1 {
+    font-size: 42px;
+  }
+
+  .calendar-timeline-shell {
+    min-height: 660px;
+    border-radius: 14px;
+  }
+
+  .calendar-timeline-shell .sx-vue-calendar-wrapper {
+    height: 660px;
+  }
+
+  .calendar-timeline-loading {
+    min-height: 658px;
+    padding: 22px;
+  }
+
+  .calendar-dialog-backdrop {
+    padding: 12px;
+    align-items: end;
+  }
+
+  .calendar-dialog {
+    max-height: calc(100vh - 24px);
+    padding: 24px 20px;
+    border-radius: 20px 20px 12px 12px;
+  }
+
+  .calendar-dialog-close {
+    top: 14px;
+    right: 14px;
   }
 
   .join-section {

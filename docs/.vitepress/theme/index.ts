@@ -3,6 +3,7 @@ import type { Theme } from 'vitepress'
 import HomePage from './components/HomePage.vue'
 import ScheduleBoard from './components/ScheduleBoard.vue'
 import SessionHeader from './components/SessionHeader.vue'
+import '@schedule-x/theme-default/dist/index.css'
 import './style.css'
 
 export default {

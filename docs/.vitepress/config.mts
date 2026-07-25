@@ -19,7 +19,7 @@ const base = '/ai-infra-website/'
 const firstPublishedSession = sessions.find(({ href }) => href)
 const wiki = (feishuSnapshot as { wiki?: WikiSnapshot }).wiki
 const sessionSidebar = topics.map((topic) => ({
-  text: `Topic ${topic.number} · ${topic.title}`,
+  text: `主题 ${topic.number} · ${topic.title}`,
   collapsed: topic.number !== '01',
   items: sessions
     .filter((session) => session.topic === topic.key && session.href)
@@ -50,6 +50,11 @@ export default defineConfig({
   cleanUrls: true,
   appearance: true,
   lastUpdated: true,
+  vite: {
+    ssr: {
+      noExternal: ['@schedule-x/vue']
+    }
+  },
   head: [
     [
       'meta',
@@ -73,7 +78,7 @@ export default defineConfig({
       'meta',
       {
         property: 'og:description',
-        content: '从一行 Kernel，到一套大模型系统。七周、四个 Topic，一起把系统跑起来。'
+        content: '从一行 Kernel，到一套大模型系统。七周、四个主题，一起把系统跑起来。'
       }
     ],
     ['link', { rel: 'icon', href: `${base}favicon.svg`, type: 'image/svg+xml' }]
@@ -88,7 +93,7 @@ export default defineConfig({
       ...(firstPublishedSession
         ? [
             {
-              text: `Session ${firstPublishedSession.id}`,
+              text: `第 ${firstPublishedSession.id} 讲`,
               link: firstPublishedSession.href!
             }
           ]

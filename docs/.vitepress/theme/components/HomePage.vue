@@ -8,9 +8,9 @@ import {
 } from '../../data/program'
 
 const facts = [
-  { label: 'SESSIONS', value: `${sessions.length} 场系列研讨` },
-  { label: 'TOPICS', value: `${topics.length} 大主题方向` },
-  { label: 'SEASON', value: '2026 暑期' }
+  { label: '课程场次', value: `${sessions.length} 场系列研讨` },
+  { label: '主题方向', value: `${topics.length} 大主题方向` },
+  { label: '活动时间', value: '2026 暑期' }
 ]
 
 const formatSteps = [
@@ -115,7 +115,7 @@ function scheduleHref(href?: string) {
 
     <section class="home-section" aria-labelledby="home-topics-title">
       <div class="home-section-heading">
-        <p class="home-chip">TOPICS</p>
+        <p class="home-chip">主题方向</p>
         <h2 id="home-topics-title">四条主线，一套系统视角</h2>
       </div>
 
@@ -143,7 +143,7 @@ function scheduleHref(href?: string) {
 
     <section class="home-section" aria-labelledby="home-format-title">
       <div class="home-section-heading">
-        <p class="home-chip">FORMAT</p>
+        <p class="home-chip">活动形式</p>
         <h2 id="home-format-title">如何进行</h2>
       </div>
 
@@ -159,7 +159,7 @@ function scheduleHref(href?: string) {
     <section class="home-section home-schedule-section" aria-labelledby="home-schedule-title">
       <div class="home-section-heading home-section-heading-row">
         <div>
-          <p class="home-chip">SCHEDULE</p>
+          <p class="home-chip">课程安排</p>
           <h2 id="home-schedule-title">近期安排</h2>
         </div>
         <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
