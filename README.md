@@ -13,7 +13,7 @@ npm run dev
 
 飞书是动态课程内容的来源：
 
-- Wiki 集合负责整棵讲义目录，Session 映射可继续覆盖单节讲义正文。
+- Wiki 集合负责整棵讲义目录；网站“课程资料”导航直接显示根节点下的子页面标题。
 - 课程共享日历中的全部事件直接生成首页和 `/schedule` 活动日历，负责标题、
   说明、日期、时间、地点和状态。
 - `docs/.vitepress/data/program.ts` 保留 Topic、讲者、提纲等网站策划字段。
@@ -68,7 +68,8 @@ API Scope 之外，应用还必须拥有目标知识空间的资源权限。进�
     "rootNodeToken": "CWcAw7BUai4MimkMFzEcmV6on7f",
     "sourceBaseUrl": "https://lcpu-club.feishu.cn/wiki",
     "title": "AI Infra Wiki"
-  }
+  },
+  "sessions": []
 }
 ```
 
@@ -76,7 +77,8 @@ API Scope 之外，应用还必须拥有目标知识空间的资源权限。进�
 生成 `/wiki/` 导航。页面 URL 使用稳定的 Wiki node token，移动或改名不会
 破坏外部链接。
 
-`sessions` 列表用于为单节课程配置：
+`sessions` 列表是可选的单节课程映射；不需要独立 Session 页面时保持空数组。
+配置单节映射时可使用：
 
 - `wikiNodeToken`：Wiki URL 中 `/wiki/` 后的 token。
 - `calendarEventId`：可选。填写后会把共享日历中的该事件链接到对应讲义页；
@@ -102,14 +104,14 @@ npm run sync:feishu
 
 同步器会先在临时目录生成完整结果，所有远端读取和格式校验成功后才替换正式
 文件。未知飞书 XML Block、危险 HTML、丢失的日程或下载失败都会中止整批更新。
-图片与附件下载到 `docs/public/feishu/<session-id>/`，文件名由内容哈希生成。
+图片与附件下载到对应的 `docs/public/feishu/` 子目录，文件名由内容哈希生成。
 
 生成文件包括：
 
-- `docs/sessions/<session-id>.md`
+- `docs/sessions/<session-id>.md`（仅在配置独立 Session 映射时生成）
 - `docs/wiki/index.md` 与 `docs/wiki/<wiki-node-token>.md`
 - `docs/.vitepress/data/generated/feishu.json`
-- `docs/public/feishu/<session-id>/`
+- `docs/public/feishu/<session-id>/`（仅在配置独立 Session 映射时生成）
 - `docs/public/feishu/wiki/<wiki-node-token>/`
 
 不要直接修改这些生成文件；请在飞书 Wiki 或日历中修改。

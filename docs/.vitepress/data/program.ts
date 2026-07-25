@@ -105,8 +105,7 @@ const staticSessions: Session[] = [
       'CUDA：grid / block / thread、warp、host / device',
       'Triton / TileLang：CTA-level 与 tile abstraction'
     ],
-    owners: ['超算队同学'],
-    href: '/sessions/01'
+    owners: ['超算队同学']
   },
   {
     id: '02',

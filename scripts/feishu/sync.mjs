@@ -40,6 +40,7 @@ import {
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(scriptDir, '../..')
 const dryRun = process.argv.includes('--dry-run')
+const SESSION_ID_PATTERN = /^\d{2}$/
 const snapshotTarget = path.join(
   repoRoot,
   'docs/.vitepress/data/generated/feishu.json'
@@ -59,6 +60,7 @@ const operations = []
 
 try {
   const snapshot = await readExistingSnapshot()
+  reconcileConfiguredSessions(snapshot)
   const calendarEvents = await fetchConfiguredCalendar()
   applyCalendarData(snapshot, calendarEvents)
   const wikiCollection = await discoverConfiguredWiki()
@@ -100,7 +102,7 @@ try {
 
   const changedOperations = []
   for (const operation of operations) {
-    if (!(await pathsEqual(operation.staged, operation.target))) {
+    if (await operationChanged(operation)) {
       changedOperations.push(operation)
     }
   }
@@ -136,14 +138,72 @@ try {
 async function readExistingSnapshot() {
   try {
     const snapshot = JSON.parse(await readFile(snapshotTarget, 'utf8'))
-    if (snapshot?.version !== 1 || !snapshot.sessions) {
+    if (
+      snapshot?.version !== 1 ||
+      !snapshot.sessions ||
+      typeof snapshot.sessions !== 'object' ||
+      Array.isArray(snapshot.sessions)
+    ) {
       throw new Error('Unsupported generated Feishu snapshot format')
+    }
+    for (const [id, value] of Object.entries(snapshot.sessions)) {
+      if (
+        !SESSION_ID_PATTERN.test(id) ||
+        !value ||
+        typeof value !== 'object' ||
+        Array.isArray(value)
+      ) {
+        throw new Error('Generated Feishu snapshot contains an invalid session')
+      }
     }
     return snapshot
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error
     return { version: 1, sessions: {} }
   }
+}
+
+function reconcileConfiguredSessions(snapshot) {
+  const configuredById = new Map(
+    config.sessions.map((session) => [session.id, session])
+  )
+
+  for (const [id, current] of Object.entries(snapshot.sessions)) {
+    const configured = configuredById.get(id)
+    if (!configured) {
+      delete snapshot.sessions[id]
+      queueSessionOutputRemoval(id)
+      continue
+    }
+
+    const next = { ...current }
+    if (!configured.wikiNodeToken && next.document) {
+      delete next.document
+      queueSessionOutputRemoval(id)
+    }
+    if (!configured.calendarEventId && next.calendar) {
+      delete next.calendar
+    }
+
+    if (Object.keys(next).length > 0) {
+      snapshot.sessions[id] = next
+    } else {
+      delete snapshot.sessions[id]
+    }
+  }
+}
+
+function queueSessionOutputRemoval(id) {
+  operations.push({
+    remove: true,
+    target: path.join(repoRoot, `docs/sessions/${id}.md`),
+    label: `removed Session ${id} page`
+  })
+  operations.push({
+    remove: true,
+    target: path.join(repoRoot, `docs/public/feishu/${id}`),
+    label: `removed Session ${id} assets`
+  })
 }
 
 async function fetchConfiguredCalendar() {
@@ -480,6 +540,11 @@ async function pathsEqual(left, right) {
   return (await digestPath(left)) === (await digestPath(right))
 }
 
+async function operationChanged(operation) {
+  if (operation.remove) return pathExists(operation.target)
+  return !(await pathsEqual(operation.staged, operation.target))
+}
+
 async function digestPath(inputPath, relative = '') {
   const info = await stat(inputPath)
   const hash = createHash('sha256')
@@ -524,7 +589,9 @@ async function commitOperations(changedOperations) {
           await rename(operation.target, backup)
           movedExistingTarget = true
         }
-        await rename(operation.staged, operation.target)
+        if (!operation.remove) {
+          await rename(operation.staged, operation.target)
+        }
         committed.push({ ...operation, backup, existed })
       } catch (error) {
         if (movedExistingTarget) {

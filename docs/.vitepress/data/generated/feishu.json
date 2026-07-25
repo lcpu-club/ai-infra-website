@@ -1,16 +1,6 @@
 {
   "version": 1,
-  "sessions": {
-    "01": {
-      "document": {
-        "wikiNodeToken": "VIJPw24sqiPOhXkfEwXcEvVInhg",
-        "documentId": "QCpddjfi3oR3LxxRattcszYrnvg",
-        "objectType": "docx",
-        "sourceTitle": "Session 1 7.23",
-        "revisionId": 27
-      }
-    }
-  },
+  "sessions": {},
   "calendar": {
     "timezone": "Asia/Shanghai",
     "range": {

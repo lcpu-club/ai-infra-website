@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitepress'
-import { sessions, topics } from './data/program'
 import feishuSnapshot from './data/generated/feishu.json'
 
 interface WikiPage {
@@ -16,18 +15,14 @@ interface WikiSnapshot {
 }
 
 const base = '/ai-infra-website/'
-const firstPublishedSession = sessions.find(({ href }) => href)
 const wiki = (feishuSnapshot as { wiki?: WikiSnapshot }).wiki
-const sessionSidebar = topics.map((topic) => ({
-  text: `主题 ${topic.number} · ${topic.title}`,
-  collapsed: topic.number !== '01',
-  items: sessions
-    .filter((session) => session.topic === topic.key && session.href)
-    .map((session) => ({
-      text: `${session.id} · ${session.title}`,
-      link: session.href!
-    }))
-})).filter(({ items }) => items.length > 0)
+const wikiCourseItems = (wiki?.pages ?? [])
+  .filter((page) => page.parentWikiNodeToken === null)
+  .sort((left, right) => left.order - right.order)
+  .map((page) => ({
+    text: page.title,
+    link: page.route
+  }))
 const wikiSidebarItems = (parentWikiNodeToken: string | null): any[] =>
   (wiki?.pages ?? [])
     .filter((page) => page.parentWikiNodeToken === parentWikiNodeToken)
@@ -90,30 +85,15 @@ export default defineConfig({
       { text: '课程介绍', link: '/' },
       { text: '活动日历', link: '/schedule' },
       ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
-      ...(firstPublishedSession
+      ...(wiki
         ? [
-            {
-              text: `第 ${firstPublishedSession.id} 讲`,
-              link: firstPublishedSession.href!
-            }
+            wikiCourseItems.length > 0
+              ? { text: '课程资料', items: wikiCourseItems }
+              : { text: '课程资料', link: '/wiki/' }
           ]
-        : []),
-      {
-        text: '课程资料',
-        items: [
-          ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
-          ...sessions
-            .filter(({ href }) => href)
-            .map((session) => ({
-              text: session.title,
-              link: session.href!
-            })),
-          { text: '完整活动日历', link: '/schedule#full-schedule' }
-        ]
-      }
+        : [])
     ],
     sidebar: {
-      '/sessions/': sessionSidebar,
       ...(wiki
         ? {
             '/wiki/': [

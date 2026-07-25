@@ -100,8 +100,8 @@ function scheduleHref(href?: string) {
         <a class="home-button home-button-primary" :href="withBase('/schedule')">
           查看课程日历
         </a>
-        <a class="home-button home-button-secondary" :href="withBase('/sessions/01')">
-          浏览课程讲义
+        <a class="home-button home-button-secondary" :href="withBase('/wiki/')">
+          浏览课程资料
         </a>
       </div>
     </header>
