@@ -68,7 +68,7 @@ function footerMessage(locale: LocaleKey) {
   const names =
     locale === 'en'
       ? {
-          lcpu: 'PKU Linux Club',
+          lcpu: 'Linux Club of Peking Unversity',
           wmhpc: 'PKU Weiming Supercomputing Team',
           linuxproj: 'Linux.cn'
         }
@@ -95,7 +95,7 @@ function footerCopyright(locale: LocaleKey) {
   const names =
     locale === 'en'
       ? {
-          lcpu: 'PKU Linux Club',
+          lcpu: 'Linux Club of Peking Unversity',
           wmhpc: 'PKU Weiming Supercomputing Team'
         }
       : {

@@ -170,9 +170,9 @@ export const siteCopy = {
   en: {
     home: {
       organizationsAria:
-        'PKU Weiming Supercomputing Team and PKU Linux Club',
+        'PKU Weiming Supercomputing Team and Linux Club of Peking Unversity',
       wmhpc: 'PKU Weiming Supercomputing Team',
-      lcpu: 'PKU Linux Club',
+      lcpu: 'Linux Club of Peking Unversity',
       subtitle: 'How can we train faster, run better, and serve for less?',
       lead:
         'From kernels and compilers to distributed systems and collective communication, and from model serving to reinforcement learning systems, this seminar series connects the ideas and engineering behind large-scale AI training and inference.',
