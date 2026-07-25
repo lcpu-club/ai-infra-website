@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Button,
-  Calendar,
-  Card,
-  CardBody,
-  CardHeader,
   Chip,
   Divider,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Table,
   TableBody,
   TableCell,
@@ -17,21 +18,22 @@ import {
   TableHeader,
   TableRow
 } from '@heroui/react'
-import { CalendarDate } from '@internationalized/date'
+import type { CalendarEvent } from '@schedule-x/calendar'
+import { viewDay, viewMonthGrid, viewWeek } from '@schedule-x/calendar'
+import { ScheduleXCalendar, useCalendarApp } from '@schedule-x/react'
+import 'temporal-polyfill/global'
+import { useTheme } from 'next-themes'
 import {
   calendarEvents,
-  sessions,
-  type CalendarStatus,
-  type TopicKey
+  type CalendarStatus
 } from '@/docs/.vitepress/data/program'
-import { SITE, docHref } from '@/lib/site'
+import { docHref } from '@/lib/site'
 
 type ScheduleItem = {
   key: string
   date: string
   title: string
-  kind: 'session' | 'event'
-  topic?: TopicKey
+  kind: 'event'
   timeLabel?: string
   owners?: string[]
   description?: string
@@ -42,23 +44,9 @@ type ScheduleItem = {
   status?: CalendarStatus
 }
 
-// 直接消费 GitHub Action 同步进 program.ts 的公开日程快照。
+// 仅消费 GitHub Action 同步进 program.ts 的飞书日程快照。
 const scheduleItems: ScheduleItem[] = [
-  ...sessions.map((session) => ({
-    key: `session-${session.id}`,
-    date: session.date,
-    title: session.title,
-    kind: 'session' as const,
-    topic: session.topic,
-    timeLabel: session.timeLabel,
-    owners: session.owners,
-    location: session.location,
-    meetingUrl: session.meetingUrl,
-    href: session.href,
-    status: session.calendarStatus
-  })),
   ...calendarEvents
-    .filter((event) => !event.sessionId)
     .map((event) => ({
       key: `event-${event.eventId}`,
       date: event.date,
@@ -74,18 +62,6 @@ const scheduleItems: ScheduleItem[] = [
     }))
 ].sort((left, right) => left.date.localeCompare(right.date))
 
-const topicColor: Record<TopicKey, 'primary' | 'secondary' | 'success' | 'warning'> = {
-  kernel: 'primary',
-  comm: 'warning',
-  serving: 'success',
-  rl: 'secondary'
-}
-
-function asCalendarDate(iso: string) {
-  const [year, month, day] = iso.split('-').map(Number)
-  return new CalendarDate(year, month, day)
-}
-
 function readableDate(iso: string) {
   const [year, month, day] = iso.split('-').map(Number)
   return `${year} 年 ${month} 月 ${day} 日`
@@ -93,8 +69,58 @@ function readableDate(iso: string) {
 
 export default function CalendarPage() {
   const firstDate = scheduleItems[0]?.date ?? '2026-01-01'
-  const [selectedDate, setSelectedDate] = useState(firstDate)
-  const selectedItems = scheduleItems.filter((item) => item.date === selectedDate)
+  const [selectedKey, setSelectedKey] = useState(scheduleItems[0]?.key ?? '')
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const { resolvedTheme } = useTheme()
+  const selectedItem = scheduleItems.find((item) => item.key === selectedKey) ?? scheduleItems[0]
+
+  const calendarEvents = useMemo<CalendarEvent[]>(
+    () => scheduleItems.map((item) => {
+      const start = Temporal.PlainDate.from(item.date)
+
+      return {
+        id: item.key,
+        title: item.title,
+        start,
+        end: start,
+        description: item.description,
+        location: item.location,
+        people: item.owners,
+        calendarId: 'event',
+        _options: { disableDND: true, disableResize: true }
+      }
+    }),
+    []
+  )
+
+  const calendarApp = useCalendarApp({
+    views: [viewMonthGrid, viewWeek, viewDay],
+    defaultView: 'month-grid',
+    selectedDate: Temporal.PlainDate.from(firstDate),
+    events: calendarEvents,
+    locale: 'zh-CN',
+    firstDayOfWeek: 1,
+    // 以月历作为所有断点的初始视图，避免窄屏自动切到按小时视图。
+    isResponsive: false,
+    monthGridOptions: { nEventsPerDay: 3 },
+    calendars: {
+      event: {
+        colorName: 'Calendar event',
+        lightColors: { main: '#8f1d2c', container: '#f7eaec', onContainer: '#5d101b' },
+        darkColors: { main: '#e26473', container: '#552730', onContainer: '#ffe8eb' }
+      }
+    },
+    callbacks: {
+      onEventClick: (event) => {
+        setSelectedKey(String(event.id))
+        setIsDetailOpen(true)
+      }
+    }
+  })
+
+  useEffect(() => {
+    calendarApp?.setTheme(resolvedTheme === 'dark' ? 'dark' : 'light')
+  }, [calendarApp, resolvedTheme])
 
   return (
     <div className="mx-auto w-[min(1140px,calc(100%-48px))] py-12 sm:py-16">
@@ -103,73 +129,62 @@ export default function CalendarPage() {
           <span className="font-mono-label text-[11px] font-bold text-primary">COURSE CALENDAR</span>
           <h1 className="mt-3 text-4xl font-bold text-foreground sm:text-5xl">课程日历</h1>
           <p className="mt-3 text-[15px] leading-relaxed text-foreground-500">
-            共 {sessions.length} 场系列研讨、{scheduleItems.length} 项公开安排。数据由飞书同步
-            Action 生成，选择日期即可查看当天活动和讲义入口。
+            共 {scheduleItems.length} 项飞书公开安排。数据由飞书同步 Action 生成，点击日程
+            可查看时间、地点与相关入口。
           </p>
         </div>
-        <Button size="sm" variant="flat" onPress={() => setSelectedDate(firstDate)}>
+        <Button
+          size="sm"
+          variant="flat"
+          onPress={() => {
+            setSelectedKey(scheduleItems[0]?.key ?? '')
+            setIsDetailOpen(Boolean(scheduleItems[0]))
+          }}
+        >
           回到首场活动
         </Button>
       </header>
 
-      <div className="grid gap-8 lg:grid-cols-[360px_minmax(0,1fr)]">
-        <Card shadow="sm">
-          <CardHeader className="pb-0">
-            <p className="text-sm font-semibold">选择日期</p>
-          </CardHeader>
-          <CardBody className="pt-3">
-            <Calendar<any>
-              aria-label="课程日期"
-              value={asCalendarDate(selectedDate)}
-              onChange={(date) => setSelectedDate(String(date))}
-              showMonthAndYearPickers
-            />
-          </CardBody>
-        </Card>
+      <section className="schedule-x-shell" aria-label="课程月历">
+        <ScheduleXCalendar calendarApp={calendarApp} />
+      </section>
 
-        <section aria-live="polite">
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <h2 className="text-xl font-semibold text-foreground">{readableDate(selectedDate)}</h2>
-            <Chip size="sm" variant="flat">{selectedItems.length} 项安排</Chip>
-          </div>
-
-          {selectedItems.length === 0 ? (
-            <Card shadow="none" className="border border-dashed border-divider">
-              <CardBody className="py-10 text-center text-sm text-foreground-500">当天暂无安排</CardBody>
-            </Card>
-          ) : (
-            <div className="grid gap-3">
-              {selectedItems.map((item) => (
-                <Card key={item.key} shadow="sm">
-                  <CardHeader className="flex flex-wrap items-center gap-2 pb-1">
-                    <Chip
-                      size="sm"
-                      color={item.topic ? topicColor[item.topic] : 'default'}
-                      variant="flat"
-                    >
-                      {item.kind === 'session' ? '课程分享' : '日历活动'}
-                    </Chip>
-                    {item.timeLabel && <span className="text-xs text-foreground-500">{item.timeLabel}</span>}
-                    {item.status === 'tentative' && <Chip size="sm" color="warning" variant="dot">待定</Chip>}
-                    {item.status === 'cancelled' && <Chip size="sm" color="danger" variant="dot">已取消</Chip>}
-                  </CardHeader>
-                  <CardBody className="gap-2 pt-1">
-                    <h3 className="text-base font-semibold text-foreground">{item.title}</h3>
-                    {item.owners?.length ? <p className="text-sm text-foreground-500">分享人：{item.owners.join('、')}</p> : null}
-                    {item.description ? <p className="whitespace-pre-line text-sm leading-relaxed text-foreground-600">{item.description}</p> : null}
-                    {item.location ? <p className="text-sm text-foreground-500">地点：{item.location}</p> : null}
-                    <div className="flex flex-wrap gap-4 pt-1 text-sm">
-                      {item.href ? <Link href={docHref(item.href)}>查看讲义</Link> : null}
-                      {item.meetingUrl ? <Link href={item.meetingUrl} isExternal>进入会议</Link> : null}
-                      {item.sourceUrl ? <Link href={item.sourceUrl} isExternal color="foreground">飞书日历</Link> : null}
-                    </div>
-                  </CardBody>
-                </Card>
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+      <Modal
+        isOpen={isDetailOpen && Boolean(selectedItem)}
+        onOpenChange={setIsDetailOpen}
+        placement="center"
+        scrollBehavior="inside"
+      >
+        <ModalContent>
+          {(onClose) => selectedItem ? (
+            <>
+              <ModalHeader className="flex flex-col gap-2">
+                <span className="text-sm font-normal text-foreground-500">{readableDate(selectedItem.date)}</span>
+                <span>{selectedItem.title}</span>
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-wrap gap-2">
+                  <Chip size="sm" variant="flat">飞书日程</Chip>
+                  {selectedItem.timeLabel && <Chip size="sm" variant="flat">{selectedItem.timeLabel}</Chip>}
+                  {selectedItem.status === 'tentative' && <Chip size="sm" color="warning" variant="dot">待定</Chip>}
+                  {selectedItem.status === 'cancelled' && <Chip size="sm" color="danger" variant="dot">已取消</Chip>}
+                </div>
+                {selectedItem.owners?.length ? <p className="text-sm text-foreground-500">参与人：{selectedItem.owners.join('、')}</p> : null}
+                {selectedItem.description ? <p className="whitespace-pre-line text-sm leading-relaxed text-foreground-600">{selectedItem.description}</p> : null}
+                {selectedItem.location ? <p className="text-sm text-foreground-500">地点：{selectedItem.location}</p> : null}
+              </ModalBody>
+              <ModalFooter className="flex flex-wrap justify-between gap-2">
+                <Button variant="light" onPress={onClose}>关闭</Button>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  {selectedItem.href ? <Link href={docHref(selectedItem.href)}>查看讲义</Link> : null}
+                  {selectedItem.meetingUrl ? <Link href={selectedItem.meetingUrl} isExternal>进入会议</Link> : null}
+                  {selectedItem.sourceUrl ? <Link href={selectedItem.sourceUrl} isExternal color="foreground">飞书日历</Link> : null}
+                </div>
+              </ModalFooter>
+            </>
+          ) : null}
+        </ModalContent>
+      </Modal>
 
       <Divider className="my-12" />
 

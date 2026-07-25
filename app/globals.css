@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @config '../tailwind.config.js';
+@import '@schedule-x/theme-default/dist/index.css';
 
 @theme {
   --font-sans: Inter, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
@@ -73,4 +74,45 @@ body {
 .font-mono-label {
   font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace);
   letter-spacing: 0.08em;
+}
+
+.schedule-x-shell {
+  --sx-color-primary: var(--site-brand);
+  --sx-color-on-primary: #fff;
+  --sx-color-primary-container: var(--site-brand-soft);
+  --sx-color-on-primary-container: var(--site-brand);
+  --sx-color-surface: var(--site-surface);
+  --sx-color-surface-dim: var(--site-surface-2);
+  --sx-color-surface-bright: var(--site-surface);
+  --sx-color-on-surface: var(--site-text);
+  --sx-color-surface-container: var(--site-surface-2);
+  --sx-color-surface-container-low: var(--site-surface);
+  --sx-color-surface-container-high: var(--site-surface-3);
+  --sx-color-background: var(--site-bg);
+  --sx-color-on-background: var(--site-text);
+  --sx-color-outline: var(--site-line-strong);
+  --sx-color-outline-variant: var(--site-line);
+  --sx-color-surface-tint: var(--site-brand);
+  border: 1px solid var(--site-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.schedule-x-shell .is-dark {
+  --sx-color-primary: var(--site-brand);
+  --sx-color-on-primary: #190d10;
+  --sx-color-primary-container: var(--site-brand-soft);
+  --sx-color-on-primary-container: var(--site-brand);
+  --sx-color-surface: var(--site-surface);
+  --sx-color-surface-dim: var(--site-surface-2);
+  --sx-color-surface-bright: var(--site-surface);
+  --sx-color-on-surface: var(--site-text);
+  --sx-color-surface-container: var(--site-surface-2);
+  --sx-color-surface-container-low: var(--site-surface);
+  --sx-color-surface-container-high: var(--site-surface-3);
+  --sx-color-background: var(--site-bg);
+  --sx-color-on-background: var(--site-text);
+  --sx-color-outline: var(--site-line-strong);
+  --sx-color-outline-variant: var(--site-line);
+  --sx-color-surface-tint: var(--site-brand);
 }
