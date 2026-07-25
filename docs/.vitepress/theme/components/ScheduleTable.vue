@@ -1,9 +1,25 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { withBase } from 'vitepress'
+import { Temporal } from 'temporal-polyfill'
 import {
   calendarEvents,
   type CalendarEvent
 } from '../../data/program'
+
+const now = ref(Date.now())
+let clock: number | undefined
+
+onMounted(() => {
+  now.value = Date.now()
+  clock = window.setInterval(() => {
+    now.value = Date.now()
+  }, 30_000)
+})
+
+onBeforeUnmount(() => {
+  if (clock !== undefined) window.clearInterval(clock)
+})
 
 function inclusiveEndDate(event: CalendarEvent) {
   if (!event.allDay || event.endDate <= event.date) return event.date
@@ -18,10 +34,29 @@ function dateLabel(event: CalendarEvent) {
   return `${event.date} 至 ${endDate}`
 }
 
-function statusLabel(event: CalendarEvent) {
-  if (event.status === 'cancelled') return '已取消'
-  if (event.status === 'confirmed') return '已确认'
-  return '待确认'
+function eventBoundary(event: CalendarEvent, boundary: 'start' | 'end') {
+  if (event.allDay) {
+    const date = boundary === 'start' ? event.date : event.endDate
+    return Temporal.PlainDate.from(date).toZonedDateTime(event.timezone)
+      .epochMilliseconds
+  }
+  return Temporal.Instant.from(
+    boundary === 'start' ? event.startAt : event.endAt
+  ).epochMilliseconds
+}
+
+function phaseFor(event: CalendarEvent) {
+  if (now.value < eventBoundary(event, 'start')) return 'upcoming'
+  if (now.value >= eventBoundary(event, 'end')) return 'ended'
+  return 'ongoing'
+}
+
+function phaseLabel(event: CalendarEvent) {
+  return {
+    upcoming: '待开始',
+    ongoing: '进行中',
+    ended: '已结束'
+  }[phaseFor(event)]
 }
 </script>
 
@@ -32,14 +67,26 @@ function statusLabel(event: CalendarEvent) {
         <tr>
           <th scope="col">日期</th>
           <th scope="col">安排</th>
+          <th scope="col">活动内容</th>
           <th scope="col">时间</th>
-          <th scope="col">状态</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="event in calendarEvents" :id="`event-${event.eventId}`" :key="event.eventId">
+        <tr
+          v-for="event in calendarEvents"
+          :id="`event-${event.eventId}`"
+          :key="event.eventId"
+        >
           <td>
-            <time :datetime="event.startAt">{{ dateLabel(event) }}</time>
+            <div class="schedule-date">
+              <span
+                class="schedule-phase"
+                :class="`is-${phaseFor(event)}`"
+              >
+                {{ phaseLabel(event) }}
+              </span>
+              <time :datetime="event.startAt">{{ dateLabel(event) }}</time>
+            </div>
           </td>
           <td>
             <a v-if="event.href" :href="withBase(event.href)">
@@ -48,15 +95,11 @@ function statusLabel(event: CalendarEvent) {
             <span v-else>{{ event.summary }}</span>
             <small v-if="event.location">{{ event.location }}</small>
           </td>
-          <td>{{ event.timeLabel }}</td>
-          <td>
-            <span
-              class="schedule-status"
-              :class="`is-${event.status}`"
-            >
-              {{ statusLabel(event) }}
-            </span>
+          <td class="schedule-content">
+            <span v-if="event.description">{{ event.description }}</span>
+            <span v-else class="is-empty">暂无活动说明</span>
           </td>
+          <td>{{ event.timeLabel }}</td>
         </tr>
       </tbody>
     </table>

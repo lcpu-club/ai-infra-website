@@ -361,23 +361,28 @@ export const calendarRange = snapshot.calendar?.range
 
 export const calendarEvents: CalendarEvent[] = (
   snapshot.calendar?.events ?? []
-).map((event) => {
-  const linkedSession = Object.entries(syncedSessions).find(
-    ([, session]) => session.calendar?.eventId === event.eventId
-  )?.[0]
+)
+  .filter(
+    (event) =>
+      event.status !== 'cancelled' && event.summary.trim().length > 0
+  )
+  .map((event) => {
+    const linkedSession = Object.entries(syncedSessions).find(
+      ([, session]) => session.calendar?.eventId === event.eventId
+    )?.[0]
 
-  return {
-    ...event,
-    summary: event.summary || '未命名活动',
-    dateLabel: event.date.slice(5).replace('-', '.'),
-    ...(linkedSession
-      ? {
-          sessionId: linkedSession,
-          href: `/sessions/${linkedSession}`
-        }
-      : {})
-  }
-})
+    return {
+      ...event,
+      summary: event.summary,
+      dateLabel: event.date.slice(5).replace('-', '.'),
+      ...(linkedSession
+        ? {
+            sessionId: linkedSession,
+            href: `/sessions/${linkedSession}`
+          }
+        : {})
+    }
+  })
 
 export const sessions: Session[] = staticSessions.map((session) => {
   const synced = syncedSessions[session.id]

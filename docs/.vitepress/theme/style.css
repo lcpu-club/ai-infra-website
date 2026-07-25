@@ -1693,7 +1693,7 @@ body.has-calendar-dialog {
 .schedule-page .schedule-table {
   display: table;
   width: 100%;
-  min-width: 720px;
+  min-width: 900px;
   margin: 0;
   border: 0;
   border-collapse: separate;
@@ -1721,15 +1721,15 @@ body.has-calendar-dialog {
 }
 
 .schedule-page .schedule-table th:nth-child(2) {
-  width: 35%;
+  width: 24%;
 }
 
 .schedule-page .schedule-table th:nth-child(3) {
-  width: 21%;
+  width: 31%;
 }
 
 .schedule-page .schedule-table th:last-child {
-  width: 15%;
+  width: 16%;
   border-radius: 0 11px 11px 0;
 }
 
@@ -1763,28 +1763,52 @@ body.has-calendar-dialog {
   font-weight: 500;
 }
 
-.schedule-status {
+.schedule-date {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+
+.schedule-date time {
+  white-space: nowrap;
+}
+
+.schedule-phase {
   display: inline-flex;
   min-height: 32px;
   padding: 4px 12px;
   border-radius: 999px;
   align-items: center;
-  color: var(--site-brand);
-  background: var(--site-brand-soft);
   font-size: 16px;
   font-weight: 650;
   line-height: 1.5;
   white-space: nowrap;
 }
 
-.schedule-status.is-confirmed {
+.schedule-phase.is-upcoming {
+  color: var(--topic-kernel);
+  background: var(--topic-kernel-soft);
+}
+
+.schedule-phase.is-ongoing {
   color: var(--topic-serving);
   background: var(--topic-serving-soft);
 }
 
-.schedule-status.is-cancelled {
+.schedule-phase.is-ended {
   color: var(--site-text-3);
   background: var(--site-surface-3);
+}
+
+.schedule-content {
+  color: var(--site-text-2);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.schedule-content .is-empty {
+  color: var(--site-text-3);
 }
 
 .inner-page-hero {
