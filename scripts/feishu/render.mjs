@@ -22,21 +22,23 @@ export function renderWikiPage({
   title,
   body,
   breadcrumbs = [],
-  sourceUrl,
   collectionTitle
 }) {
   const safeTitle = singleLine(title || '未命名页面')
   const safeCollectionTitle = singleLine(collectionTitle || 'Wiki 讲义')
-  const breadcrumbItems = [
-    { title: safeCollectionTitle, route: '/wiki/' },
-    ...breadcrumbs
-  ]
+  const breadcrumbItems =
+    breadcrumbs.length > 0
+      ? [{ title: safeCollectionTitle, route: '/wiki/' }, ...breadcrumbs]
+      : []
   const breadcrumb = breadcrumbItems
     .map(
       ({ title: itemTitle, route }) =>
         `[${escapeMarkdownInline(singleLine(itemTitle))}](${route})`
     )
     .join(' / ')
+  const breadcrumbBlock = breadcrumb ? `${breadcrumb}\n\n` : ''
+  const trimmedBody = body.trim()
+  const bodyBlock = trimmedBody ? `\n\n${trimmedBody}` : ''
 
   return `---
 title: ${JSON.stringify(safeTitle)}
@@ -47,13 +49,10 @@ lastUpdated: false
 
 <!-- 此文件由 npm run sync:feishu 生成，请在飞书 Wiki 中编辑正文。 -->
 
-${breadcrumb}
-
-# ${escapeMarkdownInline(safeTitle)}
-
-[在飞书中查看原文 ↗](${sourceUrl})
-
-${body.trim()}
+${breadcrumbBlock}<header class="session-banner wiki-page-banner">
+  <span class="section-index">课程资料</span>
+  <h1>${escapeHtml(safeTitle)}</h1>
+</header>${bodyBlock}
 `
 }
 
@@ -63,4 +62,13 @@ function singleLine(value) {
 
 function escapeMarkdownInline(value) {
   return String(value).replace(/[\\`*_[\]<>]/g, '\\$&')
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
 }

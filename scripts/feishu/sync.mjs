@@ -453,8 +453,7 @@ async function stageWikiCollectionPage({
     title: sourceTitle,
     body,
     breadcrumbs,
-    collectionTitle,
-    sourceUrl: `${config.wiki.sourceBaseUrl}/${wikiNodeToken}`
+    collectionTitle
   })
   await mkdir(path.dirname(outputPath), { recursive: true })
   await writeFile(outputPath, page, 'utf8')

@@ -10,7 +10,7 @@
     "events": [
       {
         "eventId": "3b4d3e17-ee6c-43c0-a088-229be6043c12_0",
-        "summary": "测试日程1",
+        "summary": "",
         "date": "2026-07-24",
         "endDate": "2026-07-24",
         "startAt": "2026-07-23T23:00:00.000Z",
@@ -18,13 +18,12 @@
         "allDay": false,
         "timeLabel": "07:00–11:15",
         "timezone": "Asia/Shanghai",
-        "status": "tentative",
+        "status": "cancelled",
         "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=3b4d3e17-ee6c-43c0-a088-229be6043c12&originalTime=0&startTime=1784847600"
       },
       {
         "eventId": "c74ecf79-0ac2-489d-8417-086eea9a947a_0",
-        "summary": "测试日程2",
-        "description": "内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试内容测试",
+        "summary": "",
         "date": "2026-07-25",
         "endDate": "2026-07-26",
         "startAt": "2026-07-25",
@@ -32,7 +31,7 @@
         "allDay": true,
         "timeLabel": "全天",
         "timezone": "Asia/Shanghai",
-        "status": "tentative",
+        "status": "cancelled",
         "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=c74ecf79-0ac2-489d-8417-086eea9a947a&originalTime=0&startTime=1784937600"
       }
     ]
@@ -44,6 +43,40 @@
     "documentId": "UFDwdkFbkonl5ExHBFVcJhJOnge",
     "objectType": "docx",
     "revisionId": 24,
-    "pages": []
+    "pages": [
+      {
+        "wikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
+        "parentWikiNodeToken": null,
+        "title": "Topic 1 - Kernel and Compilers",
+        "route": "/wiki/VWJPwVFTHifeadkE4phc45hOntg",
+        "depth": 0,
+        "order": 0,
+        "documentId": "QYxrdD2agoePeyxqLTtcJrBGnue",
+        "objectType": "docx",
+        "revisionId": 3
+      },
+      {
+        "wikiNodeToken": "F9oKw4GUgi30lQkgWScckzjfnfd",
+        "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
+        "title": "Session 00 | 从 HPC 到 AI Infra: 并行计算与并行编程",
+        "route": "/wiki/F9oKw4GUgi30lQkgWScckzjfnfd",
+        "depth": 1,
+        "order": 1,
+        "documentId": "XO9wdbXxJoWUDxxkRB9cEdy2nbf",
+        "objectType": "docx",
+        "revisionId": 26
+      },
+      {
+        "wikiNodeToken": "WHFXw13vEiD8Hikfp3ScU33JnXe",
+        "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
+        "title": "Session 01｜GPU Programming Model",
+        "route": "/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe",
+        "depth": 1,
+        "order": 2,
+        "documentId": "H5x1dK6LzoVFmuxUzDicmuQ1nbb",
+        "objectType": "docx",
+        "revisionId": 36
+      }
+    ]
   }
 }
