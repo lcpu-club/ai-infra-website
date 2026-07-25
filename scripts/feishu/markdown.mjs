@@ -4,7 +4,8 @@ const DANGEROUS_TAG_PATTERN =
 const REMAINING_TAG_PATTERN =
   /(?<!\\)<\/?([A-Za-z][A-Za-z0-9_-]*)(?=[\s/>])[^<>\n]*>/
 const SUB_PAGE_LIST_PATTERN =
-  /<sub-page-list\b([^>]*?)(?:\/>|>\s*<\/sub-page-list>)/gi
+  /<sub-page-list\b([^>]*?)(?:\/>|>([\s\S]*?)<\/sub-page-list>)/gi
+const SUB_PAGE_ENTRY_PATTERN = /<sub-page\b[^>]*\/\s*>/gi
 const CITE_PATTERN = /<cite\b([^>]*)>\s*<\/cite>/gi
 const TABLE_PATTERN = /<table\b[^>]*>[\s\S]*?<\/table>/gi
 const TABLE_TAG_PATTERN =
@@ -180,7 +181,8 @@ function parseStrictAttributes(source, allowedNames, context) {
 function convertSupportedXml(markdown, { context, renderSubPageList }) {
   let output = markdown
 
-  output = output.replace(SUB_PAGE_LIST_PATTERN, (tag, source) => {
+  output = output.replace(SUB_PAGE_LIST_PATTERN, (tag, source, body = '') => {
+    assertSupportedSubPageListBody(body, context)
     if (typeof renderSubPageList !== 'function') return tag
     return renderSubPageList(parseAttributes(source))
   })
@@ -263,6 +265,13 @@ function convertSupportedXml(markdown, { context, renderSubPageList }) {
   output = output.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/gi, '$1')
 
   return output.replace(/\n{3,}/g, '\n\n')
+}
+
+function assertSupportedSubPageListBody(body, context) {
+  const unsupported = body.replace(SUB_PAGE_ENTRY_PATTERN, '').trim()
+  if (unsupported) {
+    throw new Error(`${context} sub-page-list contains unsupported content`)
+  }
 }
 
 export function extractSubPageListReferences(markdown) {

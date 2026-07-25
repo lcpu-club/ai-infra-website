@@ -104,7 +104,10 @@ test('converts common Feishu extension blocks', async () => {
 test('renders Feishu sub-page-list blocks with the discovered Wiki directory', async () => {
   const source =
     '# Wiki\n\n' +
-    '<sub-page-list space-id="space_1" wiki-token="root_1"></sub-page-list>\n'
+    '<sub-page-list space-id="space_1" wiki-token="root_1">' +
+    '<sub-page doc-id="doc_1" file-type="docx" title="Session 00 | 从 HPC 到 AI Infra"/>' +
+    '<sub-page doc-id="doc_2" file-type="docx" title="Session 01｜GPU Programming Model"/>' +
+    '</sub-page-list>\n'
   const references = extractSubPageListReferences(source)
   const output = await normalizeFeishuMarkdown(source, {
     contextLabel: 'Wiki page Wiki',
@@ -205,5 +208,21 @@ test('fails closed for unknown or unsafe embedded blocks', async () => {
       wikiRoutes: new Map()
     }),
     /unsupported Feishu block <canvas>/
+  )
+  await assert.rejects(
+    normalizeFeishuMarkdown(
+      '# Title\n\n' +
+        '<sub-page-list space-id="space_1" wiki-token="root_1">' +
+        '<whiteboard token="nested"/>' +
+        '</sub-page-list>',
+      {
+        sessionId: '01',
+        wikiRoutes: new Map(),
+        renderSubPageList() {
+          return ''
+        }
+      }
+    ),
+    /sub-page-list contains unsupported content/
   )
 })
