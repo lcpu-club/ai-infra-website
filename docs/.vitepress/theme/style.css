@@ -145,6 +145,35 @@ a {
   text-underline-offset: 3px;
 }
 
+/* Shared capsule treatment for labels and compact metadata */
+
+.home-chip,
+.hero-kicker,
+.section-heading > span,
+.section-heading-row > div > span,
+.inner-page-hero > span,
+.calendar-event-meta > span,
+.calendar-empty-state > span,
+.session-banner .section-index,
+.takeaway > span,
+.learning-path span,
+.reading-card > span,
+.assignment-card > span {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  align-items: center;
+  color: var(--site-brand);
+  background: var(--site-brand-soft);
+  font-size: var(--site-label-font-size);
+  font-weight: 650;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 /* VitePress shell */
 
 .VPNav {
@@ -261,12 +290,7 @@ a {
   padding: 64px 0 96px;
 }
 
-.home-shell h1,
-.home-shell h2,
-.home-shell h3,
-.home-shell p,
-.home-shell ol,
-.home-shell ul {
+.home-shell :where(h1, h2, h3, p, ol, ul) {
   margin: 0;
   padding: 0;
   border: 0;
@@ -1119,9 +1143,7 @@ a {
 }
 
 .calendar-event-meta > span + span::before {
-  margin-right: 13px;
-  color: var(--site-line-strong);
-  content: '/';
+  content: none;
 }
 
 .calendar-event-meta .calendar-event-state,
