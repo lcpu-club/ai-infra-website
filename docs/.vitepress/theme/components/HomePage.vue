@@ -38,11 +38,15 @@ const formatSteps = [
 const sponsors = [
   {
     name: '腾讯',
-    logo: '/sponsors/tencent.png'
+    logo: '/sponsors/tencent.png',
+    description:
+      '腾讯成立于1998年，总部位于中国深圳。公司一直秉承科技向善的宗旨。我们的通信和社交服务连接全球逾10亿人，帮助他们与亲友联系，畅享便捷的出行、支付和娱乐生活。腾讯发行多款风靡全球的电子游戏及其他优质数字内容，为全球用户带来丰富的互动娱乐体验。腾讯还提供云计算、营销、金融科技等一系列企业服务，支持合作伙伴实现数字化转型，促进业务发展。'
   },
   {
     name: '宽德投资',
-    logo: '/sponsors/wizard-quant.jpg'
+    logo: '/sponsors/wizard-quant.jpg',
+    description:
+      '宽德投资是一家国内领先、业务全面的量化对冲基金。基于先进高效的研究和交易构架，以及完善的资产管理系统，宽德投资在国内期货、股票、期权等主流市场具有良好的盈利能力。宽德智能学习实验室（Will）是宽德投资独立孵化的创业型实验室，致力于实现超级科技助手（ASI for Sci-Tech）。Will 将汇聚顶尖 AI 人才，专注于研发通用性超级科技助手，追求技术复利与持续性领先。'
   }
 ]
 
@@ -190,21 +194,24 @@ function scheduleHref(href?: string) {
     <section class="home-section home-sponsor-section" aria-labelledby="home-sponsor-title">
       <div class="home-section-heading">
         <p class="home-chip">赞助支持</p>
-        <h2 id="home-sponsor-title">感谢合作伙伴支持</h2>
+        <h2 id="home-sponsor-title">感谢赞助商支持</h2>
       </div>
 
       <div class="home-sponsor-grid">
-        <figure
+        <article
           v-for="sponsor in sponsors"
           :key="sponsor.name"
           class="home-sponsor-card"
         >
-          <img
-            :src="withBase(sponsor.logo)"
-            :alt="`${sponsor.name}标志`"
-            loading="lazy"
-          >
-        </figure>
+          <div class="home-sponsor-logo">
+            <img
+              :src="withBase(sponsor.logo)"
+              :alt="`${sponsor.name}标志`"
+              loading="lazy"
+            >
+          </div>
+          <p>{{ sponsor.description }}</p>
+        </article>
       </div>
     </section>
   </main>
