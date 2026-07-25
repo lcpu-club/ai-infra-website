@@ -401,14 +401,6 @@ a {
   color: var(--site-brand) !important;
 }
 
-.home-facts {
-  display: grid;
-  margin-top: 64px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.home-fact-card,
 .home-topic-card,
 .home-format-card,
 .home-schedule-card,
@@ -420,31 +412,13 @@ a {
   box-shadow: var(--site-shadow);
 }
 
-.home-fact-card {
-  padding: 17px 18px;
-}
-
-.home-fact-card p {
-  color: var(--site-text-3);
-  font-family: var(--vp-font-family-mono);
-  font-size: 16px;
-  font-weight: 650;
-  letter-spacing: 0.07em;
-  line-height: 1.45;
-}
-
-.home-fact-card strong {
-  display: block;
-  margin-top: 5px;
-  color: var(--site-text);
-  font-size: 16px;
-  font-weight: 680;
-  line-height: 1.5;
-}
-
 .home-section {
   margin-top: 80px;
   scroll-margin-top: 90px;
+}
+
+.home-schedule-section {
+  margin-top: 64px;
 }
 
 .home-section-heading {
@@ -803,7 +777,6 @@ a {
     width: 100%;
   }
 
-  .home-facts,
   .home-format-grid,
   .home-sponsor-grid {
     grid-template-columns: 1fr;

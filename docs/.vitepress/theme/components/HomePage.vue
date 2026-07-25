@@ -2,15 +2,8 @@
 import { withBase } from 'vitepress'
 import {
   calendarEvents,
-  sessions,
   topics
 } from '../../data/program'
-
-const facts = [
-  { label: '课程场次', value: `${sessions.length} 场系列研讨` },
-  { label: '主题方向', value: `${topics.length} 大主题方向` },
-  { label: '活动时间', value: '2026 暑期' }
-]
 
 const formatSteps = [
   {
@@ -99,7 +92,7 @@ function scheduleHref(href?: string) {
 <template>
   <main class="home-shell">
     <header class="home-hero">
-      <p class="home-chip">北京大学学生 Linux 俱乐部 · 未名超算</p>
+      <p class="home-chip">北京大学学生 Linux 俱乐部 · 未名超算队</p>
       <h1>AI Infrastructure Seminars</h1>
       <p class="home-subtitle">从 GPU Kernel 到分布式训推系统的系列研讨</p>
       <p class="home-lead">
@@ -116,11 +109,36 @@ function scheduleHref(href?: string) {
       </div>
     </header>
 
-    <section class="home-facts" aria-label="课程概览">
-      <article v-for="fact in facts" :key="fact.label" class="home-fact-card">
-        <p>{{ fact.label }}</p>
-        <strong>{{ fact.value }}</strong>
-      </article>
+    <section class="home-section home-schedule-section" aria-labelledby="home-schedule-title">
+      <div class="home-section-heading home-section-heading-row">
+        <div>
+          <h2 id="home-schedule-title">近期安排</h2>
+        </div>
+        <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
+      </div>
+
+      <div v-if="schedulePreview.length" class="home-schedule-list">
+        <a
+          v-for="item in schedulePreview"
+          :key="item.key"
+          class="home-schedule-card"
+          :href="scheduleHref(item.href)"
+        >
+          <time :datetime="item.date">
+            <strong>{{ item.dateLabel }}</strong>
+            <span>{{ item.year }} 年</span>
+          </time>
+          <div>
+            <span class="home-schedule-kind">{{ item.label }}</span>
+            <h3>{{ item.title }}</h3>
+          </div>
+          <span class="home-schedule-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <div v-else class="home-schedule-empty">
+        <strong>近期暂无公开安排</strong>
+        <span>飞书日历新增活动后会自动显示在这里。</span>
+      </div>
     </section>
 
     <section class="home-section" aria-labelledby="home-topics-title">
@@ -162,38 +180,6 @@ function scheduleHref(href?: string) {
           <p>{{ step.description }}</p>
         </li>
       </ol>
-    </section>
-
-    <section class="home-section home-schedule-section" aria-labelledby="home-schedule-title">
-      <div class="home-section-heading home-section-heading-row">
-        <div>
-          <h2 id="home-schedule-title">近期安排</h2>
-        </div>
-        <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
-      </div>
-
-      <div v-if="schedulePreview.length" class="home-schedule-list">
-        <a
-          v-for="item in schedulePreview"
-          :key="item.key"
-          class="home-schedule-card"
-          :href="scheduleHref(item.href)"
-        >
-          <time :datetime="item.date">
-            <strong>{{ item.dateLabel }}</strong>
-            <span>{{ item.year }} 年</span>
-          </time>
-          <div>
-            <span class="home-schedule-kind">{{ item.label }}</span>
-            <h3>{{ item.title }}</h3>
-          </div>
-          <span class="home-schedule-arrow" aria-hidden="true">→</span>
-        </a>
-      </div>
-      <div v-else class="home-schedule-empty">
-        <strong>近期暂无公开安排</strong>
-        <span>飞书日历新增活动后会自动显示在这里。</span>
-      </div>
     </section>
 
     <section class="home-section home-sponsor-section" aria-labelledby="home-sponsor-title">
