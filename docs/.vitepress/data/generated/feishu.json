@@ -53,7 +53,7 @@
     "sourceUrl": "https://lcpu-club.feishu.cn/wiki/SURAw8B4riKkhRkUKPYc43k7nHf",
     "documentId": "CG7cdsC45ooyVTxorPGcI2Y8nld",
     "objectType": "docx",
-    "revisionId": 1119,
+    "revisionId": 1121,
     "pages": [
       {
         "wikiNodeToken": "E3ltwZcMEiBJy2kusiCcKlk5nzb",
@@ -97,7 +97,18 @@
         "order": 3,
         "documentId": "Vr27dsf11ooFf2xhtYzcvFaZnkw",
         "objectType": "docx",
-        "revisionId": 342
+        "revisionId": 787
+      },
+      {
+        "wikiNodeToken": "YMv1wqrGLiGqDjk8Wv1c08uOnPd",
+        "parentWikiNodeToken": "VIJPw24sqiPOhXkfEwXcEvVInhg",
+        "title": "内容打磨",
+        "route": "/wiki/YMv1wqrGLiGqDjk8Wv1c08uOnPd",
+        "depth": 2,
+        "order": 4,
+        "documentId": "LYZydg4NDo6Y11xUZEEc7wfqnVe",
+        "objectType": "docx",
+        "revisionId": 236
       },
       {
         "wikiNodeToken": "UuLEwoEJRiSaBak8gdnc7UfPn9c",
@@ -105,7 +116,7 @@
         "title": "Weiming HPC Training Camp x LCPU AI Infra Seminars 暑期活动方案",
         "route": "/wiki/UuLEwoEJRiSaBak8gdnc7UfPn9c",
         "depth": 0,
-        "order": 4,
+        "order": 5,
         "documentId": "Hjbud6tOJotp6YxipiIcP23PnM5",
         "objectType": "docx",
         "revisionId": 1125
@@ -116,7 +127,7 @@
         "title": "Weiming HPC Training Camp x LCPU AI Infra Seminars (筹)",
         "route": "/wiki/BtqywAZHNiA38KkEwb0cNvTUnNf",
         "depth": 0,
-        "order": 5,
+        "order": 6,
         "documentId": "D02XdMhnkoBo6GxdXzacH16KnHb",
         "objectType": "docx",
         "revisionId": 51
