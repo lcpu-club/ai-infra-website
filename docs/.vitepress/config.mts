@@ -84,7 +84,6 @@ export default defineConfig({
     nav: [
       { text: '课程介绍', link: '/' },
       { text: '活动日历', link: '/schedule' },
-      ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
       ...(wiki
         ? [
             wikiCourseItems.length > 0

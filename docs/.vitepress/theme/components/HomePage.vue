@@ -35,6 +35,17 @@ const formatSteps = [
   }
 ]
 
+const sponsors = [
+  {
+    name: '腾讯',
+    logo: '/sponsors/tencent.png'
+  },
+  {
+    name: '宽德投资',
+    logo: '/sponsors/wizard-quant.jpg'
+  }
+]
+
 interface SchedulePreviewItem {
   key: string
   date: string
@@ -173,6 +184,27 @@ function scheduleHref(href?: string) {
       <div v-else class="home-schedule-empty">
         <strong>近期暂无公开安排</strong>
         <span>飞书日历新增活动后会自动显示在这里。</span>
+      </div>
+    </section>
+
+    <section class="home-section home-sponsor-section" aria-labelledby="home-sponsor-title">
+      <div class="home-section-heading">
+        <p class="home-chip">赞助支持</p>
+        <h2 id="home-sponsor-title">感谢合作伙伴支持</h2>
+      </div>
+
+      <div class="home-sponsor-grid">
+        <figure
+          v-for="sponsor in sponsors"
+          :key="sponsor.name"
+          class="home-sponsor-card"
+        >
+          <img
+            :src="withBase(sponsor.logo)"
+            :alt="`${sponsor.name}标志`"
+            loading="lazy"
+          >
+        </figure>
       </div>
     </section>
   </main>
