@@ -33,6 +33,21 @@
         "timezone": "Asia/Shanghai",
         "status": "cancelled",
         "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=c74ecf79-0ac2-489d-8417-086eea9a947a&originalTime=0&startTime=1784937600"
+      },
+      {
+        "eventId": "f998aa77-12f5-4f85-99c5-6503c58c2144_0",
+        "summary": "Topic 1 Kernel & ML compiler",
+        "description": "Session 00 |  从 HPC 到 AI Infra: 并行计算与并行编程\nSession 01｜GPU Programming Model\n介绍活动的整体安排、内容设计、评测与算力",
+        "date": "2026-07-26",
+        "endDate": "2026-07-26",
+        "startAt": "2026-07-26T10:00:00.000Z",
+        "endAt": "2026-07-26T12:30:00.000Z",
+        "allDay": false,
+        "timeLabel": "18:00–20:30",
+        "timezone": "Asia/Shanghai",
+        "status": "tentative",
+        "location": "腾讯会议 B站直播",
+        "sourceUrl": "https://applink.feishu.cn/client/calendar/event/detail?calendarId=7666077798931500213&key=f998aa77-12f5-4f85-99c5-6503c58c2144&originalTime=0&startTime=1785060000"
       }
     ]
   },
