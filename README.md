@@ -65,7 +65,7 @@ API Scope 之外，应用还必须拥有目标知识空间的资源权限。进�
 ```json
 {
   "wiki": {
-    "rootNodeToken": "SURAw8B4riKkhRkUKPYc43k7nHf",
+    "rootNodeToken": "CWcAw7BUai4MimkMFzEcmV6on7f",
     "sourceBaseUrl": "https://lcpu-club.feishu.cn/wiki",
     "title": "AI Infra Wiki"
   }
