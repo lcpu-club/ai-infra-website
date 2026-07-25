@@ -7,7 +7,7 @@ lastUpdated: false
 
 <!-- 此文件由 npm run sync:feishu 生成，请在飞书 Wiki 中编辑正文。 -->
 
-[AI Infra Wiki](/wiki/) / [Topic 1 - Kernel and Compilers](/wiki/VWJPwVFTHifeadkE4phc45hOntg)
+[AI Infra Wiki](/wiki/) / [Topic 1 - Kernel and ML Compilers](/wiki/VWJPwVFTHifeadkE4phc45hOntg)
 
 <header class="session-banner wiki-page-banner">
   <span class="section-index">课程资料</span>
