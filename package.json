@@ -1,22 +1,39 @@
 {
   "name": "ai-infra-seminars-2026",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev docs --host 0.0.0.0",
-    "build": "vitepress build docs",
-    "preview": "vitepress preview docs --host 0.0.0.0",
+    "dev": "next dev -H 0.0.0.0",
+    "dev:docs": "vitepress dev docs --host 0.0.0.0",
+    "build": "next build --webpack && vitepress build docs && node scripts/merge-dist.mjs",
+    "build:web": "next build --webpack",
+    "build:docs": "vitepress build docs",
+    "preview": "npm run build && npx serve out",
     "sync:feishu": "node scripts/feishu/sync.mjs",
     "sync:feishu:dry": "node scripts/feishu/sync.mjs --dry-run",
     "inspect:feishu": "node scripts/feishu/inspect.mjs",
     "test:feishu": "node --test scripts/feishu/*.test.mjs"
   },
+  "dependencies": {
+    "@heroui/react": "^2.8.0",
+    "@larksuiteoapi/node-sdk": "^1.71.1",
+    "framer-motion": "^11.11.0",
+    "next": "^16.0.0",
+    "next-themes": "^0.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "devDependencies": {
+    "@tailwindcss/postcss": "4.1.12",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "4.1.12",
+    "typescript": "^5.6.0",
     "vitepress": "^1.6.4",
     "vue": "^3.5.13"
-  },
-  "dependencies": {
-    "@larksuiteoapi/node-sdk": "^1.71.1"
   }
 }

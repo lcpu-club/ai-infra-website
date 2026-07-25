@@ -6,3 +6,12 @@ docs/.vitepress/dist
 *.log
 .env.feishu.local
 .feishu-sync-*
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# local npm cache (sandbox writes stay in workspace)
+.npmcache/

@@ -15,7 +15,7 @@ import ScheduleTable from './ScheduleTable.vue'
         从 GPU 编程、分布式通信到模型推理与强化学习系统，一起理解一次 API 调用背后的计算。
       </p>
       <div class="hero-actions">
-        <a href="#schedule">查看活动日历 <span>↓</span></a>
+        <a :href="withBase('/calendar')">查看活动日历 <span>→</span></a>
         <a :href="withBase('/sessions/01')">阅读 Session 01 <span>→</span></a>
       </div>
 
@@ -126,7 +126,7 @@ import ScheduleTable from './ScheduleTable.vue'
       </div>
       <ScheduleTable compact :limit="4" />
       <p class="schedule-more-link">
-        <a :href="withBase('/schedule')">查看完整活动日历 →</a>
+        <a :href="withBase('/calendar')">查看完整活动日历 →</a>
       </p>
     </section>
 

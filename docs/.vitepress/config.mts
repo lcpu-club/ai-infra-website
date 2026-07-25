@@ -83,7 +83,7 @@ export default defineConfig({
     siteTitle: 'AI Infra Seminars',
     nav: [
       { text: '课程介绍', link: '/' },
-      { text: '活动日历', link: '/schedule' },
+      { text: '活动日历', link: '/calendar' },
       ...(wiki ? [{ text: wiki.title, link: '/wiki/' }] : []),
       ...(firstPublishedSession
         ? [
@@ -103,7 +103,7 @@ export default defineConfig({
               text: session.title,
               link: session.href!
             })),
-          { text: '完整活动日历', link: '/schedule#full-schedule' }
+          { text: '完整活动日历', link: '/calendar' }
         ]
       }
     ],

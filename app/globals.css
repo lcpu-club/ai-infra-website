@@ -1,0 +1,76 @@
+@import 'tailwindcss';
+@config '../tailwind.config.js';
+
+@theme {
+  --font-sans: Inter, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
+}
+
+:root {
+  --site-bg: #fbfaf9;
+  --site-surface: #ffffff;
+  --site-surface-2: #f5f3f2;
+  --site-surface-3: #eeecea;
+  --site-text: #191b22;
+  --site-text-2: #515865;
+  --site-text-3: #6d737e;
+  --site-line: #e1dedb;
+  --site-line-strong: #c9c4c0;
+  --site-brand: #8f1d2c;
+  --site-brand-soft: #f7eaec;
+
+  --topic-kernel: #396ab5;
+  --topic-kernel-soft: #edf3fb;
+  --topic-comm: #9b6012;
+  --topic-comm-soft: #fbf3e5;
+  --topic-serving: #247d70;
+  --topic-serving-soft: #eaf6f3;
+  --topic-rl: #7558a8;
+  --topic-rl-soft: #f2edf9;
+}
+
+.dark {
+  --site-bg: #202228;
+  --site-surface: #282b32;
+  --site-surface-2: #30343c;
+  --site-surface-3: #393e48;
+  --site-text: #f1efed;
+  --site-text-2: #c2c4cb;
+  --site-text-3: #999ea9;
+  --site-line: #444a55;
+  --site-line-strong: #59616f;
+  --site-brand: #e26473;
+  --site-brand-soft: rgba(226, 100, 115, 0.12);
+
+  --topic-kernel: #78a7eb;
+  --topic-kernel-soft: rgba(120, 167, 235, 0.13);
+  --topic-comm: #d7a654;
+  --topic-comm-soft: rgba(215, 166, 84, 0.13);
+  --topic-serving: #67b9aa;
+  --topic-serving-soft: rgba(103, 185, 170, 0.13);
+  --topic-rl: #ae8ddb;
+  --topic-rl-soft: rgba(174, 141, 219, 0.13);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--site-bg);
+}
+
+body {
+  color: var(--site-text);
+  background: var(--site-bg);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  color: #fff;
+  background: var(--site-brand);
+}
+
+.font-mono-label {
+  font-family: var(--font-mono, 'SFMono-Regular', Consolas, monospace);
+  letter-spacing: 0.08em;
+}

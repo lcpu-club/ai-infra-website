@@ -86,7 +86,7 @@ jobs:
         if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' }}
         uses: actions/upload-pages-artifact@v4
         with:
-          path: docs/.vitepress/dist
+          path: out
 
   deploy:
     environment:
