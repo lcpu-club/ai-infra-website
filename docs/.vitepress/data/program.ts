@@ -50,6 +50,11 @@ export interface CalendarEvent {
   meetingUrl?: string
   sessionId?: string
   href?: string
+  speakers?: string[]
+  assignment?: {
+    title: string
+    href?: string
+  }
 }
 
 export const topics: Topic[] = [
@@ -57,19 +62,19 @@ export const topics: Topic[] = [
     key: 'kernel',
     number: '01',
     title: 'Kernel & ML Compiler',
-    shortTitle: 'Kernel',
+    shortTitle: 'Kernel & Operator',
     description:
-      '从 GPU 体系结构与 CUDA 出发，沿着 Layout、数据复用和流水线一路抵达高性能 GEMM、Attention 与 MoE Kernel。',
-    tags: ['CUDA', 'Triton', 'TileLang', 'Tensor Core']
+      '从 GPU 体系结构与 CUDA 出发，沿着 Layout、数据复用和流水线一路抵达高性能 GEMM、Attention 与 MoE Kernel，并理解 DSL、ML Compile 如何实现简化开发与自动优化的梦想',
+    tags: ['CUDA', 'Triton', 'TileLang', 'Tensor Core', 'Warp Specialization','Pipeline Ordering', 'ML Compiler']
   },
   {
     key: 'comm',
     number: '02',
-    title: 'Distributed Parallelism & Communication',
+    title: 'Interconnnect & Communication',
     shortTitle: 'Communication',
     description:
-      '理解模型如何跨卡切分、数据如何流动，以及互联网络与集合通信如何决定大规模系统的真实效率。',
-    tags: ['RDMA', 'NCCL', 'All-Reduce', 'MoE']
+      '从不同的视角看互联网络与集合通信如何决定大规模系统的真实效率',
+    tags: ['RDMA', 'NCCL', 'Scale-Up', 'Scale-Out', 'Network Fabric', 'Memory-Storage Co-design']
   },
   {
     key: 'serving',
@@ -77,8 +82,8 @@ export const topics: Topic[] = [
     title: 'LLM Serving & Inference',
     shortTitle: 'Serving',
     description:
-      '围绕 KV Cache、调度与并行策略，拆解一批长短不一的请求如何共享有限 GPU 并保持低延迟。',
-    tags: ['KV Cache', 'Batching', 'PD Disaggregation', 'Spec Decode']
+      '围绕 KV Cache、调度与并行策略，理解推理优化的目标和目的，并实践和理解真实推理在系统层面如何优化',
+    tags: ['KV Cache Centric Systems', 'Batching', 'PD 分离', 'Spec Decode', 'vLLM']
   },
   {
     key: 'rl',
@@ -86,8 +91,8 @@ export const topics: Topic[] = [
     title: 'Distributed Reinforcement Learning Systems',
     shortTitle: 'RL Systems',
     description:
-      '当训练、推理、奖励与环境同时出现，系统如何解决长尾、资源调度、权重同步、容错与训推一致性。',
-    tags: ['PPO', 'veRL', 'Rollout', 'Agentic RL']
+      '当训练、推理、奖励与环境同时出现，如何系统性地看待和解决解决长尾、资源调度、权重同步、容错与训推一致性等问题',
+    tags: ['PPO', 'veRL', 'Rollout', 'Agentic RL','训推一致性', '分布式 RL 系统']
   }
 ]
 
@@ -355,6 +360,15 @@ interface FeishuSnapshot {
 const snapshot = feishuSnapshot as FeishuSnapshot
 const syncedSessions = snapshot.sessions
 
+const calendarEventDetails: Record<
+  string,
+  Pick<CalendarEvent, 'speakers' | 'assignment'>
+> = {
+  'f998aa77-12f5-4f85-99c5-6503c58c2144_0': {
+    speakers: ['陈嘉骏', '郑熠', '王艺霏']
+  }
+}
+
 export const calendarTimezone =
   snapshot.calendar?.timezone || 'Asia/Shanghai'
 export const calendarRange = snapshot.calendar?.range
@@ -373,6 +387,7 @@ export const calendarEvents: CalendarEvent[] = (
 
     return {
       ...event,
+      ...calendarEventDetails[event.eventId],
       summary: event.summary,
       dateLabel: event.date.slice(5).replace('-', '.'),
       ...(linkedSession

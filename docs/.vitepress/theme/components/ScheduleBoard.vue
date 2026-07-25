@@ -21,11 +21,11 @@ function openFirstEvent() {
       </button>
     </header>
 
-    <CalendarTimeline v-if="calendarEvents.length" />
-
     <section id="full-schedule" class="calendar-list-section">
       <h2>全部安排</h2>
       <ScheduleTable />
     </section>
+
+    <CalendarTimeline v-if="calendarEvents.length" />
   </main>
 </template>

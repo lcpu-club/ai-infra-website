@@ -6,6 +6,7 @@ import {
   calendarEvents,
   type CalendarEvent
 } from '../../data/program'
+import EventLocation from './EventLocation.vue'
 
 const now = ref(Date.now())
 let clock: number | undefined
@@ -68,6 +69,8 @@ function phaseLabel(event: CalendarEvent) {
           <th scope="col">日期</th>
           <th scope="col">安排</th>
           <th scope="col">活动内容</th>
+          <th scope="col">讲者</th>
+          <th scope="col">作业</th>
           <th scope="col">时间</th>
         </tr>
       </thead>
@@ -93,11 +96,30 @@ function phaseLabel(event: CalendarEvent) {
               {{ event.summary }}
             </a>
             <span v-else>{{ event.summary }}</span>
-            <small v-if="event.location">{{ event.location }}</small>
+            <small v-if="event.location">
+              <EventLocation :location="event.location" />
+            </small>
           </td>
           <td class="schedule-content">
             <span v-if="event.description">{{ event.description }}</span>
             <span v-else class="is-empty">暂无活动说明</span>
+          </td>
+          <td class="schedule-speakers">
+            <span v-if="event.speakers?.length">
+              {{ event.speakers.join('、') }}
+            </span>
+            <span v-else class="is-empty">待定</span>
+          </td>
+          <td>
+            <a
+              v-if="event.assignment?.href"
+              :href="withBase(event.assignment.href)"
+            >
+              {{ event.assignment.title }}
+            </a>
+            <span v-else-if="event.assignment">
+              {{ event.assignment.title }}
+            </span>
           </td>
           <td>{{ event.timeLabel }}</td>
         </tr>

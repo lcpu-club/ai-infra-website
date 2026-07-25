@@ -1,7 +1,7 @@
 export function renderSessionPage({ session, body }) {
   const title = session.pageTitle || `Session ${session.id}`
   const description =
-    session.description || `${title} · AI Infra Seminars 2026`
+    session.description || `${title} · Infra Seminars 2026`
 
   return `---
 title: ${JSON.stringify(title)}

@@ -16,6 +16,7 @@ import {
   calendarTimezone,
   type CalendarEvent
 } from '../../data/program'
+import EventLocation from './EventLocation.vue'
 
 const { isDark } = useData()
 const selectedEvent = ref<CalendarEvent | null>(null)
@@ -92,14 +93,14 @@ const calendarApp = createCalendar({
     feishu: {
       colorName: 'feishu',
       lightColors: {
-        main: '#8f1d2c',
-        container: '#8f1d2c',
+        main: '#3451b2',
+        container: '#5672cd',
         onContainer: '#ffffff'
       },
       darkColors: {
-        main: '#e26473',
-        container: '#e26473',
-        onContainer: '#190d10'
+        main: '#a8b1ff',
+        container: '#3e63dd',
+        onContainer: '#ffffff'
       }
     }
   },
@@ -204,7 +205,9 @@ onBeforeUnmount(() => {
         <dl v-if="selectedEvent.location" class="calendar-dialog-details">
           <div>
             <dt>地点</dt>
-            <dd>{{ selectedEvent.location }}</dd>
+            <dd>
+              <EventLocation :location="selectedEvent.location" />
+            </dd>
           </div>
         </dl>
 

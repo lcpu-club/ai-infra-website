@@ -38,7 +38,7 @@ const wikiSidebarItems = (parentWikiNodeToken: string | null): any[] =>
 
 export default defineConfig({
   lang: 'zh-CN',
-  title: 'AI Infra Seminars',
+  title: 'Infra Seminars',
   base,
   description:
     'Weiming HPC Training Camp × LCPU AI Infra Seminars：从 Kernel 到分布式系统、推理与强化学习系统。',
@@ -55,7 +55,7 @@ export default defineConfig({
       'meta',
       {
         name: 'theme-color',
-        content: '#fbfaf9',
+        content: '#ffffff',
         media: '(prefers-color-scheme: light)'
       }
     ],
@@ -63,12 +63,12 @@ export default defineConfig({
       'meta',
       {
         name: 'theme-color',
-        content: '#202228',
+        content: '#1b1b1f',
         media: '(prefers-color-scheme: dark)'
       }
     ],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'AI Infra Seminars 2026' }],
+    ['meta', { property: 'og:title', content: 'Infra Seminars 2026' }],
     [
       'meta',
       {
@@ -76,11 +76,11 @@ export default defineConfig({
         content: '从一行 Kernel，到一套大模型系统。七周、四个主题，一起把系统跑起来。'
       }
     ],
-    ['link', { rel: 'icon', href: `${base}favicon.svg`, type: 'image/svg+xml' }]
+    ['link', { rel: 'icon', href: `${base}wmhpc.png`, type: 'image/png' }]
   ],
   themeConfig: {
-    logo: '/favicon.svg',
-    siteTitle: 'AI Infra Seminars',
+    logo: '/wmhpc.png',
+    siteTitle: 'Infra Seminars',
     nav: [
       { text: '课程介绍', link: '/' },
       { text: '活动日历', link: '/schedule' },
@@ -142,9 +142,18 @@ export default defineConfig({
       next: '下一节'
     },
     footer: {
-      message: '课程资料将持续整理并开源共享',
+      message:
+        `<span class="footer-organization-logos">` +
+        `<a href="https://lcpu.dev" target="_blank" rel="noreferrer" aria-label="北京大学学生 Linux 俱乐部官网">` +
+        `<img class="footer-logo footer-logo-lcpu" src="${base}lcpu.svg" alt="北京大学学生 Linux 俱乐部标志">` +
+        `</a>` +
+        `<a href="https://hpc.pku.edu.cn/pkusc/zh-cn/" target="_blank" rel="noreferrer" aria-label="北京大学未名超算队官网">` +
+        `<img class="footer-logo footer-logo-wmhpc" src="${base}wmhpc.png" alt="北京大学未名超算队标志">` +
+        `</a>` +
+        `<img class="footer-logo footer-logo-linuxproj" src="${base}linuxproj.svg" alt="Linux 中国开源社区标志">` +
+        `</span>`,
       copyright:
-        'Weiming HPC Training Camp × LCPU AI Infra Seminars'
+        '© 2026 <a href="https://lcpu.dev" target="_blank" rel="noreferrer">北京大学学生 Linux 俱乐部</a> · <a href="https://hpc.pku.edu.cn/pkusc/zh-cn/" target="_blank" rel="noreferrer">北京大学未名超算队</a> · Licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noreferrer">CC BY-NC-SA 4.0</a>'
     }
   }
 })

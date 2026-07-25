@@ -9,7 +9,7 @@ const formatSteps = [
   {
     number: '01',
     title: '主题分享',
-    description: '每场围绕一个系统主题，由队内同学系统讲解核心原理与工程取舍。'
+    description: '每场围绕一个系统主题，由专业同学进行系统讲解和分享。'
   },
   {
     number: '02',
@@ -18,13 +18,18 @@ const formatSteps = [
   },
   {
     number: '03',
-    title: '代码实践',
-    description: '结合 CUDA、Triton 与推理框架，提供可复现的动手环节与示例。'
+    title: "Guest Lecture",
+    description: '邀请业界专家进行专题讲座，分享前沿技术与实践经验。'
   },
   {
     number: '04',
-    title: '讲义沉淀',
-    description: '讲义与资料统一同步到课程 Wiki，持续更新、长期可查。'
+    title: '代码实践',
+    description: '结合 CUDA、TileLang 与训推框架，提供高质量的作业练习、评测环境与测试实例。'
+  },
+  {
+    number: '05',
+    title: '资料开源',
+    description: '讲义与资料统一同步开源，持续更新。'
   }
 ]
 
@@ -92,12 +97,29 @@ function scheduleHref(href?: string) {
 <template>
   <main class="home-shell">
     <header class="home-hero">
-      <p class="home-chip">北京大学学生 Linux 俱乐部 · 未名超算队</p>
+      <p
+        class="home-chip"
+        aria-label="北京大学未名超算队与北京大学学生 Linux 俱乐部"
+      >
+        <span>
+          <a
+            href="https://hpc.pku.edu.cn/pkusc/zh-cn/"
+            target="_blank"
+            rel="noreferrer"
+          >北京大学未名超算队</a>
+        </span>
+        <span>
+          <a
+            href="https://lcpu.dev"
+            target="_blank"
+            rel="noreferrer"
+          >北京大学学生 Linux 俱乐部</a>
+        </span>
+      </p>
       <h1>AI Infrastructure Seminars</h1>
-      <p class="home-subtitle">从 GPU Kernel 到分布式训推系统的系列研讨</p>
+      <p class="home-subtitle">大模型如何训更快、跑更好、推更省？</p>
       <p class="home-lead">
-        面向对 AI 系统底层感兴趣的同学，沿着 Kernel 与编译器、分布式并行与通信、
-        LLM 推理，以及分布式强化学习系统四条主线，构建一套可动手、可复现的知识路径。
+        从 Kernel 到编译器、从分布式系统到集合通信、从模型推理到强化学习系统，社团骨干与超算队倾力设计打造课程设计，力求向你揭示工业界大规模模型训练与推理的最前沿！
       </p>
       <div class="home-actions">
         <a class="home-button home-button-primary" :href="withBase('/schedule')">
@@ -114,7 +136,7 @@ function scheduleHref(href?: string) {
         <div>
           <h2 id="home-schedule-title">近期安排</h2>
         </div>
-        <a class="home-calendar-link" :href="withBase('/schedule')">打开完整日历 →</a>
+        <a class="home-calendar-link" :href="withBase('/schedule')">打开课程日历 →</a>
       </div>
 
       <div v-if="schedulePreview.length" class="home-schedule-list">
@@ -137,13 +159,13 @@ function scheduleHref(href?: string) {
       </div>
       <div v-else class="home-schedule-empty">
         <strong>近期暂无公开安排</strong>
-        <span>飞书日历新增活动后会自动显示在这里。</span>
+        <span>敬请期待</span>
       </div>
     </section>
 
     <section class="home-section" aria-labelledby="home-topics-title">
       <div class="home-section-heading">
-        <h2 id="home-topics-title">四条主线，一套系统视角</h2>
+        <h2 id="home-topics-title">四个 Topics，四个 Level</h2>
       </div>
 
       <div class="home-topic-list">
@@ -181,52 +203,101 @@ function scheduleHref(href?: string) {
         </li>
       </ol>
     </section>
+  </main>
 
-    <section class="home-section home-sponsor-section" aria-labelledby="home-sponsor-title">
-      <div class="home-section-heading">
-        <h2 id="home-sponsor-title">感谢赞助商支持</h2>
-      </div>
+  <footer class="home-support-footer" aria-label="支持单位与版权信息">
+    <div class="home-support-inner">
+      <section class="home-support-panel" aria-labelledby="home-support-title">
+        <h2 id="home-support-title" class="home-support-heading">
+          赞助商与合作伙伴
+        </h2>
 
-      <div class="home-sponsor-grid">
-        <article
-          v-for="sponsor in sponsors"
-          :key="sponsor.name"
-          class="home-sponsor-card"
-        >
-          <div class="home-sponsor-logo">
+        <div class="home-support-logo-grid">
+          <div
+            v-for="sponsor in sponsors"
+            :key="sponsor.name"
+            class="home-support-logo-card"
+          >
             <img
               :src="withBase(sponsor.logo)"
               :alt="`${sponsor.name}标志`"
               loading="lazy"
             >
           </div>
-          <p>{{ sponsor.description }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="home-section home-partner-section" aria-labelledby="home-partner-title">
-      <div class="home-section-heading">
-        <h2 id="home-partner-title">合作伙伴</h2>
-      </div>
-
-      <div class="home-partner-list">
-        <a
-          v-for="partner in partners"
-          :key="partner.name"
-          class="home-partner-card"
-          :href="partner.href"
-          target="_blank"
-          rel="noopener noreferrer"
-          :aria-label="`访问 ${partner.name} 官网`"
-        >
-          <img
-            :src="withBase(partner.logo)"
-            :alt="`${partner.name}标志`"
-            loading="lazy"
+          <a
+            v-for="partner in partners"
+            :key="partner.name"
+            class="home-support-logo-card"
+            :href="partner.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="`访问 ${partner.name} 官网`"
           >
-        </a>
-      </div>
-    </section>
-  </main>
+            <img
+              :src="withBase(partner.logo)"
+              :alt="`${partner.name}标志`"
+              loading="lazy"
+            >
+          </a>
+        </div>
+      </section>
+
+      <section class="home-credits-panel" aria-labelledby="home-credits-title">
+        <h2 id="home-credits-title" class="home-support-heading">联合发起</h2>
+
+        <div class="home-credits-logos">
+          <a
+            href="https://lcpu.dev"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="北京大学学生 Linux 俱乐部官网"
+          >
+            <img
+              class="home-credit-logo home-credit-logo-lcpu"
+              :src="withBase('/lcpu.svg')"
+              alt="北京大学学生 Linux 俱乐部标志"
+            >
+          </a>
+          <a
+            href="https://hpc.pku.edu.cn/pkusc/zh-cn/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="北京大学未名超算队官网"
+          >
+            <img
+              class="home-credit-logo home-credit-logo-wmhpc"
+              :src="withBase('/wmhpc.png')"
+              alt="北京大学未名超算队标志"
+            >
+          </a>
+          <img
+            class="home-credit-logo home-credit-logo-linuxproj"
+            :src="withBase('/linuxproj.svg')"
+            alt="Linux 中国开源社区标志"
+          >
+        </div>
+
+        <p class="home-credits-copy">
+          © 2026
+          <a
+            href="https://lcpu.dev"
+            target="_blank"
+            rel="noreferrer"
+          >北京大学学生 Linux 俱乐部</a>
+          ·
+          <a
+            href="https://hpc.pku.edu.cn/pkusc/zh-cn/"
+            target="_blank"
+            rel="noreferrer"
+          >北京大学未名超算队</a>
+          · Licensed under
+          <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            rel="license noreferrer"
+          >CC BY-NC-SA 4.0</a>
+        </p>
+      </section>
+    </div>
+  </footer>
 </template>

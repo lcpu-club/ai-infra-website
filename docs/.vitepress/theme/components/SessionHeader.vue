@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { sessions, topicFor } from '../../data/program'
+import EventLocation from './EventLocation.vue'
 
 const props = defineProps<{
   sessionId: string
@@ -44,7 +45,9 @@ const topic = topicFor(session.topic)
     <div class="session-banner-meta">
       <span>状态 · {{ status }}</span>
       <span>分享 · {{ session.owners.join(' · ') }}</span>
-      <span v-if="session.location">地点 · {{ session.location }}</span>
+      <span v-if="session.location">
+        地点 · <EventLocation :location="session.location" />
+      </span>
       <span v-else>形式 · 预习 + 分享 + 讨论</span>
       <a
         v-if="session.meetingUrl"
