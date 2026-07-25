@@ -73,7 +73,7 @@ jobs:
         if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' && env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}
         shell: bash
         run: |
-          git add -- docs/sessions docs/wiki docs/.vitepress/data/generated docs/public/feishu
+          git add -A -- docs
           if git diff --cached --quiet; then
             exit 0
           fi
