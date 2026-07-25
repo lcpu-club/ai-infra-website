@@ -50,6 +50,13 @@ export default defineConfig({
   cleanUrls: true,
   appearance: true,
   lastUpdated: true,
+  vite: {
+    server: {
+      proxy: {
+        '/ai-infra-website/calendar': 'http://localhost:3210'
+      }
+    }
+  },
   head: [
     [
       'meta',

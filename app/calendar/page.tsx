@@ -175,10 +175,6 @@ export default function CalendarPage() {
         <div className="max-w-2xl">
           <span className="font-mono-label text-[11px] font-bold text-primary">COURSE CALENDAR</span>
           <h1 className="mt-3 text-4xl font-bold text-foreground sm:text-5xl">课程日历</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-foreground-500">
-            共 {scheduleItems.length} 项飞书公开安排。数据由飞书同步 Action 生成，点击日程
-            可查看时间、地点与相关入口。
-          </p>
         </div>
         <Button
           size="sm"
