@@ -2286,6 +2286,33 @@ body.has-calendar-dialog {
   box-shadow: var(--site-shadow);
 }
 
+.wiki-breadcrumb {
+  display: flex;
+  margin: 0 0 22px;
+  align-items: center;
+  color: var(--site-text-3);
+  flex-wrap: wrap;
+  gap: 6px 9px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.wiki-breadcrumb a {
+  color: var(--site-text-3);
+  font-weight: 580;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.wiki-breadcrumb a:hover {
+  color: var(--site-brand);
+}
+
+.wiki-breadcrumb span {
+  color: var(--site-line-strong);
+  user-select: none;
+}
+
 .session-banner .section-index {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);

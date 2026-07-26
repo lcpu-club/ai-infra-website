@@ -33,10 +33,12 @@ export function renderWikiPage({
   const breadcrumb = breadcrumbItems
     .map(
       ({ title: itemTitle, route }) =>
-        `[${escapeMarkdownInline(singleLine(itemTitle))}](${route})`
+        `<a href="${escapeHtml(route)}">${escapeHtml(singleLine(itemTitle))}</a>`
     )
-    .join(' / ')
-  const breadcrumbBlock = breadcrumb ? `${breadcrumb}\n\n` : ''
+    .join('<span aria-hidden="true">/</span>')
+  const breadcrumbBlock = breadcrumb
+    ? `  <nav class="wiki-breadcrumb" aria-label="文档路径">${breadcrumb}</nav>\n`
+    : ''
   const trimmedBody = body.trim()
   const bodyBlock = trimmedBody ? `\n\n${trimmedBody}` : ''
 
@@ -49,8 +51,8 @@ lastUpdated: false
 
 <!-- 此文件由 npm run sync:feishu 生成，请在飞书 Wiki 中编辑正文。 -->
 
-${breadcrumbBlock}<header class="session-banner wiki-page-banner">
-  <span class="section-index">课程资料</span>
+<header class="session-banner wiki-page-banner">
+${breadcrumbBlock}  <span class="section-index">课程资料</span>
   <h1>${escapeHtml(safeTitle)}</h1>
 </header>${bodyBlock}
 `
@@ -58,10 +60,6 @@ ${breadcrumbBlock}<header class="session-banner wiki-page-banner">
 
 function singleLine(value) {
   return String(value).replace(/[\u0000-\u001f\u007f]+/g, ' ').trim()
-}
-
-function escapeMarkdownInline(value) {
-  return String(value).replace(/[\\`*_[\]<>]/g, '\\$&')
 }
 
 function escapeHtml(value) {

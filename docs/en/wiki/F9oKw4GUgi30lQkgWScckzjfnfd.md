@@ -5,9 +5,8 @@ outline: deep
 lastUpdated: false
 ---
 
-[AI Infra Seminars Wiki](/en/wiki/) / [Topic 1 — Kernel and ML Compilers](/en/wiki/VWJPwVFTHifeadkE4phc45hOntg)
-
 <header class="session-banner wiki-page-banner">
+  <nav class="wiki-breadcrumb" aria-label="Document path"><a href="/en/wiki/">AI Infra Seminars Wiki</a><span aria-hidden="true">/</span><a href="/en/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 — Kernel and ML Compilers</a></nav>
   <span class="section-index">Course Materials</span>
   <h1>Session 00 — From HPC to AI Infra: Parallel Computing and Parallel Programming</h1>
 </header>
