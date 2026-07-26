@@ -9,7 +9,6 @@ lastUpdated: false
 
 <header class="session-banner wiki-page-banner">
   <nav class="wiki-breadcrumb" aria-label="文档路径"><a href="/wiki/">AI Infra Wiki</a><span aria-hidden="true">/</span><a href="/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 - Kernel and ML Compilers</a></nav>
-  <span class="section-index">课程资料</span>
   <h1>Session 00 | 从 HPC 到 AI Infra: 并行计算与并行编程</h1>
 </header>
 

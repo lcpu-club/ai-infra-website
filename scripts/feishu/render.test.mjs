@@ -15,15 +15,15 @@ test('renders Wiki pages with the shared title banner and no Feishu source link'
     output,
     /<nav class="wiki-breadcrumb" aria-label="文档路径"><a href="\/wiki\/">课程 Wiki<\/a><span aria-hidden="true">\/<\/span><a href="\/wiki\/topic-1">主题一<\/a><\/nav>/
   )
-  assert.match(output, /<span class="section-index">课程资料<\/span>/)
   assert.match(output, /<h1>GPU &lt;模型&gt; &amp; 编程<\/h1>/)
+  assert.doesNotMatch(output, /<span class="section-index">课程资料<\/span>/)
   assert.ok(
     output.indexOf('<nav class="wiki-breadcrumb"') >
       output.indexOf('<header class="session-banner wiki-page-banner">')
   )
   assert.ok(
     output.indexOf('<nav class="wiki-breadcrumb"') <
-      output.indexOf('<span class="section-index">课程资料</span>')
+      output.indexOf('<h1>GPU &lt;模型&gt; &amp; 编程</h1>')
   )
   assert.doesNotMatch(output, /在飞书中查看原文/)
   assert.doesNotMatch(output, /^# GPU/m)

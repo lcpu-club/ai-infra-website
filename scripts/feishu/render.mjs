@@ -52,8 +52,7 @@ lastUpdated: false
 <!-- 此文件由 npm run sync:feishu 生成，请在飞书 Wiki 中编辑正文。 -->
 
 <header class="session-banner wiki-page-banner">
-${breadcrumbBlock}  <span class="section-index">课程资料</span>
-  <h1>${escapeHtml(safeTitle)}</h1>
+${breadcrumbBlock}  <h1>${escapeHtml(safeTitle)}</h1>
 </header>${bodyBlock}
 `
 }

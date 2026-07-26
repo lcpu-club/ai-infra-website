@@ -6,7 +6,6 @@ lastUpdated: false
 ---
 
 <header class="session-banner wiki-page-banner">
-  <span class="section-index">Course Materials</span>
   <h1>Topic 1 — Kernel and ML Compilers</h1>
 </header>
 

@@ -2313,6 +2313,10 @@ body.has-calendar-dialog {
   user-select: none;
 }
 
+.wiki-page-banner h1 {
+  margin-top: 0;
+}
+
 .session-banner .section-index {
   color: var(--site-brand);
   font-family: var(--vp-font-family-mono);

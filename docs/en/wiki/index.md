@@ -6,7 +6,6 @@ lastUpdated: false
 ---
 
 <header class="session-banner wiki-page-banner">
-  <span class="section-index">Course Materials</span>
   <h1>AI Infra Seminars Wiki</h1>
 </header>
 
