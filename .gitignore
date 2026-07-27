@@ -6,3 +6,9 @@ docs/.vitepress/dist
 *.log
 .env.feishu.local
 .feishu-sync-*
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
