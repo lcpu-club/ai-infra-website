@@ -16,7 +16,7 @@ interface WikiSnapshot {
 
 type LocaleKey = 'zh' | 'en'
 
-const base = '/'
+const base = '/ai-infra-website/'
 const wiki = (feishuSnapshot as { wiki?: WikiSnapshot }).wiki
 const englishWikiTitles: Record<string, string> = {
   __root: 'AI Infra Seminars Wiki',
