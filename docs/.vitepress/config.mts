@@ -16,7 +16,7 @@ interface WikiSnapshot {
 
 type LocaleKey = 'zh' | 'en'
 
-const base = '/ai-infra-website/'
+const base = '/'
 const wiki = (feishuSnapshot as { wiki?: WikiSnapshot }).wiki
 const englishWikiTitles: Record<string, string> = {
   __root: 'AI Infra Seminars Wiki',
@@ -269,7 +269,7 @@ export default defineConfig({
       'meta',
       {
         name: 'theme-color',
-        content: '#1b1b1f',
+        content: '#202228',
         media: '(prefers-color-scheme: dark)'
       }
     ],
