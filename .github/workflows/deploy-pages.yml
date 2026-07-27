@@ -67,7 +67,7 @@ jobs:
 
       - name: Build VitePress site
         if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' }}
-        run: npm run build
+        run: npm run build:github
 
       - name: Persist synchronized content snapshot
         if: ${{ steps.deployment-decision.outputs.should_deploy == 'true' && env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}

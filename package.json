@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vitepress dev docs --host 0.0.0.0",
     "build": "vitepress build docs",
+    "build:github": "SITE_BASE=/ai-infra-website/ vitepress build docs",
     "preview": "vitepress preview docs --host 0.0.0.0",
     "sync:feishu": "node scripts/feishu/sync.mjs",
     "sync:feishu:dry": "node scripts/feishu/sync.mjs --dry-run",
