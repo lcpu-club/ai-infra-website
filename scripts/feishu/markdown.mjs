@@ -8,6 +8,11 @@ const SUB_PAGE_LIST_PATTERN =
 const SUB_PAGE_ENTRY_PATTERN = /<sub-page\b[^>]*\/\s*>/gi
 const CITE_PATTERN = /<cite\b([^>]*)>\s*<\/cite>/gi
 const TABLE_PATTERN = /<table\b[^>]*>[\s\S]*?<\/table>/gi
+const MARKDOWN_IMAGE_PATTERN =
+  /!\[([^\]\n]*)\]\((https:\/\/[^)\s]+)\)/g
+const FEISHU_MEDIA_HOSTS = new Set([
+  'internal-api-drive-stream.feishu.cn'
+])
 const TABLE_TAG_PATTERN =
   /<\s*(\/?)\s*([A-Za-z][A-Za-z0-9_-]*)(?=[\s/>])([^>]*)>/g
 const TABLE_TAGS = new Set([
@@ -62,6 +67,10 @@ export async function normalizeFeishuMarkdown(
   }
 
   markdown = await replaceMediaTags(markdown, {
+    context,
+    downloadAsset
+  })
+  markdown = await replaceHostedFeishuImages(markdown, {
     context,
     downloadAsset
   })
@@ -141,6 +150,46 @@ async function replaceMediaTags(markdown, options) {
   }
 
   return output + markdown.slice(cursor)
+}
+
+async function replaceHostedFeishuImages(markdown, options) {
+  const matches = [...markdown.matchAll(MARKDOWN_IMAGE_PATTERN)].filter(
+    (match) => isHostedFeishuMediaUrl(match[2])
+  )
+  if (matches.length === 0) return markdown
+  if (typeof options.downloadAsset !== 'function') {
+    throw new Error(`${options.context} contains media but no downloader`)
+  }
+
+  let output = ''
+  let cursor = 0
+  for (const match of matches) {
+    output += markdown.slice(cursor, match.index)
+    const label = match[1]
+    const asset = await options.downloadAsset({
+      sourceUrl: match[2],
+      name: label || undefined,
+      kind: 'img'
+    })
+    output += `![${label}](${asset.publicPath})`
+    cursor = match.index + match[0].length
+  }
+
+  return output + markdown.slice(cursor)
+}
+
+function isHostedFeishuMediaUrl(value) {
+  try {
+    const url = new URL(value)
+    return (
+      url.protocol === 'https:' &&
+      !url.username &&
+      !url.password &&
+      FEISHU_MEDIA_HOSTS.has(url.hostname)
+    )
+  } catch {
+    return false
+  }
 }
 
 function parseAttributes(source) {

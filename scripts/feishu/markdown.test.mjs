@@ -87,6 +87,35 @@ test('downloads Feishu image tags and turns them into local Markdown assets', as
   assert.equal(output, '![架构图](/feishu/01/abc.png)\n')
 })
 
+test('downloads hosted Feishu Markdown images and leaves other remote images alone', async () => {
+  const calls = []
+  const sourceUrl =
+    'https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/authcode/?code=temporary_code'
+  const output = await normalizeFeishuMarkdown(
+    `# Title\n\n![架构图](${sourceUrl})\n\n![](https://example.com/public.png)\n`,
+    {
+      sessionId: '01',
+      wikiRoutes: new Map(),
+      async downloadAsset(input) {
+        calls.push(input)
+        return { publicPath: '/feishu/01/hosted.png' }
+      }
+    }
+  )
+
+  assert.deepEqual(calls, [
+    {
+      sourceUrl,
+      name: '架构图',
+      kind: 'img'
+    }
+  ])
+  assert.equal(
+    output,
+    '![架构图](/feishu/01/hosted.png)\n\n![](https://example.com/public.png)\n'
+  )
+})
+
 test('converts common Feishu extension blocks', async () => {
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n<callout emoji="💡"><p>重点</p></callout>\n' +

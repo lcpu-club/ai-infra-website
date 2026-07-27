@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url'
 import {
   createFeishuClient,
   downloadDocumentMedia,
+  downloadFeishuMediaUrl,
   fetchWikiMarkdown,
   listCalendarEvents,
   listWikiNodes,
@@ -474,15 +475,27 @@ function createMediaDownloader({
   const mediaCache = new Map()
   let lastMediaRequest = 0
 
-  return async function downloadAsset({ token, name, kind }) {
-    if (mediaCache.has(token)) return mediaCache.get(token)
+  return async function downloadAsset({ token, sourceUrl, name, kind }) {
+    const mediaKey = token ? `token:${token}` : sourceUrl ? `url:${sourceUrl}` : ''
+    if (!mediaKey) {
+      throw new Error(`${contextLabel} contains media without a download source`)
+    }
+    if (mediaCache.has(mediaKey)) return mediaCache.get(mediaKey)
 
     const elapsed = Date.now() - lastMediaRequest
     if (elapsed < 220) await delay(220 - elapsed)
-    const media = await downloadDocumentMedia(client, token)
+    const media = sourceUrl
+      ? await downloadFeishuMediaUrl(sourceUrl)
+      : await downloadDocumentMedia(client, token)
     lastMediaRequest = Date.now()
 
-    if (media.contentType.split(';', 1)[0].trim() === 'image/svg+xml') {
+    const mediaType = media.contentType.split(';', 1)[0].trim().toLowerCase()
+    if (kind === 'img' && !mediaType.startsWith('image/')) {
+      throw new Error(
+        `${contextLabel} image download returned ${mediaType || 'an unknown content type'}`
+      )
+    }
+    if (mediaType === 'image/svg+xml') {
       throw new Error(
         `${contextLabel} contains an SVG asset; convert it to PNG ` +
           'before publishing to avoid active content'
@@ -497,7 +510,7 @@ function createMediaDownloader({
     const result = {
       publicPath: `${publicBasePath}/${fileName}`
     }
-    mediaCache.set(token, result)
+    mediaCache.set(mediaKey, result)
     return result
   }
 }

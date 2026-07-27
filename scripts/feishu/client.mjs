@@ -1,5 +1,10 @@
 import { once } from 'node:events'
+import { Readable } from 'node:stream'
 import * as lark from '@larksuiteoapi/node-sdk'
+
+const FEISHU_MEDIA_HOSTS = new Set([
+  'internal-api-drive-stream.feishu.cn'
+])
 
 const silentLogger = {
   error() {},
@@ -160,6 +165,53 @@ export async function downloadDocumentMedia(client, fileToken) {
     buffer,
     contentType: String(headers['content-type'] ?? 'application/octet-stream'),
     contentDisposition: String(headers['content-disposition'] ?? '')
+  }
+}
+
+export async function downloadFeishuMediaUrl(sourceUrl) {
+  let url
+  try {
+    url = new URL(sourceUrl)
+  } catch {
+    throw new Error('Download hosted Feishu media failed: invalid URL')
+  }
+  if (
+    url.protocol !== 'https:' ||
+    url.username ||
+    url.password ||
+    !FEISHU_MEDIA_HOSTS.has(url.hostname)
+  ) {
+    throw new Error('Download hosted Feishu media failed: untrusted URL')
+  }
+
+  let response
+  try {
+    response = await fetch(url, {
+      redirect: 'error',
+      signal: AbortSignal.timeout(30_000)
+    })
+  } catch (error) {
+    throw new Error(
+      `Download hosted Feishu media failed: ${error?.message || 'request failed'}`
+    )
+  }
+  if (!response.ok) {
+    throw new Error(
+      `Download hosted Feishu media failed (${response.status}): HTTP error`
+    )
+  }
+  if (!response.body) {
+    throw new Error('Download hosted Feishu media failed: empty response')
+  }
+
+  return {
+    buffer: await streamToBuffer(Readable.fromWeb(response.body)),
+    contentType: String(
+      response.headers.get('content-type') ?? 'application/octet-stream'
+    ),
+    contentDisposition: String(
+      response.headers.get('content-disposition') ?? ''
+    )
   }
 }
 
