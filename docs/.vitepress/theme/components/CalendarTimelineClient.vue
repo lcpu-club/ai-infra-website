@@ -108,9 +108,9 @@ const calendarApp = createCalendar({
         onContainer: '#ffffff'
       },
       darkColors: {
-        main: '#f07b88',
-        container: '#d85869',
-        onContainer: '#190d10'
+        main: '#a8b1ff',
+        container: '#3e63dd',
+        onContainer: '#ffffff'
       }
     }
   },
