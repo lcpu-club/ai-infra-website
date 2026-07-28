@@ -12,7 +12,7 @@ lastUpdated: false
   <h1>Session 01｜GPU Programming Model</h1>
 </header>
 
-![](https://feishu.cn/file/TbpgbtEPponvYOxOwBnciX5Onhb)
+![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/174c92ca95639c69ea4b7e8d.png)
 
 为什么 GPU 上的一个线程不比 CPU 更快，却能完成更大规模的并行计算？
 
