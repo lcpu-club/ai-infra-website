@@ -113,6 +113,14 @@ const hrefFor = href
         <a class="home-button home-button-secondary" :href="hrefFor('/wiki/')">
           {{ home.materialsButton }}
         </a>
+        <a
+          class="home-button home-button-secondary"
+          href="https://lcpu-club.feishu.cn/share/base/form/shrcn8p79S5hUphdZICTHgOafiu"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {{ home.registrationButton }}
+        </a>
       </div>
     </header>
 
