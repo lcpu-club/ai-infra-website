@@ -50,41 +50,22 @@
       "locations": [
         {
           "label": {
-            "zh": "腾讯会议",
-            "en": "Tencent Meeting"
-          }
-        },
-        {
-          "label": {
-            "zh": "B站直播",
-            "en": "Bilibili Live"
-          }
-        },
-        {
-          "label": {
-            "zh": "LCPU Live",
-            "en": "LCPU Live"
-          },
-          "href": "https://live.lcpu.dev/"
-        },
-        {
-          "label": {
-            "zh": "Session 00 回放",
-            "en": "Session 00 replay"
+            "zh": "Session 1.0 回放",
+            "en": "Session 1.0 replay"
           },
           "href": "https://www.bilibili.com/video/BV1u83w6DEfG"
         },
         {
           "label": {
-            "zh": "Session 01.1 回放",
-            "en": "Session 01.1 replay"
+            "zh": "Session 1.1 回放",
+            "en": "Session 1.1 replay"
           },
           "href": "https://www.bilibili.com/video/BV1g83w6DETm"
         },
         {
           "label": {
-            "zh": "Session 01.2 回放",
-            "en": "Session 01.2 replay"
+            "zh": "Session 1.2 回放",
+            "en": "Session 1.2 replay"
           },
           "href": "https://www.bilibili.com/video/BV1Sb3w6nE8v"
         }
