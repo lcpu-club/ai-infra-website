@@ -7,15 +7,17 @@
     "dev": "vitepress dev docs --host 0.0.0.0",
     "build": "vitepress build docs",
     "build:github": "SITE_BASE=/ai-infra-website/ vitepress build docs",
-    "preview": "vitepress preview docs --host 0.0.0.0",
+    "preview": "npm run build && wrangler dev",
     "sync:feishu": "node scripts/feishu/sync.mjs",
     "sync:feishu:dry": "node scripts/feishu/sync.mjs --dry-run",
     "inspect:feishu": "node scripts/feishu/inspect.mjs",
-    "test:feishu": "node --test scripts/feishu/*.test.mjs"
+    "test:feishu": "node --test scripts/feishu/*.test.mjs",
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
     "vitepress": "^1.6.4",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "wrangler": "^4.114.0"
   },
   "dependencies": {
     "@larksuiteoapi/node-sdk": "^1.71.1",
