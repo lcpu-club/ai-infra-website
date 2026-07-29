@@ -1,0 +1,78 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+PRODID:-//LCPU//AI Infra Seminars//ZH-CN
+X-WR-CALNAME:AI Infra Seminars
+X-WR-TIMEZONE:Asia/Shanghai
+BEGIN:VEVENT
+UID:event-topic-1-opening@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260726T100000Z
+SUMMARY:Topic 1 Kernel & ML Compiler 第一次分享
+STATUS:TENTATIVE
+CATEGORIES:AI INFRA,lecture,kernel
+DTSTART:20260726T100000Z
+DTEND:20260726T123000Z
+DESCRIPTION:Session 00｜从 HPC 到 AI Infra：并行计算与并行编程
+ \nSession 01｜GPU Programming Model\n介绍活动整体安排、内容设
+ 计、评测与算力资源。\n\nLCPU Live: https://live.lcpu.dev/\nSessi
+ on 00 回放: https://www.bilibili.com/video/BV1u83w6DEfG\nSession 01.1 
+ 回放: https://www.bilibili.com/video/BV1g83w6DETm\nSession 01.2 回放: 
+ https://www.bilibili.com/video/BV1Sb3w6nE8v\n\nTopic 1 讲义: https://ai-
+ infra-website.leavelet.workers.dev/wiki/VWJPwVFTHifeadkE4phc45hOntg
+LOCATION:腾讯会议 · B站直播 · LCPU Live · Session 00 回放 · Se
+ ssion 01.1 回放 · Session 01.2 回放
+URL:https://ai-infra-website.leavelet.workers.dev/wiki/VWJPwVFTHifeadkE4phc
+ 45hOntg
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:event-topic-1-session-02@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260730T113000Z
+SUMMARY:Topic 1\, Session 2：Memory Abstraction & Hierarchy
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,lecture,kernel
+DTSTART:20260730T113000Z
+DTEND:20260730T133000Z
+DESCRIPTION:本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发
+ 理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演
+ 进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件
+ 视角理解 SM、warp 执行、 coalescing、latency hiding、shared memo
+ ry bank conflict、padding、 swizzle 与 per-thread microtile，最后使
+ 用 Nsight Compute 完成一个 Kernel 的编写与调优。\n\nLCPU Live:
+  https://live.lcpu.dev/
+LOCATION:腾讯会议 · B站直播 · LCPU Live
+URL:https://live.lcpu.dev/
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:event-topic-1-session-03@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260802T110000Z
+SUMMARY:Topic 1\, Session 3：Tensor Core
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,lecture,kernel
+DTSTART:20260802T110000Z
+DTEND:20260802T140000Z
+DESCRIPTION:本讲以 Tensor Core 的硬件与编程模型为主线，贯
+ 穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三
+ 代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的
+ 设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解
+ 决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低
+ 精度 Tensor Core 的使用。\n\nLCPU Live: https://live.lcpu.dev/
+LOCATION:腾讯会议 · B站直播 · LCPU Live
+URL:https://live.lcpu.dev/
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:assignment-A01@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260808T155900Z
+SUMMARY:[DDL] A01 · Assignment 01 · GPU 与 GPU 编程
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,ASSIGNMENT,DEADLINE
+DTSTART:20260808T155900Z
+DURATION:PT15M
+URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
+ rs/blob/main/assignment01/README.md
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

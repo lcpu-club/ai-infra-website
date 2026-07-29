@@ -1,0 +1,38 @@
+$schema: ./assignments.schema.json
+version: 1
+
+# 作业在这里集中维护；日程通过 assignments: [A01] 引用稳定 ID。
+# release 和 due 都可以填写带时区的时间，也可以只填写 YYYY-MM-DD。
+assignments:
+  - id: A01
+    title:
+      zh: "Assignment 01 · GPU 与 GPU 编程"
+      en: "Assignment 01 · GPU & GPU Programming"
+    due: "2026-08-08T23:59:00+08:00"
+    links:
+      - type: spec
+        label:
+          zh: GitHub 文档
+          en: GitHub documentation
+        href: https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment01/README.md
+      - type: submission
+        label:
+          zh: HPC Game 平台
+          en: HPC Game platform
+        href: https://hpcgame.pku.edu.cn/
+
+# 作业模板：复制下面整段，移除每行开头的 "# " 后填写。
+# ID 必须唯一，并在对应活动的 assignments 列表中引用。
+#
+#   - id: A02
+#     title:
+#       zh: 作业中文标题
+#       en: Assignment title in English
+#     release: "2026-08-06T21:30:00+08:00"
+#     due: "2026-08-13T23:59:00+08:00"
+#     links:
+#       - type: spec
+#         label:
+#           zh: 作业说明
+#           en: Assignment specification
+#         href: https://example.com/assignment

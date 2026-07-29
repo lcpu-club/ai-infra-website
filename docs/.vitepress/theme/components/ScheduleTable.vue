@@ -2,18 +2,15 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Temporal } from 'temporal-polyfill'
 import {
-  calendarEvents,
+  localizedCalendarEvents,
   type CalendarEvent
-} from '../../data/program'
-import {
-  localizeCalendarEvent,
-  useSiteLocale
-} from '../../data/site-i18n'
+} from '../../data/schedule'
+import { useSiteLocale } from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
 
 const { locale, copy, href } = useSiteLocale()
 const displayedEvents = computed(() =>
-  calendarEvents.map((event) => localizeCalendarEvent(event, locale.value))
+  localizedCalendarEvents(locale.value)
 )
 const now = ref(Date.now())
 let clock: number | undefined
@@ -54,18 +51,40 @@ function eventBoundary(event: CalendarEvent, boundary: 'start' | 'end') {
 }
 
 function phaseFor(event: CalendarEvent) {
+  if (event.status === 'cancelled') return 'cancelled'
   if (now.value < eventBoundary(event, 'start')) return 'upcoming'
   if (now.value >= eventBoundary(event, 'end')) return 'ended'
   return 'ongoing'
 }
 
 function phaseLabel(event: CalendarEvent) {
+  if (event.status === 'cancelled') return copy.value.schedule.statuses.cancelled
   return copy.value.schedule.phases[phaseFor(event)]
 }
+
+function descriptionPreview(description: string) {
+  const normalized = description.replace(/\s+/g, ' ').trim()
+  return normalized.length > 120
+    ? `${normalized.slice(0, 120).trimEnd()}…`
+    : normalized
+}
+
+function isLongDescription(description: string) {
+  return description.replace(/\s+/g, ' ').trim().length > 120
+}
+
+function linkHref(link: string) {
+  return href(link)
+}
+
+function isExternal(link: string) {
+  return /^https?:\/\//.test(link)
+}
+
 </script>
 
 <template>
-  <div v-if="calendarEvents.length" class="schedule-table-wrap">
+  <div v-if="displayedEvents.length" class="schedule-table-wrap">
     <table class="schedule-table">
       <thead>
         <tr>
@@ -80,7 +99,7 @@ function phaseLabel(event: CalendarEvent) {
           :id="`event-${event.eventId}`"
           :key="event.eventId"
         >
-          <td>
+          <td :data-label="copy.schedule.headers[0]">
             <div class="schedule-date">
               <span
                 class="schedule-phase"
@@ -89,39 +108,97 @@ function phaseLabel(event: CalendarEvent) {
                 {{ phaseLabel(event) }}
               </span>
               <time :datetime="event.startAt">{{ dateLabel(event) }}</time>
+              <span class="schedule-time">{{ event.timeLabel }}</span>
             </div>
           </td>
-          <td>
-            <a v-if="event.href" :href="href(event.href)">
-              {{ event.summary }}
-            </a>
-            <span v-else>{{ event.summary }}</span>
-            <small v-if="event.location">
-              <EventLocation :location="event.location" />
+          <td :data-label="copy.schedule.headers[1]">
+            <span>{{ event.summary }}</span>
+            <small v-if="event.locations.length">
+              <EventLocation :locations="event.locations" />
             </small>
           </td>
-          <td class="schedule-content">
-            <span v-if="event.description">{{ event.description }}</span>
+          <td
+            class="schedule-content"
+            :data-label="copy.schedule.headers[2]"
+          >
+            <details
+              v-if="event.description && isLongDescription(event.description)"
+              class="schedule-description"
+            >
+              <summary>
+                <span class="schedule-description-preview">
+                  {{ descriptionPreview(event.description) }}
+                </span>
+                <span
+                  class="schedule-description-action schedule-description-expand"
+                >
+                  {{ copy.schedule.expandContent }}
+                </span>
+                <span
+                  class="schedule-description-action schedule-description-collapse"
+                >
+                  {{ copy.schedule.collapseContent }}
+                </span>
+              </summary>
+              <p>{{ event.description }}</p>
+            </details>
+            <span v-else-if="event.description">{{ event.description }}</span>
             <span v-else class="is-empty">{{ copy.schedule.noDescription }}</span>
           </td>
-          <td class="schedule-speakers">
-            <span v-if="event.speakers?.length">
-              {{ event.speakers.join(locale === 'en' ? ', ' : '、') }}
-            </span>
+          <td
+            class="schedule-speakers"
+            :data-label="copy.schedule.headers[3]"
+          >
+            <template v-if="event.speakers?.length">
+              <span
+                v-for="speaker in event.speakers"
+                :key="speaker"
+                class="schedule-speaker"
+              >
+                {{ speaker }}
+              </span>
+            </template>
             <span v-else class="is-empty">{{ copy.schedule.speakerTbd }}</span>
           </td>
-          <td>
-            <a
-              v-if="event.assignment?.href"
-              :href="href(event.assignment.href)"
+          <td
+            class="schedule-resources"
+            :data-label="copy.schedule.headers[4]"
+          >
+            <div
+              v-if="event.links.length"
+              class="schedule-resource-links"
             >
-              {{ event.assignment.title }}
-            </a>
-            <span v-else-if="event.assignment">
-              {{ event.assignment.title }}
-            </span>
+              <a
+                v-for="link in event.links"
+                :key="`${event.eventId}-${link.href}`"
+                :href="linkHref(link.href)"
+                :target="isExternal(link.href) ? '_blank' : undefined"
+                :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+              >
+                {{ link.label }}
+              </a>
+            </div>
+            <div
+              v-if="event.assignments.length"
+              class="schedule-assignment-links"
+            >
+              <a
+                v-for="assignment in event.assignments"
+                :key="assignment.id"
+                :href="href(assignment.href)"
+                :title="assignment.title"
+              >
+                {{ assignment.id }}
+              </a>
+            </div>
+            <span
+              v-if="
+                !event.links.length &&
+                  !event.assignments.length
+              "
+              class="is-empty"
+            >—</span>
           </td>
-          <td>{{ event.timeLabel }}</td>
         </tr>
       </tbody>
     </table>

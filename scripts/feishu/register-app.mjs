@@ -13,7 +13,7 @@ const result = await registerApp({
   createOnly: true,
   appPreset: {
     name: 'AI Infra 课程内容同步',
-    desc: '只读同步课程 Wiki 讲义和共享课程日历到公开课程网站'
+    desc: '只读同步课程 Wiki 讲义到公开课程网站'
   },
   addons: {
     preset: false,
@@ -21,10 +21,7 @@ const result = await registerApp({
       tenant: [
         'wiki:wiki:readonly',
         'docx:document:readonly',
-        'docs:document.media:download',
-        'calendar:calendar:read',
-        'calendar:calendar.event:read',
-        'calendar:calendar.acl:read'
+        'docs:document.media:download'
       ]
     }
   },

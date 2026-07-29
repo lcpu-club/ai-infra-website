@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Infra seminar assignments",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "assignments"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 1 },
+    "assignments": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/assignment" }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zh"],
+      "properties": {
+        "zh": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      }
+    },
+    "dateOrDateTime": {
+      "type": "string",
+      "oneOf": [
+        { "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(?::\\d{2})?(?:Z|[+-]\\d{2}:\\d{2})$"
+        }
+      ]
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "label", "href"],
+      "properties": {
+        "type": {
+          "enum": ["spec", "starter", "submission", "solution", "other"]
+        },
+        "label": { "$ref": "#/$defs/localizedText" },
+        "href": { "type": "string", "minLength": 1 }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]{1,31}$"
+        },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "release": { "$ref": "#/$defs/dateOrDateTime" },
+        "due": { "$ref": "#/$defs/dateOrDateTime" },
+        "links": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/link" }
+        },
+        "published": { "type": "boolean" }
+      }
+    }
+  }
+}

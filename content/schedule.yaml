@@ -1,0 +1,190 @@
+$schema: ./schedule.schema.json
+version: 1
+timezone: Asia/Shanghai
+siteUrl: https://ai-infra-website.leavelet.workers.dev
+
+events:
+  - id: topic-1-opening
+    type: lecture
+    topic: kernel
+    sessions: ["00", "01"]
+    title:
+      zh: Topic 1 Kernel & ML Compiler 第一次分享
+      en: "Topic 1: Kernel & ML Compiler — First Seminar"
+    description:
+      zh: |-
+        Session 00｜从 HPC 到 AI Infra：并行计算与并行编程
+        Session 01｜GPU Programming Model
+        介绍活动整体安排、内容设计、评测与算力资源。
+      en: |-
+        Session 00 | From HPC to AI Infra: Parallel Computing and Parallel Programming
+        Session 01 | GPU Programming Model
+        Seminar overview, curriculum design, evaluation, and computing resources.
+    start: "2026-07-26T18:00:00+08:00"
+    end: "2026-07-26T20:30:00+08:00"
+    confirmation: tentative
+    speakers:
+      - name:
+          zh: 陈嘉骏
+          en: Jiajun Chen
+      - name:
+          zh: 郑熠
+          en: Yi Zheng
+      - name:
+          zh: 王艺霏
+          en: Yifei Wang
+    locations:
+      - label:
+          zh: Session 1.0 回放
+          en: Session 1.0 replay
+        href: https://www.bilibili.com/video/BV1u83w6DEfG
+      - label:
+          zh: Session 1.1 回放
+          en: Session 1.1 replay
+        href: https://www.bilibili.com/video/BV1g83w6DETm
+      - label:
+          zh: Session 1.2 回放
+          en: Session 1.2 replay
+        href: https://www.bilibili.com/video/BV1Sb3w6nE8v
+    links:
+      - label:
+          zh: Topic 1 讲义
+          en: Topic 1 notes
+        href: /wiki/VWJPwVFTHifeadkE4phc45hOntg
+    assignments: [A01]
+    display:
+      homepage: true
+      calendar: true
+      accent: kernel
+
+  - id: topic-1-session-02
+    type: lecture
+    topic: kernel
+    sessions: ["02"]
+    title:
+      zh: "Topic 1, Session 2：Memory Abstraction & Hierarchy"
+      en: "Topic 1, Session 2: Memory Abstraction & Hierarchy"
+    description:
+      zh: >-
+        本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse
+        与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用
+        Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、
+        coalescing、latency hiding、shared memory bank conflict、padding、
+        swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个
+        Kernel 的编写与调优。
+    start: "2026-07-30T19:30:00+08:00"
+    end: "2026-07-30T21:30:00+08:00"
+    confirmation: confirmed
+    speakers:
+      - name:
+          zh: 周宇轩
+          en: Yuxuan Zhou
+      - name:
+          zh: 林若瑜
+          en: Ruoyu Lin
+    locations:
+      - label:
+          zh: 腾讯会议
+          en: Tencent Meeting
+      - label:
+          zh: B站直播
+          en: Bilibili Live
+      - label:
+          zh: LCPU Live
+          en: LCPU Live
+        href: https://live.lcpu.dev
+    links: []
+    assignments: []
+    display:
+      homepage: true
+      calendar: true
+      accent: kernel
+
+  - id: topic-1-session-03
+    type: lecture
+    topic: kernel
+    sessions: ["03"]
+    title:
+      zh: "Topic 1, Session 3：Tensor Core"
+      en: "Topic 1, Session 3: Tensor Core"
+    description:
+      zh: >-
+        本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、
+        wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与
+        发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用
+        layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8
+        fine-grained scaling 介绍低精度 Tensor Core 的使用。
+    start: "2026-08-02T19:00:00+08:00"
+    end: "2026-08-02T22:00:00+08:00"
+    confirmation: confirmed
+    speakers:
+      - name:
+          zh: 孙远航
+          en: Yuanhang Sun
+    locations:
+      - label:
+          zh: 腾讯会议
+          en: Tencent Meeting
+      - label:
+          zh: B站直播
+          en: Bilibili Live
+      - label:
+          zh: LCPU Live
+          en: LCPU Live
+        href: https://live.lcpu.dev
+    links: []
+    assignments: []
+    display:
+      homepage: true
+      calendar: true
+      accent: kernel
+
+# 活动模板：复制下面整段，移除每行开头的 "# " 后填写。
+# type 可用 lecture 或 guest-lecture；assignments 只填写已存在的作业 ID。
+#
+#   - id: topic-2-session-01
+#     type: lecture
+#     topic: comm
+#     sessions: ["04"]
+#     title:
+#       zh: 活动中文标题
+#       en: Event title in English
+#     description:
+#       zh: 活动中文简介
+#       en: Event description in English
+#     start: "2026-08-06T19:30:00+08:00"
+#     end: "2026-08-06T21:30:00+08:00"
+#     confirmation: tentative
+#     speakers:
+#       - name:
+#           zh: 主讲人姓名
+#           en: Speaker Name
+#     locations:
+#       - label:
+#           zh: 腾讯会议
+#           en: Tencent Meeting
+#         href: https://meeting.tencent.com/...
+#       - label:
+#           zh: B站直播
+#           en: Bilibili Live
+#       - label:
+#           zh: LCPU Live
+#           en: LCPU Live
+#         href: https://live.lcpu.dev
+#     links:
+#       - label:
+#           zh: 课程讲义
+#           en: Course notes
+#         href: /wiki/FEISHU_WIKI_NODE_TOKEN
+#     assignments: [A02]
+#     display:
+#       homepage: true
+#       calendar: true
+#       accent: comm
+#
+# 录播发布后，把下面项目复制到该活动的 locations 中：
+#
+#       - label:
+#           zh: 课程回放
+#           en: Session replay
+#         href: https://www.bilibili.com/video/BVxxxxxxxxx

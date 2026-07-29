@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { withBase } from 'vitepress'
-import { calendarEvents, topics } from '../../data/program'
+import { topics } from '../../data/program'
+import { localizedCalendarEvents } from '../../data/schedule'
 import {
   localizedTopics,
-  localizeCalendarEvent,
   useSiteLocale
 } from '../../data/site-i18n'
 
@@ -57,9 +57,9 @@ function previewDate(date: string) {
 }
 
 const schedulePreview = computed<SchedulePreviewItem[]>(() =>
-  calendarEvents
+  localizedCalendarEvents(locale.value)
     .filter((event) => event.status !== 'cancelled')
-    .map((event) => localizeCalendarEvent(event, locale.value))
+    .filter((event) => event.display.homepage)
     .map((event) => ({
       key: `event-${event.eventId}`,
       date: event.date,

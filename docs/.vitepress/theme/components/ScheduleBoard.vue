@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { calendarEvents } from '../../data/program'
+import { withBase } from 'vitepress'
+import { scheduleEventCount } from '../../data/schedule'
 import { useSiteLocale } from '../../data/site-i18n'
 import CalendarTimeline from './CalendarTimeline.vue'
 import ScheduleTable from './ScheduleTable.vue'
@@ -15,13 +16,18 @@ function openFirstEvent() {
   <main class="course-site schedule-page-shell">
     <header class="schedule-page-header">
       <h1>{{ copy.schedule.title }}</h1>
-      <button
-        v-if="calendarEvents.length"
-        type="button"
-        @click="openFirstEvent"
-      >
-        {{ copy.schedule.firstEvent }}
-      </button>
+      <div class="schedule-page-actions">
+        <a :href="withBase('/calendar.ics')" download>
+          {{ copy.schedule.downloadCalendar }}
+        </a>
+        <button
+          v-if="scheduleEventCount"
+          type="button"
+          @click="openFirstEvent"
+        >
+          {{ copy.schedule.firstEvent }}
+        </button>
+      </div>
     </header>
 
     <section id="full-schedule" class="calendar-list-section">
@@ -29,6 +35,6 @@ function openFirstEvent() {
       <ScheduleTable />
     </section>
 
-    <CalendarTimeline v-if="calendarEvents.length" />
+    <CalendarTimeline v-if="scheduleEventCount" />
   </main>
 </template>

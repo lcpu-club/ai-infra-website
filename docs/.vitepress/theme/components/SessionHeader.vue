@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { sessions, topicFor } from '../../data/program'
+import { localizedCalendarEvents } from '../../data/schedule'
 import {
   localizedTopics,
   useSiteLocale
@@ -24,17 +25,26 @@ const dateFormatter = new Intl.DateTimeFormat('en-CA', {
 })
 const today = ref(dateFormatter.format(new Date()))
 const { locale, copy } = useSiteLocale()
+const calendarEvent = computed(() =>
+  localizedCalendarEvents(locale.value).find((event) =>
+    event.sessionIds?.includes(session.id)
+  )
+)
+const sessionDate = computed(() => calendarEvent.value?.date ?? session.date)
+const sessionDateLabel = computed(() =>
+  sessionDate.value.slice(5).replace('-', '.')
+)
 
 onMounted(() => {
   today.value = dateFormatter.format(new Date())
 })
 
 const status = computed(() => {
-  if (session.calendarStatus === 'cancelled') {
+  if (calendarEvent.value?.status === 'cancelled') {
     return copy.value.session.statuses.cancelled
   }
-  if (session.date < today.value) return copy.value.session.statuses.ended
-  if (session.date === today.value) return copy.value.session.statuses.today
+  if (sessionDate.value < today.value) return copy.value.session.statuses.ended
+  if (sessionDate.value === today.value) return copy.value.session.statuses.today
   return copy.value.session.statuses.upcoming
 })
 
@@ -46,26 +56,19 @@ const topic = computed(
 <template>
   <header class="session-banner">
     <span class="section-index">
-      {{ copy.session.topic }} {{ topic.number }} · {{ copy.session.lecture }} {{ session.id }} · {{ session.dateLabel }}
-      <template v-if="session.timeLabel"> · {{ session.timeLabel }}</template>
+      {{ copy.session.topic }} {{ topic.number }} · {{ copy.session.lecture }} {{ session.id }} · {{ sessionDateLabel }}
+      <template v-if="calendarEvent?.timeLabel"> · {{ calendarEvent.timeLabel }}</template>
     </span>
     <h1>{{ session.title }}</h1>
     <p>{{ session.items.join('；') }}</p>
     <div class="session-banner-meta">
       <span>{{ copy.session.status }} · {{ status }}</span>
       <span>{{ copy.session.speakers }} · {{ session.owners.join(' · ') }}</span>
-      <span v-if="session.location">
-        {{ copy.session.location }} · <EventLocation :location="session.location" />
+      <span v-if="calendarEvent?.locations.length">
+        {{ copy.session.location }} ·
+        <EventLocation :locations="calendarEvent.locations" />
       </span>
       <span v-else>{{ copy.session.format }} · {{ copy.session.formatValue }}</span>
-      <a
-        v-if="session.meetingUrl"
-        :href="session.meetingUrl"
-        target="_blank"
-        rel="noreferrer"
-      >
-        {{ copy.session.joinMeeting }}
-      </a>
     </div>
   </header>
 </template>

@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useData, withBase } from 'vitepress'
-import type { CalendarEvent, Topic } from './program'
+import type { Topic } from './program'
 
 export type SiteLocale = 'zh' | 'en'
 
@@ -63,26 +63,6 @@ const topicTranslations: Record<Topic['key'], Omit<Topic, 'key' | 'number'>> = {
   }
 }
 
-const eventTranslations: Record<
-  string,
-  Partial<
-    Pick<
-      CalendarEvent,
-      'summary' | 'description' | 'location' | 'timeLabel' | 'speakers'
-    >
-  >
-> = {
-  'f998aa77-12f5-4f85-99c5-6503c58c2144_0': {
-    summary: 'Topic 1: Kernel & ML Compiler — First Seminar',
-    description:
-      'Session 00 | From HPC to AI Infra: Parallel Computing and Parallel Programming\n' +
-      'Session 01 | GPU Programming Model\n' +
-      'Seminar overview, curriculum design, evaluation, and computing resources',
-    location: 'Tencent Meeting · Bilibili Live',
-    speakers: ['Jiajun Chen', 'Yi Zheng', 'Yifei Wang']
-  }
-}
-
 export const siteCopy = {
   zh: {
     home: {
@@ -125,10 +105,17 @@ export const siteCopy = {
       title: '课程日历',
       firstEvent: '回到首场活动',
       allEvents: '全部安排',
+      calendarView: '日历视图',
       calendarAria: '交互式课程日历',
       loading: '正在加载交互日历…',
       loadingHint: '上方日程列表会始终保留。',
-      headers: ['日期', '安排', '活动内容', '讲者', '作业', '时间'],
+      headers: [
+        '日期 / 时间',
+        '活动',
+        '内容提要',
+        '主讲',
+        '课程材料 / 作业'
+      ],
       phases: {
         upcoming: '待开始',
         ongoing: '进行中',
@@ -136,10 +123,18 @@ export const siteCopy = {
       },
       dateRangeSeparator: '至',
       noDescription: '暂无活动说明',
+      expandContent: '展开完整内容',
+      collapseContent: '收起完整内容',
       speakerTbd: '待定',
-      emptyTitle: '共享日历中暂时没有活动',
+      emptyTitle: '暂时没有公开活动',
       emptyDescription:
-        '在 AI Infra 共享日历中新建日程后，网站会在下一次同步时自动更新。',
+        '在 content/schedule.yaml 中添加活动后，网站会在下一次构建时自动更新。',
+      downloadCalendar: '下载课程日历 (.ics)',
+      eventTypes: {
+        lecture: '课程讲座',
+        guestLecture: '嘉宾讲座',
+        assignment: '作业 DDL'
+      },
       statuses: {
         cancelled: '已取消',
         confirmed: '已确认',
@@ -149,7 +144,24 @@ export const siteCopy = {
       location: '地点',
       viewNotes: '查看讲义',
       joinMeeting: '进入会议 ↗',
-      sourceCalendar: '飞书日历 ↗'
+      assignments: '查看作业'
+    },
+    assignments: {
+      title: '作业清单',
+      headers: ['ID', '作业', '关联活动', '发布时间', '截止时间', '状态'],
+      phases: {
+        upcoming: '未发布',
+        open: '进行中',
+        ended: '已截止',
+        noDeadline: '无截止时间'
+      },
+      noRelease: '发布即生效',
+      noDue: '待公布',
+      noEvents: '未关联活动',
+      emptyTitle: '暂未发布作业',
+      emptyDescription:
+        '在 content/assignments.yaml 中添加作业，并在日程里引用其 ID。',
+      downloadDeadlines: '下载作业 DDL (.ics)'
     },
     session: {
       topic: '主题',
@@ -164,8 +176,7 @@ export const siteCopy = {
       speakers: '分享',
       location: '地点',
       format: '形式',
-      formatValue: '预习 + 分享 + 讨论',
-      joinMeeting: '加入会议 ↗'
+      formatValue: '预习 + 分享 + 讨论'
     }
   },
   en: {
@@ -226,10 +237,17 @@ export const siteCopy = {
       title: 'Seminar Schedule',
       firstEvent: 'Jump to the first event',
       allEvents: 'All Events',
+      calendarView: 'Calendar',
       calendarAria: 'Interactive seminar calendar',
       loading: 'Loading the interactive calendar…',
       loadingHint: 'The event list above will remain available.',
-      headers: ['Date', 'Event', 'Program', 'Speakers', 'Assignment', 'Time'],
+      headers: [
+        'Date / time',
+        'Event',
+        'Summary',
+        'Speakers',
+        'Materials / assignments'
+      ],
       phases: {
         upcoming: 'Upcoming',
         ongoing: 'Live',
@@ -237,10 +255,18 @@ export const siteCopy = {
       },
       dateRangeSeparator: 'to',
       noDescription: 'No description',
+      expandContent: 'Show full description',
+      collapseContent: 'Collapse description',
       speakerTbd: 'TBA',
-      emptyTitle: 'There are no events on the shared calendar yet',
+      emptyTitle: 'There are no public events yet',
       emptyDescription:
-        'Events added to the shared AI Infra calendar will appear here after the next sync.',
+        'Add events to content/schedule.yaml and rebuild the site.',
+      downloadCalendar: 'Download course calendar (.ics)',
+      eventTypes: {
+        lecture: 'Lecture',
+        guestLecture: 'Guest Lecture',
+        assignment: 'Assignment deadline'
+      },
       statuses: {
         cancelled: 'Cancelled',
         confirmed: 'Confirmed',
@@ -250,7 +276,31 @@ export const siteCopy = {
       location: 'Location',
       viewNotes: 'View notes',
       joinMeeting: 'Join meeting ↗',
-      sourceCalendar: 'Feishu Calendar ↗'
+      assignments: 'View assignments'
+    },
+    assignments: {
+      title: 'Assignments',
+      headers: [
+        'ID',
+        'Assignment',
+        'Related events',
+        'Release',
+        'Deadline',
+        'Status'
+      ],
+      phases: {
+        upcoming: 'Not released',
+        open: 'Open',
+        ended: 'Closed',
+        noDeadline: 'No deadline'
+      },
+      noRelease: 'Available immediately',
+      noDue: 'TBA',
+      noEvents: 'No related event',
+      emptyTitle: 'No assignments have been published yet',
+      emptyDescription:
+        'Add an assignment to content/assignments.yaml and reference its ID from an event.',
+      downloadDeadlines: 'Download assignment deadlines (.ics)'
     },
     session: {
       topic: 'Topic',
@@ -265,8 +315,7 @@ export const siteCopy = {
       speakers: 'Speakers',
       location: 'Location',
       format: 'Format',
-      formatValue: 'Preparation + Talk + Discussion',
-      joinMeeting: 'Join meeting ↗'
+      formatValue: 'Preparation + Talk + Discussion'
     }
   }
 } as const
@@ -304,24 +353,4 @@ export function localizedTopics(
     number: topic.number,
     ...topicTranslations[topic.key]
   }))
-}
-
-export function localizeCalendarEvent(
-  event: CalendarEvent,
-  locale: SiteLocale
-): CalendarEvent {
-  if (locale === 'zh') return event
-  return {
-    ...event,
-    ...eventTranslations[event.eventId],
-    assignment: event.assignment
-      ? {
-          ...event.assignment,
-          title:
-            event.assignment.title === '作业'
-              ? 'Assignment'
-              : event.assignment.title
-        }
-      : undefined
-  }
 }

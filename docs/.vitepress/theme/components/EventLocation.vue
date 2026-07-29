@@ -1,30 +1,34 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { withBase } from 'vitepress'
+import type { ScheduleLocation } from '../../data/schedule'
 
-const props = defineProps<{
-  location: string
+defineProps<{
+  locations: ScheduleLocation[]
 }>()
 
-const showLcpuLive = computed(
-  () =>
-    (props.location.includes('腾讯会议') &&
-      props.location.includes('B站直播')) ||
-    (props.location.includes('Tencent Meeting') &&
-      props.location.includes('Bilibili Live'))
-)
+function locationHref(href: string) {
+  return /^https?:\/\//.test(href) ? href : withBase(href)
+}
+
+function isExternal(href: string) {
+  return /^https?:\/\//.test(href)
+}
 </script>
 
 <template>
   <span class="event-location">
-    {{ location }}
-    <template v-if="showLcpuLive">
-      ·
+    <template
+      v-for="(location, index) in locations"
+      :key="`${location.label}-${location.href ?? index}`"
+    >
+      <template v-if="index"> · </template>
       <a
-        class="event-location-live"
-        href="https://live.lcpu.dev"
-        target="_blank"
-        rel="noreferrer"
-      >LCPU Live</a>
+        v-if="location.href"
+        :href="locationHref(location.href)"
+        :target="isExternal(location.href) ? '_blank' : undefined"
+        :rel="isExternal(location.href) ? 'noreferrer' : undefined"
+      >{{ location.label }}</a>
+      <template v-else>{{ location.label }}</template>
     </template>
   </span>
 </template>

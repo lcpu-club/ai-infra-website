@@ -4,18 +4,22 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev docs --host 0.0.0.0",
-    "build": "vitepress build docs",
-    "build:github": "SITE_BASE=/ai-infra-website/ vitepress build docs",
+    "generate:schedule": "node scripts/schedule/generate.mjs",
+    "dev": "npm run generate:schedule && vitepress dev docs --host 0.0.0.0",
+    "build": "npm run generate:schedule && vitepress build docs",
+    "build:github": "npm run generate:schedule && SITE_BASE=/ai-infra-website/ vitepress build docs",
     "preview": "vitepress preview docs --host 0.0.0.0",
     "sync:feishu": "node scripts/feishu/sync.mjs",
     "sync:feishu:dry": "node scripts/feishu/sync.mjs --dry-run",
     "inspect:feishu": "node scripts/feishu/inspect.mjs",
-    "test:feishu": "node --test scripts/feishu/*.test.mjs"
+    "test:feishu": "node --test scripts/feishu/*.test.mjs",
+    "test:schedule": "node --test scripts/schedule/*.test.mjs",
+    "test": "npm run test:feishu && npm run test:schedule"
   },
   "devDependencies": {
     "vitepress": "^1.6.4",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "yaml": "^2.9.0"
   },
   "dependencies": {
     "@larksuiteoapi/node-sdk": "^1.71.1",

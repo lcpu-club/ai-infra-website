@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+PRODID:-//LCPU//AI Infra Seminars//ZH-CN
+X-WR-CALNAME:AI Infra Seminars · Assignment Deadlines
+X-WR-TIMEZONE:Asia/Shanghai
+BEGIN:VEVENT
+UID:assignment-A01@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260808T155900Z
+SUMMARY:[DDL] A01 · Assignment 01 · GPU 与 GPU 编程
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,ASSIGNMENT,DEADLINE
+DTSTART:20260808T155900Z
+DURATION:PT15M
+URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
+ rs/blob/main/assignment01/README.md
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

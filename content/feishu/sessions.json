@@ -1,12 +1,5 @@
 {
   "$schema": "./sessions.schema.json",
-  "timezone": "Asia/Shanghai",
-  "calendarId": "feishu.cn_clwru5ESzQtYBVxy2rwowh@group.calendar.feishu.cn",
-  "calendarRange": {
-    "start": "2026-07-01",
-    "end": "2026-10-01"
-  },
-  "publishMeetingUrl": false,
   "wiki": {
     "rootNodeToken": "CWcAw7BUai4MimkMFzEcmV6on7f",
     "sourceBaseUrl": "https://lcpu-club.feishu.cn/wiki",

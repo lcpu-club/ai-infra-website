@@ -1,0 +1,271 @@
+{
+  "version": 1,
+  "timezone": "Asia/Shanghai",
+  "siteUrl": "https://ai-infra-website.leavelet.workers.dev",
+  "events": [
+    {
+      "eventId": "topic-1-opening",
+      "type": "lecture",
+      "topic": "kernel",
+      "sessionIds": [
+        "00",
+        "01"
+      ],
+      "title": {
+        "zh": "Topic 1 Kernel & ML Compiler 第一次分享",
+        "en": "Topic 1: Kernel & ML Compiler — First Seminar"
+      },
+      "description": {
+        "zh": "Session 00｜从 HPC 到 AI Infra：并行计算与并行编程\nSession 01｜GPU Programming Model\n介绍活动整体安排、内容设计、评测与算力资源。",
+        "en": "Session 00 | From HPC to AI Infra: Parallel Computing and Parallel Programming\nSession 01 | GPU Programming Model\nSeminar overview, curriculum design, evaluation, and computing resources."
+      },
+      "date": "2026-07-26",
+      "endDate": "2026-07-26",
+      "startAt": "2026-07-26T10:00:00Z",
+      "endAt": "2026-07-26T12:30:00Z",
+      "allDay": false,
+      "timeLabel": "18:00–20:30",
+      "timezone": "Asia/Shanghai",
+      "status": "tentative",
+      "speakers": [
+        {
+          "name": {
+            "zh": "陈嘉骏",
+            "en": "Jiajun Chen"
+          }
+        },
+        {
+          "name": {
+            "zh": "郑熠",
+            "en": "Yi Zheng"
+          }
+        },
+        {
+          "name": {
+            "zh": "王艺霏",
+            "en": "Yifei Wang"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          }
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        },
+        {
+          "label": {
+            "zh": "Session 00 回放",
+            "en": "Session 00 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1u83w6DEfG"
+        },
+        {
+          "label": {
+            "zh": "Session 01.1 回放",
+            "en": "Session 01.1 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1g83w6DETm"
+        },
+        {
+          "label": {
+            "zh": "Session 01.2 回放",
+            "en": "Session 01.2 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1Sb3w6nE8v"
+        }
+      ],
+      "links": [
+        {
+          "label": {
+            "zh": "Topic 1 讲义",
+            "en": "Topic 1 notes"
+          },
+          "href": "/wiki/VWJPwVFTHifeadkE4phc45hOntg"
+        }
+      ],
+      "assignmentIds": [
+        "A01"
+      ],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
+    },
+    {
+      "eventId": "topic-1-session-02",
+      "type": "lecture",
+      "topic": "kernel",
+      "sessionIds": [
+        "02"
+      ],
+      "title": {
+        "zh": "Topic 1, Session 2：Memory Abstraction & Hierarchy",
+        "en": "Topic 1, Session 2: Memory Abstraction & Hierarchy"
+      },
+      "description": {
+        "zh": "本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、 coalescing、latency hiding、shared memory bank conflict、padding、 swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个 Kernel 的编写与调优。"
+      },
+      "date": "2026-07-30",
+      "endDate": "2026-07-30",
+      "startAt": "2026-07-30T11:30:00Z",
+      "endAt": "2026-07-30T13:30:00Z",
+      "allDay": false,
+      "timeLabel": "19:30–21:30",
+      "timezone": "Asia/Shanghai",
+      "status": "confirmed",
+      "speakers": [
+        {
+          "name": {
+            "zh": "周宇轩",
+            "en": "Yuxuan Zhou"
+          }
+        },
+        {
+          "name": {
+            "zh": "林若瑜",
+            "en": "Ruoyu Lin"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          }
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
+    },
+    {
+      "eventId": "topic-1-session-03",
+      "type": "lecture",
+      "topic": "kernel",
+      "sessionIds": [
+        "03"
+      ],
+      "title": {
+        "zh": "Topic 1, Session 3：Tensor Core",
+        "en": "Topic 1, Session 3: Tensor Core"
+      },
+      "description": {
+        "zh": "本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低精度 Tensor Core 的使用。"
+      },
+      "date": "2026-08-02",
+      "endDate": "2026-08-02",
+      "startAt": "2026-08-02T11:00:00Z",
+      "endAt": "2026-08-02T14:00:00Z",
+      "allDay": false,
+      "timeLabel": "19:00–22:00",
+      "timezone": "Asia/Shanghai",
+      "status": "confirmed",
+      "speakers": [
+        {
+          "name": {
+            "zh": "孙远航",
+            "en": "Yuanhang Sun"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          }
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
+    }
+  ],
+  "assignments": [
+    {
+      "id": "A01",
+      "title": {
+        "zh": "Assignment 01 · GPU 与 GPU 编程",
+        "en": "Assignment 01 · GPU & GPU Programming"
+      },
+      "due": {
+        "allDay": false,
+        "date": "2026-08-08",
+        "at": "2026-08-08T15:59:00Z",
+        "boundaryAt": "2026-08-08T15:59:00Z"
+      },
+      "links": [
+        {
+          "type": "spec",
+          "label": {
+            "zh": "GitHub 文档",
+            "en": "GitHub documentation"
+          },
+          "href": "https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment01/README.md"
+        },
+        {
+          "type": "submission",
+          "label": {
+            "zh": "HPC Game 平台",
+            "en": "HPC Game platform"
+          },
+          "href": "https://hpcgame.pku.edu.cn/"
+        }
+      ],
+      "eventIds": [
+        "topic-1-opening"
+      ]
+    }
+  ]
+}

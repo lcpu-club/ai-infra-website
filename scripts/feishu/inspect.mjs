@@ -4,14 +4,11 @@ import { fileURLToPath } from 'node:url'
 import {
   createFeishuClient,
   fetchWikiMarkdown,
-  listCalendarEvents,
-  listCalendars,
   listWikiNodes,
   resolveWikiNode
 } from './client.mjs'
 import { readSyncConfig } from './config.mjs'
 import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
-import { dateRangeToUnixSeconds } from './time.mjs'
 import { discoverWikiCollection, wikiRouteForToken } from './wiki.mjs'
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
@@ -20,34 +17,6 @@ const repoRoot = path.resolve(scriptDir, '../..')
 await loadLocalEnv(repoRoot)
 const config = await readSyncConfig(repoRoot)
 const client = createFeishuClient(requireFeishuCredentials())
-
-const calendars = await listCalendars(client)
-console.log('Calendars visible to the sync application:')
-console.table(
-  calendars.map((calendar) => ({
-    id: calendar.calendar_id,
-    name: calendar.summary,
-    type: calendar.type,
-    role: calendar.role,
-    permissions: calendar.permissions
-  }))
-)
-
-if (config.calendarId) {
-  const events = await listCalendarEvents(client, {
-    calendarId: config.calendarId,
-    ...dateRangeToUnixSeconds(config.calendarRange, config.timezone)
-  })
-  console.log(`Events in configured calendar ${config.calendarId}:`)
-  console.table(
-    events.map((event) => ({
-      id: event.event_id,
-      title: event.summary,
-      start: event.start_time?.date || event.start_time?.timestamp,
-      status: event.status
-    }))
-  )
-}
 
 if (config.wiki) {
   const collection = await discoverWikiCollection({

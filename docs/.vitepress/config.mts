@@ -127,6 +127,10 @@ function themeConfig(locale: LocaleKey): DefaultTheme.Config {
         text: english ? 'Schedule' : '活动日历',
         link: localePath('/schedule', locale)
       },
+      {
+        text: english ? 'Assignments' : '作业清单',
+        link: localePath('/assignments', locale)
+      },
       ...(wiki
         ? [
             courseItems.length > 0

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   downloadFeishuMediaUrl,
-  listCalendars
+  listWikiNodes
 } from './client.mjs'
 
 test('sanitizes SDK request failures without leaking authorization headers', async () => {
@@ -19,9 +19,9 @@ test('sanitizes SDK request failures without leaking authorization headers', asy
     }
   }
   const client = {
-    calendar: {
-      v4: {
-        calendar: {
+    wiki: {
+      v2: {
+        spaceNode: {
           async list() {
             throw sdkError
           }
@@ -30,14 +30,17 @@ test('sanitizes SDK request failures without leaking authorization headers', asy
     }
   }
 
-  await assert.rejects(listCalendars(client), (error) => {
-    assert.equal(
-      error.message,
-      'List calendars failed (131006): permission denied'
-    )
-    assert.doesNotMatch(String(error.stack), /must-not-leak/)
-    return true
-  })
+  await assert.rejects(
+    listWikiNodes(client, { spaceId: 'space_01' }),
+    (error) => {
+      assert.equal(
+        error.message,
+        'List Wiki nodes in space space_01 failed (131006): permission denied'
+      )
+      assert.doesNotMatch(String(error.stack), /must-not-leak/)
+      return true
+    }
+  )
 })
 
 test('downloads only allowlisted hosted Feishu media URLs', async () => {

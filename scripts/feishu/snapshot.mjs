@@ -7,7 +7,6 @@ export function stableSnapshotJson(value) {
   const output = {
     version: value.version,
     sessions: orderedSessions,
-    ...(value.calendar ? { calendar: value.calendar } : {}),
     ...(value.wiki ? { wiki: value.wiki } : {})
   }
   return `${JSON.stringify(output, null, 2)}\n`

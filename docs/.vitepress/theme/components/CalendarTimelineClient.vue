@@ -12,24 +12,28 @@ import {
 } from '@schedule-x/calendar'
 import 'temporal-polyfill/global'
 import {
-  calendarEvents,
   calendarTimezone,
+  localizedAssignments,
+  localizedCalendarEvents,
   type CalendarEvent
-} from '../../data/program'
-import {
-  localizeCalendarEvent,
-  useSiteLocale
-} from '../../data/site-i18n'
+} from '../../data/schedule'
+import { useSiteLocale } from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
 
 const { isDark } = useData()
 const { locale, copy, href } = useSiteLocale()
-const displayedEvents = calendarEvents.map((event) =>
-  localizeCalendarEvent(event, locale.value)
+const displayedEvents = localizedCalendarEvents(locale.value).filter(
+  (event) => event.display.calendar
+)
+const displayedAssignments = localizedAssignments(locale.value).filter(
+  (assignment) => assignment.due
 )
 const selectedEvent = ref<CalendarEvent | null>(null)
 const eventById = new Map(
   displayedEvents.map((event) => [event.eventId, event])
+)
+const assignmentById = new Map(
+  displayedAssignments.map((assignment) => [assignment.id, assignment])
 )
 
 function hourBoundary(hour: number) {
@@ -38,11 +42,10 @@ function hourBoundary(hour: number) {
 
 function visibleDayBoundaries() {
   const timedEvents = displayedEvents.filter((event) => !event.allDay)
-  if (timedEvents.length === 0) return { start: '09:00', end: '20:00' }
-
   const starts = timedEvents.map((event) =>
     Temporal.Instant.from(event.startAt).toZonedDateTimeISO(calendarTimezone)
   )
+  if (starts.length === 0) return { start: '09:00', end: '20:00' }
   const ends = timedEvents.map((event) =>
     Temporal.Instant.from(event.endAt).toZonedDateTimeISO(calendarTimezone)
   )
@@ -66,7 +69,7 @@ function allDayEnd(event: CalendarEvent) {
   return Temporal.PlainDate.from(event.endDate).subtract({ days: 1 })
 }
 
-const timelineEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
+const lectureEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
   id: event.eventId,
   title: event.summary,
   start: event.allDay
@@ -76,8 +79,11 @@ const timelineEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
     ? allDayEnd(event)
     : Temporal.Instant.from(event.endAt).toZonedDateTimeISO(calendarTimezone),
   description: event.description,
-  location: event.location,
-  calendarId: 'feishu',
+  ...(event.locations.length
+    ? { location: event.locations.map(({ label }) => label).join(' · ') }
+    : {}),
+  calendarId:
+    event.type === 'guest-lecture' ? 'guest-lecture' : 'lecture',
   _options: {
     disableDND: true,
     disableResize: true,
@@ -85,6 +91,37 @@ const timelineEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
       event.status === 'cancelled' ? ['is-cancelled'] : undefined
   }
 }))
+
+const assignmentEvents: ScheduleXEvent[] = displayedAssignments.map(
+  (assignment) => {
+    const due = assignment.due!
+    const deadlineTime = due.allDay
+      ? ''
+      : Temporal.Instant.from(due.at!)
+          .toZonedDateTimeISO(calendarTimezone)
+          .toPlainTime()
+          .toString({ smallestUnit: 'minute' })
+    const deadlineDate = Temporal.PlainDate.from(due.date)
+    return {
+      id: `assignment-${assignment.id}`,
+      title: `${deadlineTime ? `${deadlineTime} ` : ''}[DDL] ${assignment.id} · ${assignment.title}`,
+      start: deadlineDate,
+      end: deadlineDate,
+      description: assignment.description,
+      calendarId: 'assignment',
+      _options: {
+        disableDND: true,
+        disableResize: true,
+        additionalClasses: ['is-assignment-deadline']
+      }
+    }
+  }
+)
+
+const timelineEvents: ScheduleXEvent[] = [
+  ...lectureEvents,
+  ...assignmentEvents
+]
 
 const calendarApp = createCalendar({
   views: [viewMonthGrid, viewMonthAgenda, viewWeek, viewDay],
@@ -100,8 +137,8 @@ const calendarApp = createCalendar({
   isResponsive: true,
   monthGridOptions: { nEventsPerDay: 3 },
   calendars: {
-    feishu: {
-      colorName: 'feishu',
+    lecture: {
+      colorName: 'lecture',
       lightColors: {
         main: '#3451b2',
         container: '#5672cd',
@@ -112,11 +149,47 @@ const calendarApp = createCalendar({
         container: '#3e63dd',
         onContainer: '#ffffff'
       }
+    },
+    'guest-lecture': {
+      colorName: 'guest-lecture',
+      lightColors: {
+        main: '#7650a8',
+        container: '#8b67b8',
+        onContainer: '#ffffff'
+      },
+      darkColors: {
+        main: '#d2b4f4',
+        container: '#6d489c',
+        onContainer: '#ffffff'
+      }
+    },
+    assignment: {
+      colorName: 'assignment',
+      lightColors: {
+        main: '#a34f12',
+        container: '#bd6425',
+        onContainer: '#ffffff'
+      },
+      darkColors: {
+        main: '#ffc38a',
+        container: '#8f4310',
+        onContainer: '#ffffff'
+      }
     }
   },
   callbacks: {
     onEventClick(event) {
-      selectedEvent.value = eventById.get(String(event.id)) ?? null
+      const id = String(event.id)
+      const assignmentId = id.startsWith('assignment-')
+        ? id.slice('assignment-'.length)
+        : ''
+      if (assignmentId && assignmentById.has(assignmentId)) {
+        window.location.href = href(
+          `/assignments#assignment-${assignmentId}`
+        )
+        return
+      }
+      selectedEvent.value = eventById.get(id) ?? null
     }
   }
 })
@@ -145,6 +218,19 @@ function openFirstEvent() {
   selectedEvent.value = displayedEvents[0] ?? null
 }
 
+function openEvent(event: Event) {
+  const eventId = (event as CustomEvent<string>).detail
+  selectedEvent.value = eventById.get(eventId) ?? null
+}
+
+function linkHref(value: string) {
+  return href(value)
+}
+
+function isExternal(value: string) {
+  return /^https?:\/\//.test(value)
+}
+
 function readableDate(date: string) {
   return new Intl.DateTimeFormat(locale.value === 'en' ? 'en-US' : 'zh-CN', {
     timeZone: 'UTC',
@@ -162,11 +248,13 @@ function statusLabel(status: CalendarEvent['status']) {
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
   window.addEventListener('calendar:open-first', openFirstEvent)
+  window.addEventListener('calendar:open-event', openEvent)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', onKeydown)
   window.removeEventListener('calendar:open-first', openFirstEvent)
+  window.removeEventListener('calendar:open-event', openEvent)
   document.body.classList.remove('has-calendar-dialog')
 })
 </script>
@@ -210,34 +298,33 @@ onBeforeUnmount(() => {
           {{ selectedEvent.description }}
         </p>
 
-        <dl v-if="selectedEvent.location" class="calendar-dialog-details">
+        <dl
+          v-if="selectedEvent.locations.length"
+          class="calendar-dialog-details"
+        >
           <div>
             <dt>{{ copy.schedule.location }}</dt>
             <dd>
-              <EventLocation :location="selectedEvent.location" />
+              <EventLocation :locations="selectedEvent.locations" />
             </dd>
           </div>
         </dl>
 
         <footer class="calendar-dialog-actions">
-          <a v-if="selectedEvent.href" :href="href(selectedEvent.href)">
-            {{ copy.schedule.viewNotes }}
+          <a
+            v-for="link in selectedEvent.links"
+            :key="link.href"
+            :href="linkHref(link.href)"
+            :target="isExternal(link.href) ? '_blank' : undefined"
+            :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+          >
+            {{ link.label }}
           </a>
           <a
-            v-if="selectedEvent.meetingUrl"
-            :href="selectedEvent.meetingUrl"
-            target="_blank"
-            rel="noreferrer"
+            v-if="selectedEvent.assignments.length"
+            :href="href('/assignments')"
           >
-            {{ copy.schedule.joinMeeting }}
-          </a>
-          <a
-            v-if="selectedEvent.sourceUrl"
-            :href="selectedEvent.sourceUrl"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {{ copy.schedule.sourceCalendar }}
+            {{ copy.schedule.assignments }}
           </a>
         </footer>
       </section>

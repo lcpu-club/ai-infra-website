@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Infra seminar schedule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "timezone", "siteUrl", "events"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 1 },
+    "timezone": { "type": "string", "minLength": 1 },
+    "siteUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zh"],
+      "properties": {
+        "zh": { "type": "string", "minLength": 1 },
+        "en": { "type": "string", "minLength": 1 }
+      }
+    },
+    "dateOrDateTime": {
+      "type": "string",
+      "oneOf": [
+        { "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(?::\\d{2})?(?:Z|[+-]\\d{2}:\\d{2})$"
+        }
+      ]
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "$ref": "#/$defs/localizedText" },
+        "href": { "type": "string", "minLength": 1 }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "href"],
+      "properties": {
+        "label": { "$ref": "#/$defs/localizedText" },
+        "href": { "type": "string", "minLength": 1 }
+      }
+    },
+    "speaker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "#/$defs/localizedText" },
+        "role": { "$ref": "#/$defs/localizedText" },
+        "href": { "type": "string", "minLength": 1 }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "title",
+        "start",
+        "end",
+        "confirmation"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "type": {
+          "enum": [
+            "lecture",
+            "guest-lecture",
+            "workshop",
+            "office-hours",
+            "other"
+          ]
+        },
+        "topic": {
+          "enum": ["kernel", "comm", "serving", "rl"]
+        },
+        "sessions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^\\d{2}$"
+          }
+        },
+        "title": { "$ref": "#/$defs/localizedText" },
+        "description": { "$ref": "#/$defs/localizedText" },
+        "start": { "$ref": "#/$defs/dateOrDateTime" },
+        "end": { "$ref": "#/$defs/dateOrDateTime" },
+        "confirmation": {
+          "enum": ["tentative", "confirmed", "cancelled"]
+        },
+        "speakers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/speaker" }
+        },
+        "locations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/location" }
+        },
+        "links": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/link" }
+        },
+        "assignments": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9-]{1,31}$"
+          }
+        },
+        "published": { "type": "boolean" },
+        "display": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "homepage": { "type": "boolean" },
+            "calendar": { "type": "boolean" },
+            "accent": {
+              "enum": ["kernel", "comm", "serving", "rl", "neutral"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

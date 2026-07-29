@@ -215,55 +215,6 @@ export async function downloadFeishuMediaUrl(sourceUrl) {
   }
 }
 
-export async function listCalendars(client) {
-  const calendars = []
-  let pageToken
-
-  do {
-    const response = await callFeishu('List calendars', () =>
-      client.calendar.v4.calendar.list({
-        params: {
-          page_size: 50,
-          ...(pageToken ? { page_token: pageToken } : {})
-        }
-      })
-    )
-    const data = assertSuccess(response, 'List calendars')
-    calendars.push(...(data?.calendar_list ?? []))
-    pageToken = data?.has_more ? data.page_token : undefined
-  } while (pageToken)
-
-  return calendars
-}
-
-export async function listCalendarEvents(
-  client,
-  { calendarId, startTimestamp, endTimestamp }
-) {
-  const events = []
-  let pageToken
-
-  do {
-    const operation = `List events in calendar ${calendarId}`
-    const response = await callFeishu(operation, () =>
-      client.calendar.v4.calendarEvent.list({
-        path: { calendar_id: calendarId },
-        params: {
-          page_size: 50,
-          start_time: String(startTimestamp),
-          end_time: String(endTimestamp),
-          ...(pageToken ? { page_token: pageToken } : {})
-        }
-      })
-    )
-    const data = assertSuccess(response, operation)
-    events.push(...(data?.items ?? []))
-    pageToken = data?.has_more ? data.page_token : undefined
-  } while (pageToken)
-
-  return events
-}
-
 async function streamToBuffer(stream, maximumBytes = 25 * 1024 * 1024) {
   const chunks = []
   let size = 0

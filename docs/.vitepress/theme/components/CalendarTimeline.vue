@@ -17,6 +17,18 @@ onMounted(() => {
     class="calendar-timeline-section"
     :aria-label="copy.schedule.calendarAria"
   >
+    <header class="calendar-timeline-heading-row">
+      <h2>{{ copy.schedule.calendarView }}</h2>
+      <div class="calendar-type-legend" aria-label="Calendar event types">
+        <span class="is-lecture">{{ copy.schedule.eventTypes.lecture }}</span>
+        <span class="is-guest-lecture">
+          {{ copy.schedule.eventTypes.guestLecture }}
+        </span>
+        <span class="is-assignment">
+          {{ copy.schedule.eventTypes.assignment }}
+        </span>
+      </div>
+    </header>
     <div class="calendar-timeline-shell">
       <CalendarTimelineClient v-if="mounted" />
       <div

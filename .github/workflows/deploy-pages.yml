@@ -14,7 +14,6 @@ on:
 env:
   FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
   FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-  FEISHU_CALENDAR_ID: ${{ secrets.FEISHU_CALENDAR_ID }}
 
 permissions:
   contents: write
@@ -46,8 +45,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Test Feishu content converter
-        run: npm run test:feishu
+      - name: Test content pipelines
+        run: npm test
 
       - name: Sync course content from Feishu
         if: ${{ env.FEISHU_APP_ID != '' && env.FEISHU_APP_SECRET != '' }}

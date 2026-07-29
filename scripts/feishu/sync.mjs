@@ -18,7 +18,6 @@ import {
   downloadDocumentMedia,
   downloadFeishuMediaUrl,
   fetchWikiMarkdown,
-  listCalendarEvents,
   listWikiNodes,
   resolveWikiNode
 } from './client.mjs'
@@ -27,10 +26,6 @@ import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
 import { normalizeFeishuMarkdown } from './markdown.mjs'
 import { renderSessionPage, renderWikiPage } from './render.mjs'
 import { stableSnapshotJson } from './snapshot.mjs'
-import {
-  calendarEventsToPublicData,
-  dateRangeToUnixSeconds
-} from './time.mjs'
 import {
   breadcrumbsForWikiPage,
   discoverWikiCollection,
@@ -62,8 +57,6 @@ const operations = []
 try {
   const snapshot = await readExistingSnapshot()
   reconcileConfiguredSessions(snapshot)
-  const calendarEvents = await fetchConfiguredCalendar()
-  applyCalendarData(snapshot, calendarEvents)
   const wikiCollection = await discoverConfiguredWiki()
 
   const wikiRoutes = new Map(
@@ -113,9 +106,6 @@ try {
       JSON.stringify(
         {
           dryRun: true,
-          calendar: config.calendarId
-            ? { id: config.calendarId, eventCount: calendarEvents.length }
-            : { skipped: true },
           documents: config.sessions.filter(({ wikiNodeToken }) => wikiNodeToken)
             .length + wikiDocumentCount,
           changed: changedOperations.map(({ label }) => label)
@@ -182,10 +172,6 @@ function reconcileConfiguredSessions(snapshot) {
       delete next.document
       queueSessionOutputRemoval(id)
     }
-    if (!configured.calendarEventId && next.calendar) {
-      delete next.calendar
-    }
-
     if (Object.keys(next).length > 0) {
       snapshot.sessions[id] = next
     } else {
@@ -207,22 +193,6 @@ function queueSessionOutputRemoval(id) {
   })
 }
 
-async function fetchConfiguredCalendar() {
-  if (!config.calendarId) {
-    console.warn(
-      'Calendar sync skipped: set calendarId in content/feishu/sessions.json ' +
-        'or FEISHU_CALENDAR_ID.'
-    )
-    return []
-  }
-
-  const range = dateRangeToUnixSeconds(config.calendarRange, config.timezone)
-  return listCalendarEvents(client, {
-    calendarId: config.calendarId,
-    ...range
-  })
-}
-
 async function discoverConfiguredWiki() {
   if (!config.wiki) return null
 
@@ -234,44 +204,6 @@ async function discoverConfiguredWiki() {
     listNodes: ({ spaceId, parentNodeToken }) =>
       listWikiNodes(client, { spaceId, parentNodeToken })
   })
-}
-
-function applyCalendarData(snapshot, events) {
-  if (!config.calendarId) {
-    delete snapshot.calendar
-    return
-  }
-
-  const publicEvents = calendarEventsToPublicData(
-    events,
-    config.timezone,
-    config.publishMeetingUrl
-  )
-  snapshot.calendar = {
-    timezone: config.timezone,
-    range: config.calendarRange,
-    events: publicEvents
-  }
-  const eventById = new Map(
-    publicEvents.map((event) => [event.eventId, event])
-  )
-
-  for (const session of config.sessions) {
-    if (!session.calendarEventId) continue
-    const event = eventById.get(session.calendarEventId)
-    if (!event) {
-      throw new Error(
-        `Calendar event ${session.calendarEventId} for Session ${session.id} ` +
-          'was not found in the configured range'
-      )
-    }
-
-    const current = snapshot.sessions[session.id] ?? {}
-    snapshot.sessions[session.id] = {
-      ...current,
-      calendar: event
-    }
-  }
 }
 
 async function stageWikiSession({ session, snapshot, wikiRoutes }) {
@@ -298,11 +230,10 @@ async function stageWikiSession({ session, snapshot, wikiRoutes }) {
     })
   })
 
-  const calendarTitle = snapshot.sessions[session.id]?.calendar?.summary
   const page = renderSessionPage({
     session: {
       ...session,
-      pageTitle: calendarTitle || session.pageTitle || document.node.title
+      pageTitle: session.pageTitle || document.node.title
     },
     body
   })
