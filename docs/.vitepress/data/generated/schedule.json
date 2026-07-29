@@ -16,8 +16,8 @@
         "en": "Topic 1: Kernel & ML Compiler — First Seminar"
       },
       "description": {
-        "zh": "Session 00｜从 HPC 到 AI Infra：并行计算与并行编程\nSession 01｜GPU Programming Model\n介绍活动整体安排、内容设计、评测与算力资源。",
-        "en": "Session 00 | From HPC to AI Infra: Parallel Computing and Parallel Programming\nSession 01 | GPU Programming Model\nSeminar overview, curriculum design, evaluation, and computing resources."
+        "zh": "Session 1.0 从 HPC 到 AI Infra：并行计算与并行编程\nSession 1.1 CUDA 编程模型\nSession 1.2 Triton/TileLang Tile Level 编程\n介绍活动整体安排、内容设计、评测与算力资源。",
+        "en": "Session 1.0 From HPC to AI Infra: Parallel Computing and Parallel Programming\nSession 1.1 CUDA Programming Model\nSession 1.2 Triton/TileLang Tile Level Programming\nSeminar overview, curriculum design, evaluation, and computing resources."
       },
       "date": "2026-07-26",
       "endDate": "2026-07-26",
