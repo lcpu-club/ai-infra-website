@@ -67,7 +67,7 @@ test('keeps bold Feishu labels valid when immediately followed by text', async (
   )
 })
 
-test('downloads Feishu image tags and turns them into local Markdown assets', async () => {
+test('downloads Feishu image tags and renders image components', async () => {
   const calls = []
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n<img src="img_token" caption="架构图" width="800"/>\n',
@@ -84,7 +84,10 @@ test('downloads Feishu image tags and turns them into local Markdown assets', as
   assert.deepEqual(calls, [
     { token: 'img_token', name: undefined, kind: 'img' }
   ])
-  assert.equal(output, '![架构图](/feishu/01/abc.png)\n')
+  assert.equal(
+    output,
+    '<FeishuImage src="/feishu/01/abc.png" caption="架构图" />\n'
+  )
 })
 
 test('downloads hosted Feishu Markdown images and leaves other remote images alone', async () => {
@@ -112,7 +115,56 @@ test('downloads hosted Feishu Markdown images and leaves other remote images alo
   ])
   assert.equal(
     output,
-    '![架构图](/feishu/01/hosted.png)\n\n![](https://example.com/public.png)\n'
+    '<FeishuImage src="/feishu/01/hosted.png" caption="架构图" />\n\n' +
+      '![](https://example.com/public.png)\n'
+  )
+})
+
+test('restores image captions and dimensions from document block metadata', async () => {
+  const sourceUrl =
+    'https://internal-api-drive-stream.feishu.cn/space/image?code=test'
+  const output = await normalizeFeishuMarkdown(
+    `# Title\n\n![](${sourceUrl})\n`,
+    {
+      sessionId: '01',
+      imageMetadata: [
+        {
+          token: 'img_token',
+          caption: 'GPU "执行" 模型',
+          width: 1280,
+          height: 720
+        }
+      ],
+      wikiRoutes: new Map(),
+      async downloadAsset() {
+        return {
+          publicPath: '/feishu/01/model.png',
+          transparent: true
+        }
+      }
+    }
+  )
+
+  assert.equal(
+    output,
+    '<FeishuImage src="/feishu/01/model.png" ' +
+      'caption="GPU &quot;执行&quot; 模型" width="1280" height="720" transparent />\n'
+  )
+})
+
+test('rejects mismatched exported images and block metadata', async () => {
+  const sourceUrl =
+    'https://internal-api-drive-stream.feishu.cn/space/image?code=test'
+  await assert.rejects(
+    normalizeFeishuMarkdown(`# Title\n\n![](${sourceUrl})\n`, {
+      sessionId: '01',
+      imageMetadata: [],
+      wikiRoutes: new Map(),
+      async downloadAsset() {
+        return { publicPath: '/feishu/01/model.png' }
+      }
+    }),
+    /exported more images than its block metadata/
   )
 })
 
@@ -130,7 +182,7 @@ test('converts common Feishu extension blocks', async () => {
   assert.match(output, /- \[x\] 完成练习/)
 })
 
-test('flattens Feishu grid columns while preserving their content order', async () => {
+test('renders Feishu grid columns with their original width ratios', async () => {
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n' +
       '<grid cols="2">' +
@@ -143,7 +195,12 @@ test('flattens Feishu grid columns while preserving their content order', async 
     }
   )
 
-  assert.equal(output, '左栏内容\n\n右栏内容\n')
+  assert.match(output, /<FeishuGrid>/)
+  assert.match(output, /<FeishuGridColumn width="0\.375">/)
+  assert.match(output, /<FeishuGridColumn width="0\.625">/)
+  assert.ok(output.indexOf('左栏内容') < output.indexOf('右栏内容'))
+  assert.match(output, /<\/FeishuGridColumn>/)
+  assert.match(output, /<\/FeishuGrid>/)
 })
 
 test('rejects unsupported attributes on Feishu grids', async () => {

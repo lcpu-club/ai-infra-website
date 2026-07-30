@@ -71,24 +71,27 @@ export async function fetchWikiMarkdown(client, wikiNodeToken) {
 
   if (node.obj_type === 'docx') {
     const operation = `Export Wiki document ${wikiNodeToken}`
-    const response = await callFeishu(operation, () =>
-      client.request({
-        method: 'POST',
-        url: `/open-apis/docs_ai/v1/documents/${encodeURIComponent(node.obj_token)}/fetch`,
-        data: {
-          format: 'markdown',
-          export_option: {
-            export_block_id: false,
-            export_style_attrs: false,
-            export_cite_extra_data: false
-          },
-          extra_param: JSON.stringify({
-            enable_user_cite_reference_map: true,
-            return_html5_block_data: true
-          })
-        }
-      })
-    )
+    const [response, blocks] = await Promise.all([
+      callFeishu(operation, () =>
+        client.request({
+          method: 'POST',
+          url: `/open-apis/docs_ai/v1/documents/${encodeURIComponent(node.obj_token)}/fetch`,
+          data: {
+            format: 'markdown',
+            export_option: {
+              export_block_id: false,
+              export_style_attrs: false,
+              export_cite_extra_data: false
+            },
+            extra_param: JSON.stringify({
+              enable_user_cite_reference_map: true,
+              return_html5_block_data: true
+            })
+          }
+        })
+      ),
+      listDocumentBlocks(client, node.obj_token)
+    ])
     const data = assertSuccess(response, operation)
     const document = data?.document
 
@@ -100,6 +103,14 @@ export async function fetchWikiMarkdown(client, wikiNodeToken) {
       markdown: document.content,
       revisionId: document.revision_id ?? null,
       referenceMap: document.reference_map ?? {},
+      imageMetadata: blocks
+        .filter(({ image }) => image?.token)
+        .map(({ image }) => ({
+          token: image.token,
+          caption: image.caption?.content?.trim() || undefined,
+          width: positiveInteger(image.width),
+          height: positiveInteger(image.height)
+        })),
       node
     }
   }
@@ -125,6 +136,34 @@ export async function fetchWikiMarkdown(client, wikiNodeToken) {
   )
 }
 
+export async function listDocumentBlocks(client, documentId) {
+  const blocks = []
+  let pageToken
+
+  do {
+    const operation = `List blocks in document ${documentId}`
+    const response = await callFeishu(operation, () =>
+      client.docx.v1.documentBlock.list({
+        path: { document_id: documentId },
+        params: {
+          page_size: 500,
+          document_revision_id: -1,
+          ...(pageToken ? { page_token: pageToken } : {})
+        }
+      })
+    )
+    const data = assertSuccess(response, operation)
+    blocks.push(...(data?.items ?? []))
+
+    if (data?.has_more && !data.page_token) {
+      throw new Error(`${operation} returned no next page token`)
+    }
+    pageToken = data?.has_more ? data.page_token : undefined
+  } while (pageToken)
+
+  return blocks
+}
+
 export async function listWikiNodes(client, { spaceId, parentNodeToken }) {
   const nodes = []
   let pageToken
@@ -147,6 +186,10 @@ export async function listWikiNodes(client, { spaceId, parentNodeToken }) {
   } while (pageToken)
 
   return nodes
+}
+
+function positiveInteger(value) {
+  return Number.isInteger(value) && value > 0 ? value : undefined
 }
 
 export async function downloadDocumentMedia(client, fileToken) {

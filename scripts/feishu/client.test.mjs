@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   downloadFeishuMediaUrl,
+  fetchWikiMarkdown,
   listWikiNodes
 } from './client.mjs'
 
@@ -71,4 +72,90 @@ test('downloads only allowlisted hosted Feishu media URLs', async () => {
   } finally {
     globalThis.fetch = originalFetch
   }
+})
+
+test('combines Markdown export with paginated image block metadata', async () => {
+  const blockRequests = []
+  const client = {
+    wiki: {
+      v2: {
+        space: {
+          async getNode() {
+            return {
+              code: 0,
+              data: {
+                node: {
+                  obj_token: 'doc_01',
+                  obj_type: 'docx',
+                  title: 'Session 01'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    async request() {
+      return {
+        code: 0,
+        data: {
+          document: {
+            content: '# Session 01\n\n![](https://example.com/image.png)',
+            revision_id: 7,
+            reference_map: {}
+          }
+        }
+      }
+    },
+    docx: {
+      v1: {
+        documentBlock: {
+          async list(request) {
+            blockRequests.push(request)
+            if (!request.params.page_token) {
+              return {
+                code: 0,
+                data: {
+                  has_more: true,
+                  page_token: 'next',
+                  items: [{ block_type: 2, text: { elements: [] } }]
+                }
+              }
+            }
+            return {
+              code: 0,
+              data: {
+                has_more: false,
+                items: [
+                  {
+                    block_type: 27,
+                    image: {
+                      token: 'img_01',
+                      caption: { content: '  架构图  ' },
+                      width: 1280,
+                      height: 720
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const document = await fetchWikiMarkdown(client, 'wiki_01')
+
+  assert.equal(blockRequests.length, 2)
+  assert.equal(blockRequests[0].params.document_revision_id, -1)
+  assert.equal(blockRequests[1].params.page_token, 'next')
+  assert.deepEqual(document.imageMetadata, [
+    {
+      token: 'img_01',
+      caption: '架构图',
+      width: 1280,
+      height: 720
+    }
+  ])
 })

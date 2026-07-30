@@ -24,6 +24,7 @@ import {
 import { readSyncConfig } from './config.mjs'
 import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
 import { normalizeFeishuMarkdown } from './markdown.mjs'
+import { imageHasTransparency } from './media.mjs'
 import { renderSessionPage, renderWikiPage } from './render.mjs'
 import { stableSnapshotJson } from './snapshot.mjs'
 import {
@@ -223,6 +224,7 @@ async function stageWikiSession({ session, snapshot, wikiRoutes }) {
   const body = await normalizeFeishuMarkdown(document.markdown, {
     sessionId: session.id,
     wikiRoutes,
+    imageMetadata: document.imageMetadata,
     downloadAsset: createMediaDownloader({
       assetDirectory,
       publicBasePath: `/feishu/${session.id}`,
@@ -374,6 +376,7 @@ async function stageWikiCollectionPage({
   const body = await normalizeFeishuMarkdown(document.markdown, {
     contextLabel,
     wikiRoutes,
+    imageMetadata: document.imageMetadata,
     renderSubPageList,
     downloadAsset: createMediaDownloader({
       assetDirectory,
@@ -439,7 +442,9 @@ function createMediaDownloader({
     await writeFile(filePath, media.buffer)
 
     const result = {
-      publicPath: `${publicBasePath}/${fileName}`
+      publicPath: `${publicBasePath}/${fileName}`,
+      transparent:
+        kind === 'img' && imageHasTransparency(media.buffer, mediaType)
     }
     mediaCache.set(mediaKey, result)
     return result

@@ -2630,6 +2630,74 @@ body.has-calendar-dialog {
   background: var(--site-brand-soft);
 }
 
+.vp-doc .feishu-grid {
+  display: flex;
+  width: 100%;
+  margin: 26px 0;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.vp-doc .feishu-grid-column {
+  min-width: 0;
+  flex-basis: 0;
+  flex-grow: var(--feishu-column-width, 1);
+}
+
+.vp-doc .feishu-grid-column > :first-child {
+  margin-top: 0;
+}
+
+.vp-doc .feishu-grid-column > :last-child {
+  margin-bottom: 0;
+}
+
+.vp-doc .feishu-figure {
+  width: fit-content;
+  max-width: 100%;
+  margin: 26px auto;
+}
+
+.vp-doc .feishu-image-frame {
+  display: flex;
+  max-width: 100%;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition:
+    padding 160ms ease,
+    background-color 160ms ease;
+}
+
+.vp-doc .feishu-image-frame img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 7px;
+}
+
+.vp-doc .feishu-figure figcaption {
+  margin-top: 9px;
+  color: var(--site-text-3);
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.vp-doc .feishu-grid .feishu-figure {
+  width: 100%;
+  margin: 0;
+}
+
+.dark .vp-doc .feishu-image-frame.is-transparent {
+  padding: clamp(8px, 1.5vw, 16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: #ffffff;
+}
+
 .session-banner {
   margin: 7px 0 36px;
   padding: 30px;
@@ -2882,6 +2950,17 @@ body.has-calendar-dialog {
 }
 
 @media (max-width: 720px) {
+  .vp-doc .feishu-grid {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .vp-doc .feishu-grid-column {
+    width: 100%;
+    flex-basis: auto;
+  }
+
   .calendar-timeline-heading-row {
     margin-bottom: 16px;
     align-items: flex-start;

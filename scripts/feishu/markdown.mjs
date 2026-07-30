@@ -8,8 +8,8 @@ const SUB_PAGE_LIST_PATTERN =
 const SUB_PAGE_ENTRY_PATTERN = /<sub-page\b[^>]*\/\s*>/gi
 const CITE_PATTERN = /<cite\b([^>]*)>\s*<\/cite>/gi
 const TABLE_PATTERN = /<table\b[^>]*>[\s\S]*?<\/table>/gi
-const MARKDOWN_IMAGE_PATTERN =
-  /!\[([^\]\n]*)\]\((https:\/\/[^)\s]+)\)/g
+const FEISHU_MEDIA_PATTERN =
+  /<(img|source)\b([^>]*?)\/?>|!\[([^\]\n]*)\]\((https:\/\/[^)\s]+)\)/gi
 const FEISHU_MEDIA_HOSTS = new Set([
   'internal-api-drive-stream.feishu.cn'
 ])
@@ -46,6 +46,7 @@ export async function normalizeFeishuMarkdown(
     sessionId,
     contextLabel,
     downloadAsset,
+    imageMetadata,
     wikiRoutes = new Map(),
     renderSubPageList
   }
@@ -61,22 +62,30 @@ export async function normalizeFeishuMarkdown(
 
   const protectedCode = protectMarkdownCode(markdown)
   markdown = protectedCode.markdown
+  const protectedComponents = createPlaceholderStore('COMPONENT', markdown)
 
   if (DANGEROUS_TAG_PATTERN.test(markdown)) {
     throw new Error(`${context} contains unsafe raw HTML`)
   }
 
-  markdown = await replaceMediaTags(markdown, {
+  const imageMetadataCursor = createImageMetadataCursor(
+    imageMetadata,
+    context
+  )
+  markdown = await replaceFeishuMedia(markdown, {
     context,
-    downloadAsset
+    downloadAsset,
+    imageMetadataCursor,
+    protectComponent: protectedComponents.protect
   })
-  markdown = await replaceHostedFeishuImages(markdown, {
-    context,
-    downloadAsset
-  })
+  imageMetadataCursor.assertComplete()
   const protectedTables = protectSafeTables(markdown, context)
   markdown = protectedTables.markdown
-  markdown = convertSupportedXml(markdown, { context, renderSubPageList })
+  markdown = convertSupportedXml(markdown, {
+    context,
+    renderSubPageList,
+    protectComponent: protectedComponents.protect
+  })
   markdown = normalizeAdjacentEmphasis(markdown)
   markdown = rewriteWikiLinks(markdown, wikiRoutes)
   markdown = normalizeRenderedUrls(markdown)
@@ -90,6 +99,7 @@ export async function normalizeFeishuMarkdown(
 
   markdown = protectedTables.restore(markdown)
   markdown = protectedCode.restore(markdown)
+  markdown = protectedComponents.restore(markdown)
   return `${markdown.trim()}\n`
 }
 
@@ -110,51 +120,9 @@ function stripLeadingTitle(markdown) {
   return withoutXmlTitle.replace(/^\s*#\s+[^\n]*(?:\n+|$)/, '')
 }
 
-async function replaceMediaTags(markdown, options) {
-  const tagPattern = /<(img|source)\b([^>]*?)\/?>/gi
-  const matches = [...markdown.matchAll(tagPattern)]
-  if (matches.length === 0) return markdown
-  if (typeof options.downloadAsset !== 'function') {
-    throw new Error(`${options.context} contains media but no downloader`)
-  }
-
-  let output = ''
-  let cursor = 0
-  for (const match of matches) {
-    output += markdown.slice(cursor, match.index)
-    const tagName = match[1].toLowerCase()
-    const attributes = parseAttributes(match[2])
-    const token = attributes.token || attributes.src
-
-    if (!token || !/^[A-Za-z0-9_-]+$/.test(token)) {
-      throw new Error(
-        `${options.context} has a Feishu <${tagName}> without a valid media token`
-      )
-    }
-
-    const asset = await options.downloadAsset({
-      token,
-      name: attributes.name,
-      kind: tagName
-    })
-    const label =
-      attributes.caption ||
-      attributes.name ||
-      (tagName === 'img' ? '讲义图片' : '讲义附件')
-
-    output +=
-      tagName === 'img'
-        ? `![${escapeLabel(label)}](${asset.publicPath})`
-        : `[下载 ${escapeLabel(label)}](${asset.publicPath})`
-    cursor = match.index + match[0].length
-  }
-
-  return output + markdown.slice(cursor)
-}
-
-async function replaceHostedFeishuImages(markdown, options) {
-  const matches = [...markdown.matchAll(MARKDOWN_IMAGE_PATTERN)].filter(
-    (match) => isHostedFeishuMediaUrl(match[2])
+async function replaceFeishuMedia(markdown, options) {
+  const matches = [...markdown.matchAll(FEISHU_MEDIA_PATTERN)].filter(
+    (match) => match[1] || isHostedFeishuMediaUrl(match[4])
   )
   if (matches.length === 0) return markdown
   if (typeof options.downloadAsset !== 'function') {
@@ -165,17 +133,101 @@ async function replaceHostedFeishuImages(markdown, options) {
   let cursor = 0
   for (const match of matches) {
     output += markdown.slice(cursor, match.index)
-    const label = match[1]
-    const asset = await options.downloadAsset({
-      sourceUrl: match[2],
-      name: label || undefined,
-      kind: 'img'
-    })
-    output += `![${label}](${asset.publicPath})`
+    const tagName = match[1]?.toLowerCase()
+    const attributes = tagName ? parseAttributes(match[2]) : {}
+    const hostedImage = !tagName
+    const image = tagName === 'img' || hostedImage
+    const metadata = image ? options.imageMetadataCursor.next() : undefined
+
+    if (hostedImage) {
+      const caption = normalizeImageCaption(match[3] || metadata?.caption)
+      const asset = await options.downloadAsset({
+        sourceUrl: match[4],
+        name: match[3] || undefined,
+        kind: 'img'
+      })
+      output += options.protectComponent(
+        renderFeishuImage({ asset, caption, metadata })
+      )
+    } else {
+      const token = attributes.token || attributes.src
+      if (!token || !TOKEN_PATTERN.test(token)) {
+        throw new Error(
+          `${options.context} has a Feishu <${tagName}> without a valid media token`
+        )
+      }
+      if (
+        tagName === 'img' &&
+        metadata?.token &&
+        token !== metadata.token
+      ) {
+        throw new Error(
+          `${options.context} image metadata does not match exported media`
+        )
+      }
+
+      const asset = await options.downloadAsset({
+        token,
+        name: attributes.name,
+        kind: tagName
+      })
+      const caption = normalizeImageCaption(
+        attributes.caption || attributes.name || metadata?.caption
+      )
+      output +=
+        tagName === 'img'
+          ? options.protectComponent(
+              renderFeishuImage({ asset, caption, metadata })
+            )
+          : `[下载 ${escapeLabel(attributes.name || '讲义附件')}](${asset.publicPath})`
+    }
     cursor = match.index + match[0].length
   }
 
   return output + markdown.slice(cursor)
+}
+
+function createImageMetadataCursor(imageMetadata, context) {
+  const items = Array.isArray(imageMetadata) ? imageMetadata : null
+  let index = 0
+
+  return {
+    next() {
+      if (!items) return undefined
+      const item = items[index]
+      index += 1
+      if (!item) {
+        throw new Error(
+          `${context} exported more images than its block metadata`
+        )
+      }
+      return item
+    },
+    assertComplete() {
+      if (items && index !== items.length) {
+        throw new Error(
+          `${context} exported ${index} image(s), but block metadata contains ${items.length}`
+        )
+      }
+    }
+  }
+}
+
+function normalizeImageCaption(value) {
+  const caption = String(value ?? '')
+    .replace(/[\u0000-\u001f\u007f]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return caption || undefined
+}
+
+function renderFeishuImage({ asset, caption, metadata }) {
+  const attributes = [`src="${escapeHtml(asset.publicPath)}"`]
+  if (caption) attributes.push(`caption="${escapeHtml(caption)}"`)
+  if (metadata?.width) attributes.push(`width="${metadata.width}"`)
+  if (metadata?.height) attributes.push(`height="${metadata.height}"`)
+  if (asset.transparent) attributes.push('transparent')
+  return `<FeishuImage ${attributes.join(' ')} />`
 }
 
 function isHostedFeishuMediaUrl(value) {
@@ -227,7 +279,10 @@ function parseStrictAttributes(source, allowedNames, context) {
   return attributes
 }
 
-function convertSupportedXml(markdown, { context, renderSubPageList }) {
+function convertSupportedXml(
+  markdown,
+  { context, renderSubPageList, protectComponent }
+) {
   let output = markdown
 
   output = output.replace(SUB_PAGE_LIST_PATTERN, (tag, source, body = '') => {
@@ -275,7 +330,7 @@ function convertSupportedXml(markdown, { context, renderSubPageList }) {
       return `**飞书群：** ${escapeMarkdownInline(attributes.name)}`
     }
   )
-  output = replaceGridContainers(output, context)
+  output = replaceGridContainers(output, context, protectComponent)
   output = output.replace(
     /<callout\b([^>]*)>/gi,
     (_, source) => {
@@ -317,7 +372,7 @@ function convertSupportedXml(markdown, { context, renderSubPageList }) {
   return output.replace(/\n{3,}/g, '\n\n')
 }
 
-function replaceGridContainers(markdown, context) {
+function replaceGridContainers(markdown, context, protectComponent) {
   let output = markdown.replace(
     /<grid(?=[\s>])([^>]*)>/gi,
     (_, source) => {
@@ -326,27 +381,53 @@ function replaceGridContainers(markdown, context) {
         ['cols', 'column-size', 'column_size'],
         `${context} grid`
       )
-      return '\n'
+      return `\n\n${protectComponent('<FeishuGrid>')}\n\n`
     }
   )
 
   output = output.replace(
     /<(?:column|grid-column|grid_column)(?=[\s>])([^>]*)>/gi,
     (_, source) => {
-      parseStrictAttributes(
+      const attributes = parseStrictAttributes(
         source,
         ['width', 'width-ratio', 'width_ratio'],
         `${context} grid column`
       )
-      return '\n'
+      const width = normalizeGridWidth(
+        attributes.width ||
+          attributes['width-ratio'] ||
+          attributes.width_ratio,
+        context
+      )
+      const tag = width
+        ? `<FeishuGridColumn width="${width}">`
+        : '<FeishuGridColumn>'
+      return `\n\n${protectComponent(tag)}\n\n`
     }
   )
 
   output = output.replace(
     /<\/(?:column|grid-column|grid_column)\s*>/gi,
-    '\n\n'
+    `\n\n${protectComponent('</FeishuGridColumn>')}\n\n`
   )
-  return output.replace(/<\/grid\s*>/gi, '\n')
+  return output.replace(
+    /<\/grid\s*>/gi,
+    `\n\n${protectComponent('</FeishuGrid>')}\n\n`
+  )
+}
+
+function normalizeGridWidth(value, context) {
+  if (value === undefined) return undefined
+  if (!/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(value)) {
+    throw new Error(`${context} grid column has an invalid width`)
+  }
+
+  const numeric = Number(value)
+  const ratio = numeric > 1 && numeric <= 100 ? numeric / 100 : numeric
+  if (!Number.isFinite(ratio) || ratio <= 0 || ratio > 1) {
+    throw new Error(`${context} grid column has an invalid width`)
+  }
+  return ratio.toFixed(6).replace(/0+$/, '').replace(/\.$/, '')
 }
 
 function assertSupportedSubPageListBody(body, context) {
