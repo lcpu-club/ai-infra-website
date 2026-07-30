@@ -85,7 +85,7 @@ presenter: @陈嘉骏
 
 <FeishuGridColumn width="0.48255">
 
-<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/c7f510ecc4578cd7553760aa.png" width="1920" height="1121" transparent />
+<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/c7f510ecc4578cd7553760aa.png" caption="IPC &gt; 1" width="1920" height="1121" transparent />
 
 </FeishuGridColumn>
 
