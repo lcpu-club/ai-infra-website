@@ -465,10 +465,7 @@ function replaceCitations(markdown, { context, format }) {
 
     let label
     if (attributes.type === 'user') {
-      if (!attributes['user-name']) {
-        throw new Error(`${context} user citation is missing a name`)
-      }
-      label = `@${attributes['user-name']}`
+      label = `@${attributes['user-name'] || '飞书用户'}`
     } else if (attributes.type === 'doc') {
       label = `《${attributes.title || attributes['doc-id'] || '飞书文档'}》`
     } else {

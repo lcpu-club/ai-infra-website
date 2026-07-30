@@ -209,7 +209,8 @@ test('converts Feishu title, task list, chat card, and document citation blocks'
     '<title>飞书导出标题</title>\n\n' +
       '<chat_card name="AI Infra学习小组" chat-id="oc_123"></chat_card>\n\n' +
       '<readonly-block token="task_123" type="task_list"></readonly-block>\n\n' +
-      '<cite doc-id="Wiki_123" file-type="wiki" title="会议议程" type="doc"></cite>\n',
+      '<cite doc-id="Wiki_123" file-type="wiki" title="会议议程" type="doc"></cite>\n\n' +
+      '<cite user-id="ou_hidden" type="user"></cite>\n',
     {
       contextLabel: 'Wiki page 示例',
       wikiRoutes: new Map()
@@ -220,6 +221,7 @@ test('converts Feishu title, task list, chat card, and document citation blocks'
   assert.match(output, /\*\*飞书群：\*\* AI Infra学习小组/)
   assert.match(output, /> 飞书任务列表请在原文中查看。/)
   assert.match(output, /《会议议程》/)
+  assert.match(output, /@飞书用户/)
 })
 
 test('rejects unsafe attributes and unsupported markup inside tables', async () => {
