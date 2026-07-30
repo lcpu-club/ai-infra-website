@@ -321,19 +321,11 @@ function replaceGridContainers(markdown, context) {
   let output = markdown.replace(
     /<grid(?=[\s>])([^>]*)>/gi,
     (_, source) => {
-      const attributes = parseStrictAttributes(
+      parseStrictAttributes(
         source,
         ['cols', 'column-size', 'column_size'],
         `${context} grid`
       )
-      const columnSize = singleAttributeAlias(
-        attributes,
-        ['cols', 'column-size', 'column_size'],
-        `${context} grid`
-      )
-      if (columnSize && !/^[2-5]$/.test(columnSize)) {
-        throw new Error(`${context} grid has an invalid column size`)
-      }
       return '\n'
     }
   )
@@ -341,22 +333,11 @@ function replaceGridContainers(markdown, context) {
   output = output.replace(
     /<(?:column|grid-column|grid_column)(?=[\s>])([^>]*)>/gi,
     (_, source) => {
-      const attributes = parseStrictAttributes(
+      parseStrictAttributes(
         source,
         ['width', 'width-ratio', 'width_ratio'],
         `${context} grid column`
       )
-      const widthRatio = singleAttributeAlias(
-        attributes,
-        ['width', 'width-ratio', 'width_ratio'],
-        `${context} grid column`
-      )
-      if (
-        widthRatio &&
-        (!/^(?:[1-9]\d?|100)$/.test(widthRatio))
-      ) {
-        throw new Error(`${context} grid column has an invalid width ratio`)
-      }
       return '\n'
     }
   )
@@ -366,18 +347,6 @@ function replaceGridContainers(markdown, context) {
     '\n\n'
   )
   return output.replace(/<\/grid\s*>/gi, '\n')
-}
-
-function singleAttributeAlias(attributes, names, context) {
-  const presentNames = names.filter((name) =>
-    Object.hasOwn(attributes, name)
-  )
-  if (presentNames.length > 1) {
-    throw new Error(
-      `${context} repeats ${presentNames[0]} using multiple naming variants`
-    )
-  }
-  return presentNames.length ? attributes[presentNames[0]] : undefined
 }
 
 function assertSupportedSubPageListBody(body, context) {

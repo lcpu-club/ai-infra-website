@@ -134,8 +134,8 @@ test('flattens Feishu grid columns while preserving their content order', async 
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n' +
       '<grid cols="2">' +
-      '<column width="40"><p>左栏内容</p></column>' +
-      '<column width="60"><p>右栏内容</p></column>' +
+      '<column width="0.375"><p>左栏内容</p></column>' +
+      '<column width="0.625"><p>右栏内容</p></column>' +
       '</grid>\n',
     {
       sessionId: '01',
