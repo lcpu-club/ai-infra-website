@@ -166,3 +166,46 @@ VecAdd<<<1, N>>>(A, B, C);
 ```
 
 ### CUDA 内存管理 API
+
+CUDA 中 CPU 和 GPU 拥有独立内存，因此需要显式管理数据传输。下面的代码中给出了 CUDA 的内存管理 API：
+
+```C++
+int main()
+{
+    int n = 1000000;
+    size_t bytes = n * sizeof(float);
+    float *h_a = (float*)maloc(bytes);
+    for (int i = 0; i < n; i++) h_a[i] = 1.0f;
+    float *d_a;
+    cudaMalloc(&d_a, bytes);
+    cudaMemcpy(d_a, h_a, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(h_a, d_a, bytes, cudaMemcpyDeviceToHost);
+    cudaFree(d_a);
+    free(h_a);
+}
+```
+
+### Kernel 启动参数
+
+Kernel 的调用形式是：
+
+```C++
+kernel<<<gridDim, blockDim>>>();
+```
+
+其中 grid 的维数就是 block 的数量，block 的维数就是 block 带 thread 数量。可以是 `int` 或者 `dim3` 类型，可以支持1-3维的分块。例如矩阵计算通常使用二维：
+
+```C++
+dim3 block(16, 16); // 16x16 共计256个 block
+```
+
+### Kernel 中的内置变量
+
+Kernel 中可以直接访问线程和 block 信息：
+
+| 变量 | 含义 |  |
+|-|-|-|
+| threadIdx |  |  |
+| blockIdx |  |  |
+| blockDim |  |  |
+| gridDim |  |  |
