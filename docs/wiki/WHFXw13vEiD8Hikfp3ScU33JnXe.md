@@ -130,4 +130,39 @@ CUDA 程序通常采用 CPU + GPU 协同执行模式，CPU 负责控制流程和
 - 在 CPU 上准备数据（Host）：程序首先在 CPU 内存（Host Memory）中分配输入数据、初始化数据、设置计算参数。
 - 将数据从 CPU 内存拷贝到 GPU 内存：GPU 拥有独立显存（Device Memory），需要将数据从 CPU 内存通过 PCIe / NVLink 等接口复制。
 - 配置 Kernel 启动参数：CUDA Kernel 由大量线程执行，启动时需要指定 grid 和 block 大小（`<<<grid, block>>>`）。
-- GPU 并行执行 Kernel：GPU 根据定义的 grid、block、warp 和 thread
+- GPU 并行执行 Kernel：GPU 根据定义的 grid、block、warp 和 thread 组织线程执行。
+- 将结果从 GPU 传回 CPU：Kernel 完成后，将结果从 GPU 显存复制回 CPU，CPU 得到运行结果。
+
+## Kernel：运行在 GPU 上的函数
+
+CUDA 编程的核心是 **Kernel**。Kernel 是运行在 GPU 上的函数，由 CPU（Host）调用，并由大量 GPU thread 并行执行。
+
+### 新的关键字
+
+在 CUDA 编程中，CPU 是 host，GPU 是 device。我们通过下面的三个关键字来修饰限定函数执行的位置：
+
+- `__host__`：这类函数和正常函数没有区别，只能被 host 上执行的函数调用。
+- `__global__`：这类函数可以被任何函数调用，并在 device 上执行。
+- `__device__`：这类函数只能被 device 上执行的函数调用，并在 device 上执行。
+
+更多请参考 [Execution Space Specifier](https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-extensions.html)。
+
+### 定义 Kernel
+
+CUDA Kernel 使用 `__global__` 修饰，返回类型必须为 `void`，由 CPU 调用，在 GPU 上由多个 thread 并行执行。下面的代码是 N 个 CUDA thread 并行计算向量加法：
+
+```C++
+__global__ void VecAdd(float* A, float* B, float* C)
+{
+    int i = threadIdx.x;
+    C[i] = A[i] + B[i];
+}
+```
+
+调用时使用：
+
+```C++
+VecAdd<<<1, N>>>(A, B, C);
+```
+
+### CUDA 内存管理 API
