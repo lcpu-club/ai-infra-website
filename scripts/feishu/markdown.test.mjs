@@ -133,9 +133,9 @@ test('converts common Feishu extension blocks', async () => {
 test('flattens Feishu grid columns while preserving their content order', async () => {
   const output = await normalizeFeishuMarkdown(
     '# Title\n\n' +
-      '<grid column_size="2">' +
-      '<grid_column width_ratio="40"><p>左栏内容</p></grid_column>' +
-      '<grid-column width-ratio="60"><p>右栏内容</p></grid-column>' +
+      '<grid cols="2">' +
+      '<column width="40"><p>左栏内容</p></column>' +
+      '<column width="60"><p>右栏内容</p></column>' +
       '</grid>\n',
     {
       sessionId: '01',

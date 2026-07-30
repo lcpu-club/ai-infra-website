@@ -323,16 +323,15 @@ function replaceGridContainers(markdown, context) {
     (_, source) => {
       const attributes = parseStrictAttributes(
         source,
-        ['column-size', 'column_size'],
+        ['cols', 'column-size', 'column_size'],
         `${context} grid`
       )
-      const columnSize = singleAttributeVariant(
+      const columnSize = singleAttributeAlias(
         attributes,
-        'column-size',
-        'column_size',
+        ['cols', 'column-size', 'column_size'],
         `${context} grid`
       )
-      if (columnSize && !/^[2-4]$/.test(columnSize)) {
+      if (columnSize && !/^[2-5]$/.test(columnSize)) {
         throw new Error(`${context} grid has an invalid column size`)
       }
       return '\n'
@@ -340,22 +339,21 @@ function replaceGridContainers(markdown, context) {
   )
 
   output = output.replace(
-    /<(?:grid-column|grid_column)(?=[\s>])([^>]*)>/gi,
+    /<(?:column|grid-column|grid_column)(?=[\s>])([^>]*)>/gi,
     (_, source) => {
       const attributes = parseStrictAttributes(
         source,
-        ['width-ratio', 'width_ratio'],
+        ['width', 'width-ratio', 'width_ratio'],
         `${context} grid column`
       )
-      const widthRatio = singleAttributeVariant(
+      const widthRatio = singleAttributeAlias(
         attributes,
-        'width-ratio',
-        'width_ratio',
+        ['width', 'width-ratio', 'width_ratio'],
         `${context} grid column`
       )
       if (
         widthRatio &&
-        (!/^[1-9]\d?$/.test(widthRatio) || Number(widthRatio) > 99)
+        (!/^(?:[1-9]\d?|100)$/.test(widthRatio))
       ) {
         throw new Error(`${context} grid column has an invalid width ratio`)
       }
@@ -364,27 +362,22 @@ function replaceGridContainers(markdown, context) {
   )
 
   output = output.replace(
-    /<\/(?:grid-column|grid_column)\s*>/gi,
+    /<\/(?:column|grid-column|grid_column)\s*>/gi,
     '\n\n'
   )
   return output.replace(/<\/grid\s*>/gi, '\n')
 }
 
-function singleAttributeVariant(
-  attributes,
-  firstName,
-  secondName,
-  context
-) {
-  if (
-    Object.hasOwn(attributes, firstName) &&
-    Object.hasOwn(attributes, secondName)
-  ) {
+function singleAttributeAlias(attributes, names, context) {
+  const presentNames = names.filter((name) =>
+    Object.hasOwn(attributes, name)
+  )
+  if (presentNames.length > 1) {
     throw new Error(
-      `${context} repeats ${firstName} using two naming variants`
+      `${context} repeats ${presentNames[0]} using multiple naming variants`
     )
   }
-  return attributes[firstName] ?? attributes[secondName]
+  return presentNames.length ? attributes[presentNames[0]] : undefined
 }
 
 function assertSupportedSubPageListBody(body, context) {
