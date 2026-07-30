@@ -23,24 +23,24 @@
       {
         "wikiNodeToken": "F9oKw4GUgi30lQkgWScckzjfnfd",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 00 | 从 HPC 到 AI Infra: 并行计算与并行编程",
+        "title": "Session 1.0 | 并行计算与并行编程",
         "route": "/wiki/F9oKw4GUgi30lQkgWScckzjfnfd",
         "depth": 1,
         "order": 1,
         "documentId": "XO9wdbXxJoWUDxxkRB9cEdy2nbf",
         "objectType": "docx",
-        "revisionId": 26
+        "revisionId": 1465
       },
       {
         "wikiNodeToken": "WHFXw13vEiD8Hikfp3ScU33JnXe",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 01｜GPU Programming Model",
+        "title": "Session 1.1｜CUDA  Programming Model",
         "route": "/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe",
         "depth": 1,
         "order": 2,
         "documentId": "H5x1dK6LzoVFmuxUzDicmuQ1nbb",
         "objectType": "docx",
-        "revisionId": 42
+        "revisionId": 677
       }
     ]
   }
