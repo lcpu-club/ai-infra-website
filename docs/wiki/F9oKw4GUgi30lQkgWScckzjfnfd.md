@@ -365,7 +365,7 @@ store c
 
 <FeishuGridColumn width="0.398108">
 
-<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/6b242fbace3f3912f113078f.png" width="1840" height="1562" />
+<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/6b242fbace3f3912f113078f.png" caption="CUDA vs Triton" width="1840" height="1562" />
 
 </FeishuGridColumn>
 
@@ -419,7 +419,7 @@ store c
 
 <FeishuGridColumn width="0.323323">
 
-<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/54403bf4a6d1041fa706732f.png" width="1036" height="802" />
+<FeishuImage src="/feishu/wiki/F9oKw4GUgi30lQkgWScckzjfnfd/54403bf4a6d1041fa706732f.png" caption="推理框架" width="1036" height="802" />
 
 </FeishuGridColumn>
 

@@ -95,7 +95,7 @@ Grid 是一次 kernel 启动产生的所有 block 的集合。block 数量可以
 
 <FeishuGridColumn width="0.672133">
 
-<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/b219b627960812f5f000d1bf.png" width="713" height="500" transparent />
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/b219b627960812f5f000d1bf.png" caption="https://developer-blogs.nvidia.com/wp-content/uploads/2020/06/kernel-execution-on-gpu-1.png" width="713" height="500" transparent />
 
 </FeishuGridColumn>
 
@@ -129,4 +129,5 @@ CUDA 程序通常采用 CPU + GPU 协同执行模式，CPU 负责控制流程和
 
 - 在 CPU 上准备数据（Host）：程序首先在 CPU 内存（Host Memory）中分配输入数据、初始化数据、设置计算参数。
 - 将数据从 CPU 内存拷贝到 GPU 内存：GPU 拥有独立显存（Device Memory），需要将数据从 CPU 内存通过 PCIe / NVLink 等接口复制。
-- 配置 Kernel 启动参数：CUDA Kernel 由大量线程执行，启动时需要指定 grid 和 block 大小（`<<<grid, block>>>`）
+- 配置 Kernel 启动参数：CUDA Kernel 由大量线程执行，启动时需要指定 grid 和 block 大小（`<<<grid, block>>>`）。
+- GPU 并行执行 Kernel：GPU 根据定义的 grid、block、warp 和 thread
