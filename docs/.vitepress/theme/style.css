@@ -2634,7 +2634,7 @@ body.has-calendar-dialog {
   display: flex;
   width: 100%;
   margin: 26px 0;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 16px;
 }
 
@@ -2650,6 +2650,11 @@ body.has-calendar-dialog {
 
 .vp-doc .feishu-grid-column > :last-child {
   margin-bottom: 0;
+}
+
+.vp-doc .feishu-grid-column > div[class*='language-'] {
+  height: 100%;
+  margin: 0;
 }
 
 .vp-doc .feishu-figure {
@@ -2959,6 +2964,28 @@ body.has-calendar-dialog {
   .vp-doc .feishu-grid-column {
     width: 100%;
     flex-basis: auto;
+  }
+
+  .vp-doc
+    .feishu-grid:has(
+      > .feishu-grid-column > div[class*='language-']
+    ) {
+    flex-direction: row;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scroll-snap-type: x proximity;
+  }
+
+  .vp-doc
+    .feishu-grid:has(
+      > .feishu-grid-column > div[class*='language-']
+    )
+    > .feishu-grid-column {
+    width: auto;
+    min-width: min(280px, calc(100vw - 48px));
+    flex-basis: 0;
+    scroll-snap-align: start;
   }
 
   .calendar-timeline-heading-row {
