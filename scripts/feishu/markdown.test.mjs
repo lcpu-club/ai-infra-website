@@ -130,6 +130,35 @@ test('converts common Feishu extension blocks', async () => {
   assert.match(output, /- \[x\] 完成练习/)
 })
 
+test('flattens Feishu grid columns while preserving their content order', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '# Title\n\n' +
+      '<grid column_size="2">' +
+      '<grid_column width_ratio="40"><p>左栏内容</p></grid_column>' +
+      '<grid-column width-ratio="60"><p>右栏内容</p></grid-column>' +
+      '</grid>\n',
+    {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.equal(output, '左栏内容\n\n右栏内容\n')
+})
+
+test('rejects unsupported attributes on Feishu grids', async () => {
+  await assert.rejects(
+    normalizeFeishuMarkdown(
+      '# Title\n\n<grid onclick="alert(1)"><grid-column>x</grid-column></grid>',
+      {
+        sessionId: '01',
+        wikiRoutes: new Map()
+      }
+    ),
+    /unsupported attribute onclick/
+  )
+})
+
 test('renders Feishu sub-page-list blocks with the discovered Wiki directory', async () => {
   const source =
     '# Wiki\n\n' +

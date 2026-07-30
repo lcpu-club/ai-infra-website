@@ -275,6 +275,7 @@ function convertSupportedXml(markdown, { context, renderSubPageList }) {
       return `**飞书群：** ${escapeMarkdownInline(attributes.name)}`
     }
   )
+  output = replaceGridContainers(output, context)
   output = output.replace(
     /<callout\b([^>]*)>/gi,
     (_, source) => {
@@ -314,6 +315,76 @@ function convertSupportedXml(markdown, { context, renderSubPageList }) {
   output = output.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/gi, '$1')
 
   return output.replace(/\n{3,}/g, '\n\n')
+}
+
+function replaceGridContainers(markdown, context) {
+  let output = markdown.replace(
+    /<grid(?=[\s>])([^>]*)>/gi,
+    (_, source) => {
+      const attributes = parseStrictAttributes(
+        source,
+        ['column-size', 'column_size'],
+        `${context} grid`
+      )
+      const columnSize = singleAttributeVariant(
+        attributes,
+        'column-size',
+        'column_size',
+        `${context} grid`
+      )
+      if (columnSize && !/^[2-4]$/.test(columnSize)) {
+        throw new Error(`${context} grid has an invalid column size`)
+      }
+      return '\n'
+    }
+  )
+
+  output = output.replace(
+    /<(?:grid-column|grid_column)(?=[\s>])([^>]*)>/gi,
+    (_, source) => {
+      const attributes = parseStrictAttributes(
+        source,
+        ['width-ratio', 'width_ratio'],
+        `${context} grid column`
+      )
+      const widthRatio = singleAttributeVariant(
+        attributes,
+        'width-ratio',
+        'width_ratio',
+        `${context} grid column`
+      )
+      if (
+        widthRatio &&
+        (!/^[1-9]\d?$/.test(widthRatio) || Number(widthRatio) > 99)
+      ) {
+        throw new Error(`${context} grid column has an invalid width ratio`)
+      }
+      return '\n'
+    }
+  )
+
+  output = output.replace(
+    /<\/(?:grid-column|grid_column)\s*>/gi,
+    '\n\n'
+  )
+  return output.replace(/<\/grid\s*>/gi, '\n')
+}
+
+function singleAttributeVariant(
+  attributes,
+  firstName,
+  secondName,
+  context
+) {
+  if (
+    Object.hasOwn(attributes, firstName) &&
+    Object.hasOwn(attributes, secondName)
+  ) {
+    throw new Error(
+      `${context} repeats ${firstName} using two naming variants`
+    )
+  }
+  return attributes[firstName] ?? attributes[secondName]
 }
 
 function assertSupportedSubPageListBody(body, context) {
