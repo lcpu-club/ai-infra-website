@@ -203,9 +203,44 @@ dim3 block(16, 16); // 16x16 共计256个 block
 
 Kernel 中可以直接访问线程和 block 信息：
 
-| 变量 | 含义 |  |
-|-|-|-|
-| threadIdx |  |  |
-| blockIdx |  |  |
-| blockDim |  |  |
-| gridDim |  |  |
+| 变量 | 含义 |
+|-|-|
+| `threadIdx` | 当前 thread 在 block 内的位置 |
+| `blockIdx` | 当前 block 在 grid 内的位置 |
+| `blockDim` | 一个 block 的 thread 数量 |
+| `gridDim` | grid 中 block 数量 |
+
+```Java
+__global__ void MatAdd(float A[N][N], float B[N][N], float C[N][N])
+{
+    int i = threadIdx.x;
+    int j = threadIdx.y;
+    C[i][j] = A[i][j] + B[i][j];
+}
+int main()
+{
+    dim3 threadPerBlock(N, N);
+    MatAdd<<<1, threadsPerBlock>>>(A, B, C);
+}
+```
+
+### 使用多个 Block
+
+实际问题中数据规模通常大于一个 block，一个 block 线程数量有限，因此需要多个 block。线程全局编号：$index = blockIdx × blockDim+threadIdx$
+
+```C++
+__global__ void MatAdd(float A[N][N], float B[N][N], float C[N][N])
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    if (i < N && j < N)
+        C[i][j] = A[i][j] + B[i][j];
+}
+
+int main()
+{
+    dim3 threadsPerBlock(16, 16);
+    dim3 numBlocks((N - 1) / threadsPerBlock.x + 1, (N - 1) / threadsPerBlock.y + 1);
+    MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C);
+}
+```
