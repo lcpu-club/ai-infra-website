@@ -36,7 +36,7 @@ CUDA 为何要把线程组织成 Thread、Block 和 Grid？Warp 又是什么？
 
 - CPU 大量控制，少量计算；GPU 少量控制，大量计算。（写代码的体验是相反的：CPU 编程更多的侧重计算，GPU 编程更多的侧重控制）
 
-![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/740c8a71fa710d8b26ce501d.png)
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/740c8a71fa710d8b26ce501d.png" caption="CPU 和 GPU 对比" width="1612" height="796" transparent />
 
 - 更大的吞吐量：GPU 标称的算力是吞吐量。从硬件厂商的角度说，提高吞吐量比降低延迟容易。GPU 不擅长降低延迟，但它非常擅长隐藏延迟。GPU 的设计思路是：“既然延迟降不下来，那我就同时处理足够多的任务，让计算单元在等待数据的时候总有别的活干。”
 
@@ -85,15 +85,27 @@ Block（也称 CTA, Cooperative Thread Array）是线程协作的基本单位。
 
 SM 是 GPU 中实际执行 block 的硬件单元，负责调度 warp、执行计算和管理共享资源。
 
-![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/4932e6102a884cc984ae0add.png)
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/4932e6102a884cc984ae0add.png" caption="SM 示意图" width="1966" height="924" />
 
 #### Grid（线程网格）
 
 Grid 是一次 kernel 启动产生的所有 block 的集合。block 数量可以远大于 GPU 中 SM 数量，不应假设 block 之间具有特定的相对顺序，block 之间应当相互独立。
 
-![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/b219b627960812f5f000d1bf.png)
+<FeishuGrid>
 
-![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/97bf3214c1e4d9782a14a162.png)
+<FeishuGridColumn width="0.672133">
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/b219b627960812f5f000d1bf.png" width="713" height="500" transparent />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.327867">
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/97bf3214c1e4d9782a14a162.png" caption="Grid 和 SM" width="807" height="1173" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
 
 ### CUDA 的自动可扩展性（Scalability）
 
@@ -109,4 +121,12 @@ PTX（Parallel Thread Execution）是 GPU 的中间表示（IR），也就是所
 
 CUDA的编译流程如下图：
 
-![](/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/fe741702f607b249a85b87cd.png)
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/fe741702f607b249a85b87cd.png" caption="CUDA 编译流程" width="3395" height="3065" transparent />
+
+### CUDA 工作流程概览
+
+CUDA 程序通常采用 CPU + GPU 协同执行模式，CPU 负责控制流程和准备数据（Host），GPU 负责执行大规模并行计算（Device）一次 CUDA 计算任务通常包含以下步骤：
+
+- 在 CPU 上准备数据（Host）：程序首先在 CPU 内存（Host Memory）中分配输入数据、初始化数据、设置计算参数。
+- 将数据从 CPU 内存拷贝到 GPU 内存：GPU 拥有独立显存（Device Memory），需要将数据从 CPU 内存通过 PCIe / NVLink 等接口复制。
+- 配置 Kernel 启动参数：CUDA Kernel 由大量线程执行，启动时需要指定 grid 和 block 大小（`<<<grid, block>>>`）
