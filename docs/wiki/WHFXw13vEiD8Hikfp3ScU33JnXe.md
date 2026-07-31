@@ -244,3 +244,15 @@ int main()
     MatAdd<<<numBlocks, threadsPerBlock>>>(A, B, C);
 }
 ```
+
+需要注意的是矩阵大小不一定刚好等于 block 大小，多出来的 thread 需要退出。
+
+## Warp, SIMT 和 SIMD
+
+### 什么是 Warp
+
+一个 warp 是 32 个 thread。这32个 tread 必须执行相同的指令。如果出现了分支，分支路径就会串行化，走当前路径的线程被激活，未走当前路径的线程被 mask 掉。图中的代码就会串行的执行两个分支：
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/389b26f16497cb84df57d9a7.png" caption="warp 中的分支会串行化" width="2650" height="1238" transparent />
+
+同⼀个 block ⾥的 thread 被分到哪个 warp 由如下的 thread ID 决定：`ID = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y`，
