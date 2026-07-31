@@ -255,4 +255,81 @@ int main()
 
 <FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/389b26f16497cb84df57d9a7.png" caption="warp 中的分支会串行化" width="2650" height="1238" transparent />
 
-同⼀个 block ⾥的 thread 被分到哪个 warp 由如下的 thread ID 决定：`ID = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y`，
+同⼀个 block ⾥的 thread 被分到哪个 warp 由如下的 thread ID 决定：`ID = threadIdx.x + threadIdx.y * blockDim.x + threadIdx.z * blockDim.x * blockDim.y`，其中 `ID/32` （向下取整）相同的线程放到一个 wrap 中。
+
+### SIMT 与 SIMD
+
+SIMD: Single Instruction Multiple **Data**
+
+SIMT: Single Instruction Multiple **Thread**
+
+数据是被动的，线程是主动的。从 CC 7.0 起，每个 thread 有自己的 program counter，也就可以执执行不同的指令。而 SIMD 只有一个 program counter。但是，一个 warp 里每次激活的 thread 应该有相同的 program counter。如果条件分支太多，将导致 program counter 的不同取值太多，那么 SIMT 也是低效的。最有利于 SIMT 发挥效率的编程方式仍然是 SIMD。
+
+### Warp Divergence 案例
+
+下图代码中 betterKernel 尽量使得所有线程走相同的分支，即数据分布于 warp 边界对齐。
+
+```C++
+__global__ void badKernel(float* data, int N) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < N) {
+        if (i % 2) data[i] = sqrt(data[i]);
+        else data[i] = exp(data[i]);
+    }
+}
+
+__global__ void betterKernel(float* data, int N) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int half = (N + 1) / 2;
+    if (i < half) {
+        int target = 2 * i;
+        data[target] = exp(data[target]);
+    } else if (i < N) {
+        int target = 2 * (i - half) + 1;
+        data[target] = sqrt(data[target]);
+    }
+}
+```
+
+### Warp-Level Primitives
+
+Warp 内可以高效地进行数据交换和同步，这段代码实现了 reduce 操作，操作后 `lane 0` 的 `val` 是操作前的32个 lane 的 `val` 只和，其他的 lane 的 `val` 未定义。
+
+```C++
+#define FULL_MASK 0xffffffff
+
+for (int offset = 16; offset > 0; offset /= 2)
+    val += __shfl_down_sync(FULL_MASK, val, offset);
+```
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/9ff1f01fffa641fa42b6db5d.png" caption="warp level primitives" width="1138" height="501" transparent />
+
+## Thread Block
+
+### Block 协作
+
+Block 内的 thread 比较类似 CPU 的 thread，可以用 shared memory，也有原子操作、内存屏障，线程同步等指令。
+
+```C++
+__global__ void syncthreads_valid_behavior(int* input_data, int* output_data) {
+    __shared__ int shared_data[128];
+
+    shared_data[threadIdx.x] = input_data[threadIdx.x];
+    if (blockIdx.x > 0) { // CORRECT, uniform condition across all block threads
+        __syncthreads();
+        output_data[threadIdx.x] = shared_data[127 - threadIdx.x];
+    }
+}
+
+__global__ void syncthreads_invalid_behavior(int* input_data, int* output_data) {
+    __shared__ int shared_data[128];
+
+    shared_data[threadIdx.x] = input_data[threadIdx.x];
+    for (int i = 0; i < blockDim.x; ++i) {
+        if (i == threadIdx.x) { // WRONG, non-uniform condition
+            __syncthreads();    // Undefined Behavior
+        }
+    }
+    output_data[threadIdx.x] = shared_data[127 - threadIdx.x];
+}
+```
