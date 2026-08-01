@@ -333,3 +333,16 @@ __global__ void syncthreads_invalid_behavior(int* input_data, int* output_data) 
     output_data[threadIdx.x] = shared_data[127 - threadIdx.x];
 }
 ```
+
+### Thread Block Cluster
+
+从 CC 9.0 开始，CUDA 引入了⼀个可选的中间层次：Thread Block Cluster。Cluster 中的 block 保证在同⼀个 GPC（Graphics Processing Cluster）上调度，可以实现跨 block 通信。
+
+## 内存层次结构
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/110889978b5afc64f95b0cab.png" caption="整体视图" width="2425" height="1842" transparent />
+
+| 内存类型 | Scope | 生命周期 | 位置 |
+|-|-|-|-|
+| Global |  |  |  |
+|  |  |  |  |
