@@ -23,7 +23,10 @@ import {
 } from './client.mjs'
 import { readSyncConfig } from './config.mjs'
 import { loadLocalEnv, requireFeishuCredentials } from './env.mjs'
-import { normalizeFeishuMarkdown } from './markdown.mjs'
+import {
+  extractFeishuPageMetadata,
+  normalizeFeishuMarkdown
+} from './markdown.mjs'
 import { imageHasTransparency } from './media.mjs'
 import { renderSessionPage, renderWikiPage } from './render.mjs'
 import { stableSnapshotJson } from './snapshot.mjs'
@@ -373,7 +376,11 @@ async function stageWikiCollectionPage({
 
   const assetDirectory = path.join(stagedWikiAssets, wikiNodeToken)
   await mkdir(assetDirectory, { recursive: true })
-  const body = await normalizeFeishuMarkdown(document.markdown, {
+  const extracted = extractFeishuPageMetadata(
+    document.markdown,
+    contextLabel
+  )
+  const body = await normalizeFeishuMarkdown(extracted.markdown, {
     contextLabel,
     wikiRoutes,
     imageMetadata: document.imageMetadata,
@@ -384,17 +391,20 @@ async function stageWikiCollectionPage({
       contextLabel
     })
   })
+  const pageTitle = extracted.metadata.title || sourceTitle
   const page = renderWikiPage({
-    title: sourceTitle,
+    title: pageTitle,
     body,
     breadcrumbs,
-    collectionTitle
+    collectionTitle,
+    presenter: extracted.metadata.presenter,
+    replay: extracted.metadata.replay
   })
   await mkdir(path.dirname(outputPath), { recursive: true })
   await writeFile(outputPath, page, 'utf8')
 
   return {
-    sourceTitle,
+    sourceTitle: pageTitle,
     documentId: document.node.obj_token,
     objectType: document.node.obj_type,
     revisionId: document.revisionId

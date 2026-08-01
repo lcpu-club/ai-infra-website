@@ -2789,6 +2789,22 @@ body.has-calendar-dialog {
   font-weight: 650;
 }
 
+.wiki-page-banner-meta {
+  grid-template-columns: 1fr;
+}
+
+.wiki-page-banner-meta span:first-child {
+  display: flex;
+  align-items: baseline;
+  color: var(--site-text-2);
+  gap: 8px;
+}
+
+.wiki-page-banner-meta b {
+  color: var(--site-brand);
+  font-weight: 700;
+}
+
 .takeaway-grid {
   display: grid;
   margin: 24px 0 34px;

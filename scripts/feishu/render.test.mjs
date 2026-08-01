@@ -39,6 +39,27 @@ test('does not add a self-referencing breadcrumb to the Wiki root page', () => {
   assert.doesNotMatch(output, /class="wiki-breadcrumb"/)
 })
 
+test('renders presenter metadata inside the Wiki title banner', () => {
+  const output = renderWikiPage({
+    title: '并行计算与并行编程',
+    presenter: '@陈嘉骏',
+    replay: {
+      label: 'Session 1.0 回放',
+      url: 'https://www.bilibili.com/video/BV1test'
+    },
+    body: '正文',
+    collectionTitle: '课程 Wiki'
+  })
+
+  assert.match(
+    output,
+    /<div class="session-banner-meta wiki-page-banner-meta"><span><b>主讲<\/b><span aria-hidden="true">·<\/span>@陈嘉骏<\/span><span><b>回放<\/b><span aria-hidden="true">·<\/span><a href="https:\/\/www\.bilibili\.com\/video\/BV1test" target="_blank" rel="noreferrer">Session 1\.0 回放<\/a><\/span><\/div>/
+  )
+  assert.ok(
+    output.indexOf('wiki-page-banner-meta') < output.indexOf('</header>')
+  )
+})
+
 test('ends an empty Wiki page without extra blank lines', () => {
   const output = renderWikiPage({
     title: '空目录',

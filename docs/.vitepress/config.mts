@@ -237,6 +237,9 @@ export default defineConfig({
   cleanUrls: true,
   appearance: true,
   lastUpdated: true,
+  markdown: {
+    math: true
+  },
   locales: {
     root: {
       label: '简体中文',

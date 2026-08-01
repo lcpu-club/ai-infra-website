@@ -1,9 +1,55 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  extractFeishuPageMetadata,
   extractSubPageListReferences,
   normalizeFeishuMarkdown
 } from './markdown.mjs'
+
+test('extracts page metadata after the exported Feishu title', () => {
+  const output = extractFeishuPageMetadata(
+    '<title>Session 1.0</title>\n\n' +
+      '---\n' +
+      'title: Session 1.0 | 并行计算与并行编程\n' +
+      'presenter: <cite type="user" user-id="user_1" user-name="陈嘉骏"></cite>\n' +
+      'replay: [Session 1.0 回放](https://www.bilibili.com/video/BV1test)\n' +
+      '---\n\n' +
+      '正文\n',
+    'Wiki page Session 1.0'
+  )
+
+  assert.deepEqual(output.metadata, {
+    title: 'Session 1.0 | 并行计算与并行编程',
+    presenter: '@陈嘉骏',
+    replay: {
+      label: 'Session 1.0 回放',
+      url: 'https://www.bilibili.com/video/BV1test'
+    }
+  })
+  assert.equal(output.markdown, '\n正文\n')
+})
+
+test('accepts the legacy tittle typo as a title alias', () => {
+  const output = extractFeishuPageMetadata(
+    '# Session 1.0\n\n---\ntittle: 兼容旧标题\npresenter: 陈嘉骏\n---\n正文\n'
+  )
+
+  assert.deepEqual(output.metadata, {
+    title: '兼容旧标题',
+    presenter: '陈嘉骏'
+  })
+  assert.equal(output.markdown, '正文\n')
+})
+
+test('rejects unsafe replay metadata URLs', () => {
+  assert.throws(
+    () =>
+      extractFeishuPageMetadata(
+        '# Session 1.0\n\n---\nreplay: javascript:alert(1)\n---\n正文\n'
+      ),
+    /replay must be an HTTP\(S\) URL or Markdown link/
+  )
+})
 
 test('strips the leading title and fixes URL escapes for web rendering', async () => {
   const source =
@@ -46,6 +92,22 @@ test('does not confuse mathematical comparisons with Feishu XML tags', async () 
   )
 
   assert.equal(output, '$a_{n}=\\sum_{i<n}1/(a_i+n)$\n')
+})
+
+test('converts inline and standalone Feishu formulas to TeX delimiters', async () => {
+  const output = await normalizeFeishuMarkdown(
+    '# Title\n\n行内 <latex>a_i &lt; b_i</latex> 公式。\n\n' +
+      '<latex>\\sum_{i=1}^{n} i</latex>\n',
+    {
+      sessionId: '01',
+      wikiRoutes: new Map()
+    }
+  )
+
+  assert.equal(
+    output,
+    '行内 $a_i < b_i$ 公式。\n\n$$\n\\sum_{i=1}^{n} i\n$$\n'
+  )
 })
 
 test('keeps bold Feishu labels valid when immediately followed by text', async () => {

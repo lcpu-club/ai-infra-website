@@ -39,6 +39,12 @@ const TABLE_TAGS = new Set([
 ])
 const TABLE_VOID_TAGS = new Set(['col', 'br'])
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]+$/
+const PAGE_METADATA_KEYS = new Set([
+  'title',
+  'presenter',
+  'replay',
+  'tittle'
+])
 
 export async function normalizeFeishuMarkdown(
   input,
@@ -57,8 +63,8 @@ export async function normalizeFeishuMarkdown(
   const context = contextLabel || `Session ${sessionId}`
 
   let markdown = input.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
-  markdown = stripFrontmatter(markdown)
   markdown = stripLeadingTitle(markdown)
+  markdown = stripFrontmatter(markdown)
 
   const protectedCode = protectMarkdownCode(markdown)
   markdown = protectedCode.markdown
@@ -103,13 +109,64 @@ export async function normalizeFeishuMarkdown(
   return `${markdown.trim()}\n`
 }
 
+export function extractFeishuPageMetadata(input, contextLabel = 'Feishu page') {
+  if (typeof input !== 'string') {
+    throw new TypeError('Feishu Markdown input must be a string')
+  }
+
+  const markdown = stripLeadingTitle(
+    input.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
+  )
+  const frontmatter = readLeadingFrontmatter(markdown)
+  if (!frontmatter) return { markdown, metadata: {} }
+
+  const metadata = {}
+  for (const sourceLine of frontmatter.body.split('\n')) {
+    const line = sourceLine.trim()
+    if (!line) continue
+    const match = line.match(/^([A-Za-z][A-Za-z0-9_-]*):[ \t]*(.*)$/)
+    if (!match) {
+      throw new Error(`${contextLabel} metadata contains an invalid line`)
+    }
+
+    const sourceKey = match[1].toLowerCase()
+    if (!PAGE_METADATA_KEYS.has(sourceKey)) {
+      throw new Error(
+        `${contextLabel} metadata contains unsupported field ${sourceKey}`
+      )
+    }
+    const key = sourceKey === 'tittle' ? 'title' : sourceKey
+    if (Object.hasOwn(metadata, key)) {
+      throw new Error(`${contextLabel} metadata repeats field ${key}`)
+    }
+
+    const value = normalizePageMetadataValue(match[2], contextLabel, key)
+    if (!value) {
+      throw new Error(`${contextLabel} metadata field ${key} is empty`)
+    }
+    metadata[key] = value
+  }
+
+  return { markdown: frontmatter.rest, metadata }
+}
+
 function stripFrontmatter(markdown) {
-  if (!markdown.startsWith('---\n')) return markdown
-  const end = markdown.indexOf('\n---\n', 4)
-  if (end === -1) {
+  const frontmatter = readLeadingFrontmatter(markdown)
+  if (!frontmatter) {
+    if (!markdown.startsWith('---\n')) return markdown
     throw new Error('Markdown starts with an unterminated frontmatter block')
   }
-  return markdown.slice(end + 5)
+  return frontmatter.rest
+}
+
+function readLeadingFrontmatter(markdown) {
+  if (!markdown.startsWith('---\n')) return null
+  const match = markdown.match(/^---\n([\s\S]*?)\n---(?:\n|$)/)
+  if (!match) return null
+  return {
+    body: match[1],
+    rest: markdown.slice(match[0].length)
+  }
 }
 
 function stripLeadingTitle(markdown) {
@@ -357,10 +414,7 @@ function convertSupportedXml(
       return `[${escapeLabel(attributes.name || attributes.href)}](${attributes.href})`
     }
   )
-  output = output.replace(
-    /<latex>([\s\S]*?)<\/latex>/gi,
-    (_, body) => `\`${decodeXmlEntities(body.trim())}\``
-  )
+  output = replaceLatexBlocks(output)
   output = output.replace(/<br\s*\/?>/gi, '\n')
   output = output.replace(/<\/?p\b[^>]*>/gi, '\n')
   output = output.replace(/<b>([\s\S]*?)<\/b>/gi, '**$1**')
@@ -557,6 +611,64 @@ function replaceCitations(markdown, { context, format }) {
 
     return format === 'html' ? escapeHtml(label) : escapeMarkdownInline(label)
   })
+}
+
+function normalizePageMetadataValue(value, context, key) {
+  let output = replaceCitations(value.trim(), {
+    context: `${context} metadata ${key}`,
+    format: 'markdown'
+  })
+  output = output.replace(/<\/?(?:b|strong|em|del|u|span)\b[^>]*>/gi, '')
+  if (REMAINING_TAG_PATTERN.test(output)) {
+    throw new Error(
+      `${context} metadata field ${key} contains unsupported markup`
+    )
+  }
+  output = decodeXmlEntities(output).trim()
+  if (
+    output.length >= 2 &&
+    ((output.startsWith('"') && output.endsWith('"')) ||
+      (output.startsWith("'") && output.endsWith("'")))
+  ) {
+    output = output.slice(1, -1).trim()
+  }
+  const maximumLength =
+    key === 'replay' ? 2048 : key === 'title' ? 200 : 120
+  output = output.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim()
+  if (output.length > maximumLength) {
+    throw new Error(`${context} metadata field ${key} is too long`)
+  }
+  return key === 'replay' ? normalizeReplayMetadata(output, context) : output
+}
+
+function normalizeReplayMetadata(value, context) {
+  const markdownLink = value.match(/^\[([^\]\n]+)\]\((https?:\/\/[\s\S]+)\)$/)
+  const label = markdownLink?.[1]?.trim()
+  const url = markdownLink?.[2]?.trim() || value
+  if (!isHttpUrl(url)) {
+    throw new Error(
+      `${context} metadata field replay must be an HTTP(S) URL or Markdown link`
+    )
+  }
+  return {
+    label: label || '观看回放',
+    url
+  }
+}
+
+function replaceLatexBlocks(markdown) {
+  return markdown.replace(
+    /<latex>([\s\S]*?)<\/latex>/gi,
+    (tag, body, offset, source) => {
+      const latex = decodeXmlEntities(body.trim())
+      const lineStart = source.lastIndexOf('\n', offset - 1) + 1
+      const nextNewline = source.indexOf('\n', offset + tag.length)
+      const lineEnd = nextNewline === -1 ? source.length : nextNewline
+      const before = source.slice(lineStart, offset).trim()
+      const after = source.slice(offset + tag.length, lineEnd).trim()
+      return before || after ? `$${latex}$` : `$$\n${latex}\n$$`
+    }
+  )
 }
 
 function protectMarkdownCode(markdown) {
@@ -772,7 +884,11 @@ function decodeXmlEntities(value) {
 function isHttpUrl(value) {
   try {
     const url = new URL(value)
-    return url.protocol === 'http:' || url.protocol === 'https:'
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      !url.username &&
+      !url.password
+    )
   } catch {
     return false
   }
