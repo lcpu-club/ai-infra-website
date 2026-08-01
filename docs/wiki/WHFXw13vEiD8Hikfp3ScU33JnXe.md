@@ -340,9 +340,236 @@ __global__ void syncthreads_invalid_behavior(int* input_data, int* output_data) 
 
 ## 内存层次结构
 
+### 内存层次结构一览
+
 <FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/110889978b5afc64f95b0cab.png" caption="整体视图" width="2425" height="1842" transparent />
 
 | 内存类型 | Scope | 生命周期 | 位置 |
 |-|-|-|-|
-| Global |  |  |  |
-|  |  |  |  |
+| Global | Grid | Application | Device |
+| Constant | Grid | Application | Device |
+| Shared | Block | Kernel | SM |
+| Local | Thread | Kernel | Device |
+| Register | Thread | Kernel | SM |
+
+### Shared Memory
+
+Shared Memory 与 L1 Cache 是同一块物理存储器的不同划分，可配置比例。以下代码为使用 shared memory 分块矩阵乘法。
+
+```C++
+constexpr int TILE_SIZE = 32;
+__global__ void gemm_gpu_tiling_kernel(
+    int* __restrict__ C,        // [n, m], on gpu
+    const int* __restrict__ A,  // [n, k], on gpu
+    const int* __restrict__ B,  // [k, m], on gpu
+    int n, int m, int k         // multiples of TILE_SIZE
+) {
+    __shared__ int a_tile[TILE_SIZE][TILE_SIZE];
+    __shared__ int b_tile[TILE_SIZE][TILE_SIZE];
+    int my_c_result = 0;
+    for (int tile_index = 0; tile_index < k / TILE_SIZE; ++tile_index) {
+        a_tile[threadIdx.y][threadIdx.x] = A[(blockIdx.x*TILE_SIZE + threadIdx.y)*k + (tile_index*TILE_SIZE + threadIdx.x)];
+        b_tile[threadIdx.y][threadIdx.x] = B[(tile_index*TILE_SIZE + threadIdx.y)*m + (blockIdx.y*TILE_SIZE + threadIdx.x)];
+        __syncthreads();
+        for (int i = 0; i < TILE_SIZE; ++i) {
+            my_c_result += a_tile[threadIdx.y][i] * b_tile[i][threadIdx.x];
+        }
+
+        __syncthreads();
+    }
+
+    C[(blockIdx.x*TILE_SIZE + threadIdx.y)*m + (blockIdx.y*TILE_SIZE + threadIdx.x)] = my_c_result;
+}
+```
+
+### 全局内存访问的 coalescing
+
+全局内存的访问效率取决于访问模式。GPU 会将 warp 中的32个线程的访存请求合并为尽量少的 transcactions。一次transaction 是32字节，起始地址是32字节的倍数。这有点像 CPU 的缓存⾏机制，不过 GPU ⾃⼰的缓存⾏还要复杂⼀点：L1 缓存⾏ 128 字节，L2 缓存⾏ 32 字节。 
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/cd0776c90c3fd88031bd562e.png" caption="全局内存访问" width="2028" height="390" />
+
+## GPU 的硬件实现
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/248c216c23c743514ed5b7db.png" caption="GPU的整体结构" width="2680" height="2718" transparent />
+
+### SM 的内部结构——以 Blackwell Ultra 为例
+
+- SFU：Special Function Units（**近似**&ZeroWidthSpace;倒数、平方根倒数、sin……）
+- Tex：Texture
+- 共128个 CUDA Cores 用于32位及更低精度计算
+
+<FeishuGrid>
+
+<FeishuGridColumn width="0.540364">
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/bda7c6cf393584d1498a3fa8.png" width="526" height="622" />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.459636">
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/1dd8b0233ce411cf39f947d1.png" width="1435" height="1999" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
+
+### Warp 调度
+
+**问题**：CUDA Core 的运算速度极快，但 Global Memory 的延迟是几百个周期。如果 warp 发了⼀个访存请求后就干等着，计算单元就空闲了。
+
+**解决方案**：Warp 调度器维护着比计算单元多得多的 warp。
+
+- 当一个 warp 因为访存被阻塞时，调度器立即切换到另一个可执行的 warp
+- 硬件维护了所有 warp 的寄存器状态，上下文切换开销很低
+- 这使得计算单元和内存带宽都能尽量保持满负载
+- ⽤吞吐量掩盖延迟
+
+<FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/8179564db89971e053124477.png" caption="warp 调度" width="780" height="244" />
+
+## Occupancy：GPU 资源利用率
+
+CUDA 程序执行效率不仅取决于线程数量，还取决于 GPU 中资源的利用情况。GPU 的执行单位是 SM。一个 SM 可以同时驻留多个 Block、Warp 和 Thread，但是 SM 内部资源有限，因此，一个 Kernel 能同时运行多少线程受到资源限制。
+
+Occupancy 是**活动的 warp 数量**与 **SM 最大支持的 warp 数量**&ZeroWidthSpace;的比值。Occupancy 表征了 GPU 程序的实际使用率。高 Occupancy 可以隐藏 Memory Latency、提高计算资源利用率，并减少等待时间。
+
+### SM 的资源限制
+
+一个 SM 能容纳的 block 数量受到多个因素限制：
+
+- 最大线程数量 `maxThreadsPerMultiProcessor`
+- 最大 Block 数量 `maxBlocksPerMultiProcessor`
+- Shared Memory 限制 `sharedMemPerMultiprocessor`
+- Register 限制 `regsPerMultiprocessor`
+
+我们可以使用下面的方法科学调块长：
+
+```C++
+int minGridSize, blockSize;
+cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, myKernel, 0, 0);
+
+int numBlocks;
+cudaOccupancyMaxActiveBlocksPerMultiprocessor(&numBlocks, myKernel, blockSize, 0);
+```
+
+### 优化方向
+
+CUDA Kernel 的性能优化目标是充分利用 GPU 的并行计算能力，同时减少计算和访存中的瓶颈。主要优化方向包括：
+
+- 最大化并行执行：GPU 的计算能力来自大量 thread 并行执行。我们需要提供足够数量的 thread/block，充分利用 SM 计算资源以提高 Occupancy。
+- 优化内存访问：GPU 中计算速度远高于全局内存访问速度。合并访问（Memory Coalescing）和使用 Shared Memory 都可以优化访问速度。
+- 减少 Warp Divergence：保持 warp 内控制流一致。
+- 利用专用硬件：Tensor Core
+
+## CUDA API 选讲
+
+### 错误检查
+
+```C++
+cudaError_t err = cudaMalloc(&d_A, N * sizeof(float));
+if (err != cudaSuccess) {
+    fprintf(stderr, "CUDA error: %s\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+}
+```
+
+```C++
+#define CUDA_CHECK(expr_to_check) do {                        \
+    cudaError_t result = expr_to_check;                       \
+    if(result != cudaSuccess)                                 \
+    {                                                         \
+        fprintf(stderr,                                       \
+                "CUDA Runtime Error: %s:%i:%d = %s\n",        \
+                __FILE__,                                     \
+                __LINE__,                                     \
+                result,                                       \
+                cudaGetErrorString(result));                  \
+    }                                                         \
+} while(0)
+```
+
+### 事件计时
+
+```C++
+cudaEvent_t start, stop;
+cudaEventCreate(&start);
+cudaEventCreate(&stop);
+
+cudaEventRecord(start);
+myKernel<<<grid, block>>>(d_A, d_B, d_C);
+cudaEventRecord(stop);
+
+cudaEventSynchronize(stop);
+float milliseconds = 0;
+cudaEventElapsedTime(&milliseconds, start, stop);
+printf("kernel time: %f ms\n", milliseconds);
+
+cudaEventDestroy(start);
+cudaEventDestroy(stop);
+```
+
+### Stream
+
+CUDA Stream 是一种命令队列。不同 Stream 的 kernel 可以并发执行，只要 SM 有资源。
+
+```C++
+cudaStream_t stream1, stream2;
+cudaStreamCreate(&stream1);
+cudaStreamCreate(&stream2);
+
+kernel1<<<grid, block, 0, stream1>>>(...);
+kernel2<<<grid, block, 0, stream2>>>(...); // 可能与 kernel1 并发
+// 第三个启动参数是动态 shared memory 大小
+
+cudaStreamSynchronize(stream1);
+cudaStreamSynchronize(stream2);
+
+cudaStreamDestroy(stream1);
+cudaStreamDestroy(stream2);
+```
+
+### 统一内存
+
+通过 cudaMallocManaged 分配统一内存，CPU 和 GPU 自动共享数据，无需手动 cudaMemcpy。也可以用 \_\_managed\_\_ 修饰变量，但存在一些限制。
+
+```C++
+float *x;
+cudaMallocManaged(&x, N * sizeof(float));
+cudaFree(x);
+```
+
+### 多卡编程
+
+```C++
+cudaSetDevice(0);                         // Set device 0 as current
+float* p0;
+size_t size = 1024 * sizeof(float);
+cudaMalloc(&p0, size);                    // Allocate memory on device 0
+
+cudaSetDevice(1);                         // Set device 1 as current
+float* p1;
+cudaMalloc(&p1, size);                    // Allocate memory on device 1
+
+cudaSetDevice(0);                         // Set device 0 as current
+MyKernel<<<1000, 128>>>(p0);              // Launch kernel on device 0
+
+cudaSetDevice(1);                         // Set device 1 as current
+cudaMemcpyPeer(p1, 1, p0, 0, size);       // Copy p0 to p1
+MyKernel<<<1000, 128>>>(p1);              // Launch kernel on device 1
+```
+
+```C++
+cudaSetDevice(0);                         // Set device 0 as current
+float* p0;
+size_t size = 1024 * sizeof(float);
+cudaMalloc(&p0, size);                    // Allocate memory on device 0
+MyKernel<<<1000, 128>>>(p0);              // Launch kernel on device 0
+
+cudaSetDevice(1);                         // Set device 1 as current
+cudaDeviceEnablePeerAccess(0, 0);         // Enable peer-to-peer access
+                                         // with device 0
+
+// Launch kernel on device 1
+// This kernel launch can access memory on device 0 at address p0
+MyKernel<<<1000, 128>>>(p0);
+```
