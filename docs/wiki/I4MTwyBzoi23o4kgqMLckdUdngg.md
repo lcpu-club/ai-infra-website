@@ -104,7 +104,7 @@ void kernel(const float * __restrict__ a,
 }
 ```
 
-我们假设 load 指令的延迟是1000个 cycle，每个 cycle 可以发出1条指令，那么在执行完前2个 cycle 时（三个 load 指令），之后我们需要等待1000个 cycle的数据才能等到计算开始！
+我们假设 load 指令的延迟是1000个 cycle，每个 cycle 可以发出1条指令，那么在执行完前2个 cycle 时（三个 load 指令），之后我们需要等待1000个 cycle的数据才能等到计算开始！这样一次循环需要1006个 cycle。
 
 <FeishuGrid>
 
@@ -138,3 +138,21 @@ void kernel(const float * __restrict__ a,
     }
 }
 ```
+
+对于这个修改后的 kernel，编译器虽然可以直接判断 a 和 b 的项没有修改，可以直接在 `load c[i1]` 之后执行 `load a[i2]` 和 `load b[i2]`，但是因为对 c 做了修改，所以编译器会卡在 `load c[i2]` 之前。这样两次循环总共需要2011个 cycle，一个循环之比上面节省了0.5个cycle。
+
+<FeishuGrid>
+
+<FeishuGridColumn width="0.40164">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/15ab470edbdddb89541ee2df.png" caption="指令化的kernel" width="1242" height="736" />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.59836">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/80d8f7c31d803793f188236a.png" width="1688" height="668" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
