@@ -127,15 +127,78 @@
       "locations": [
         {
           "label": {
+            "zh": "Session 2.1 回放",
+            "en": "Session 2.1 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1gqGA6ZEfg"
+        },
+        {
+          "label": {
+            "zh": "Session 2.2 回放",
+            "en": "Session 2.2 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1L8GA6YEAH"
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
+    },
+    {
+      "eventId": "topic-1-workshop-01",
+      "type": "workshop",
+      "topic": "kernel",
+      "sessionIds": [
+        "02"
+      ],
+      "title": {
+        "zh": "Topic 1, Workshop 1：Parallel Programming with TileLang",
+        "en": "Topic 1, Workshop 1: Parallel Programming with TileLang"
+      },
+      "description": {
+        "zh": "本次 Workshop，我们将介绍：TileLang 语法、 如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。"
+      },
+      "date": "2026-08-01",
+      "endDate": "2026-08-01",
+      "startAt": "2026-08-01T11:30:00Z",
+      "endAt": "2026-08-01T14:30:00Z",
+      "allDay": false,
+      "timeLabel": "19:30–22:30",
+      "timezone": "Asia/Shanghai",
+      "status": "confirmed",
+      "speakers": [
+        {
+          "name": {
+            "zh": "孔昊然",
+            "en": "Haoran Kong"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
             "zh": "腾讯会议",
             "en": "Tencent Meeting"
-          }
+          },
+          "href": "https://meeting.tencent.com/dm/MWmIhQau1Yb0"
         },
         {
           "label": {
             "zh": "B站直播",
             "en": "Bilibili Live"
-          }
+          },
+          "href": "https://live.bilibili.com/22591408"
         },
         {
           "label": {
@@ -194,7 +257,8 @@
           "label": {
             "zh": "B站直播",
             "en": "Bilibili Live"
-          }
+          },
+          "href": "https://live.bilibili.com/22591408"
         },
         {
           "label": {

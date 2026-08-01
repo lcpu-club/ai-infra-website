@@ -86,11 +86,13 @@ events:
           en: Ruoyu Lin
     locations:
       - label:
-          zh: 腾讯会议
-          en: Tencent Meeting
+          zh: Session 2.1 回放
+          en: Session 2.1 replay
+        href: https://www.bilibili.com/video/BV1gqGA6ZEfg
       - label:
-          zh: B站直播
-          en: Bilibili Live
+          zh: Session 2.2 回放
+          en: Session 2.2 replay
+        href: https://www.bilibili.com/video/BV1L8GA6YEAH
       - label:
           zh: LCPU Live
           en: LCPU Live
@@ -130,6 +132,47 @@ events:
       - label:
           zh: B站直播
           en: Bilibili Live
+        href: https://live.bilibili.com/22591408
+      - label:
+          zh: LCPU Live
+          en: LCPU Live
+        href: https://live.lcpu.dev
+    links: []
+    assignments: []
+    display:
+      homepage: true
+      calendar: true
+      accent: kernel
+
+  - id: topic-1-workshop-01
+    type: workshop
+    topic: kernel
+    sessions: ["02"]
+    title:
+      zh: "Topic 1, Workshop 1：Parallel Programming with TileLang"
+      en: "Topic 1, Workshop 1: Parallel Programming with TileLang"
+    description:
+      zh: >-
+        本次 Workshop，我们将介绍：TileLang 语法、
+        如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、
+        如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容；
+        最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。
+    start: "2026-08-01T19:30:00+08:00"
+    end: "2026-08-01T22:30:00+08:00"
+    confirmation: confirmed
+    speakers:
+      - name:
+          zh: 孔昊然
+          en: Haoran Kong
+    locations:
+      - label:
+          zh: 腾讯会议
+          en: Tencent Meeting
+        href: https://meeting.tencent.com/dm/MWmIhQau1Yb0
+      - label:
+          zh: B站直播
+          en: Bilibili Live
+        href: https://live.bilibili.com/22591408
       - label:
           zh: LCPU Live
           en: LCPU Live
@@ -142,7 +185,8 @@ events:
       accent: kernel
 
 # 活动模板：复制下面整段，移除每行开头的 "# " 后填写。
-# type 可用 lecture 或 guest-lecture；assignments 只填写已存在的作业 ID。
+# type 可用 lecture、guest-lecture、workshop、office-hours 或 other；
+# assignments 只填写已存在的作业 ID。
 #
 #   - id: topic-2-session-01
 #     type: lecture

@@ -24,6 +24,9 @@ onMounted(() => {
         <span class="is-guest-lecture">
           {{ copy.schedule.eventTypes.guestLecture }}
         </span>
+        <span class="is-workshop">
+          {{ copy.schedule.eventTypes.workshop }}
+        </span>
         <span class="is-assignment">
           {{ copy.schedule.eventTypes.assignment }}
         </span>

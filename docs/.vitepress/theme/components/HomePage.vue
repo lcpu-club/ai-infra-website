@@ -56,6 +56,12 @@ function previewDate(date: string) {
   }
 }
 
+function previewEventLabel(type: string) {
+  return type === 'workshop'
+    ? copy.value.schedule.eventTypes.workshop
+    : home.value.calendarEvent
+}
+
 const schedulePreview = computed<SchedulePreviewItem[]>(() =>
   localizedCalendarEvents(locale.value)
     .filter((event) => event.status !== 'cancelled')
@@ -66,7 +72,7 @@ const schedulePreview = computed<SchedulePreviewItem[]>(() =>
       ...previewDate(event.date),
       title: event.summary,
       href: event.href,
-      label: home.value.calendarEvent
+      label: previewEventLabel(event.type)
     }))
     .sort((left, right) => left.date.localeCompare(right.date))
     .slice(0, 5)

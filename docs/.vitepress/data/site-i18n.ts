@@ -134,6 +134,7 @@ export const siteCopy = {
       eventTypes: {
         lecture: '课程讲座',
         guestLecture: '嘉宾讲座',
+        workshop: 'Workshop',
         assignment: '作业 DDL'
       },
       statuses: {
@@ -267,6 +268,7 @@ export const siteCopy = {
       eventTypes: {
         lecture: 'Lecture',
         guestLecture: 'Guest Lecture',
+        workshop: 'Workshop',
         assignment: 'Assignment deadline'
       },
       statuses: {

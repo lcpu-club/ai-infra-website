@@ -1719,6 +1719,10 @@ a {
   background: #8b67b8;
 }
 
+.calendar-type-legend .is-workshop::before {
+  background: #0d9488;
+}
+
 .calendar-type-legend .is-assignment::before {
   background: #bd6425;
 }
@@ -1729,6 +1733,10 @@ a {
 
 .dark .calendar-type-legend .is-guest-lecture::before {
   background: #6d489c;
+}
+
+.dark .calendar-type-legend .is-workshop::before {
+  background: #0f766e;
 }
 
 .dark .calendar-type-legend .is-assignment::before {

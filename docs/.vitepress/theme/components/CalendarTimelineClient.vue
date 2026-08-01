@@ -83,7 +83,11 @@ const lectureEvents: ScheduleXEvent[] = displayedEvents.map((event) => ({
     ? { location: event.locations.map(({ label }) => label).join(' · ') }
     : {}),
   calendarId:
-    event.type === 'guest-lecture' ? 'guest-lecture' : 'lecture',
+    event.type === 'guest-lecture'
+      ? 'guest-lecture'
+      : event.type === 'workshop'
+        ? 'workshop'
+        : 'lecture',
   _options: {
     disableDND: true,
     disableResize: true,
@@ -160,6 +164,19 @@ const calendarApp = createCalendar({
       darkColors: {
         main: '#d2b4f4',
         container: '#6d489c',
+        onContainer: '#ffffff'
+      }
+    },
+    workshop: {
+      colorName: 'workshop',
+      lightColors: {
+        main: '#0f766e',
+        container: '#0d9488',
+        onContainer: '#ffffff'
+      },
+      darkColors: {
+        main: '#99f6e4',
+        container: '#0f766e',
         onContainer: '#ffffff'
       }
     },

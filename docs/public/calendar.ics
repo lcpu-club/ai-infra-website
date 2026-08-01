@@ -38,10 +38,31 @@ DESCRIPTION:本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发
  进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件
  视角理解 SM、warp 执行、 coalescing、latency hiding、shared memo
  ry bank conflict、padding、 swizzle 与 per-thread microtile，最后使
- 用 Nsight Compute 完成一个 Kernel 的编写与调优。\n\nLCPU Live:
-  https://live.lcpu.dev/
+ 用 Nsight Compute 完成一个 Kernel 的编写与调优。\n\nSession 2.
+ 1 回放: https://www.bilibili.com/video/BV1gqGA6ZEfg\nSession 2.2 回放:
+  https://www.bilibili.com/video/BV1L8GA6YEAH\nLCPU Live: https://live.lcpu
+ .dev/
+LOCATION:Session 2.1 回放 · Session 2.2 回放 · LCPU Live
+URL:https://www.bilibili.com/video/BV1gqGA6ZEfg
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:event-topic-1-workshop-01@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260801T113000Z
+SUMMARY:Topic 1\, Workshop 1：Parallel Programming with TileLang
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,workshop,kernel
+DTSTART:20260801T113000Z
+DTEND:20260801T143000Z
+DESCRIPTION:本次 Workshop，我们将介绍：TileLang 语法、 如何
+ 用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layo
+ ut Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 
+ JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 Ti
+ leLang 下如何做算子优化以及一些相关的工具。\n\n腾讯会
+ 议: https://meeting.tencent.com/dm/MWmIhQau1Yb0\nB站直播: https://live
+ .bilibili.com/22591408\nLCPU Live: https://live.lcpu.dev/
 LOCATION:腾讯会议 · B站直播 · LCPU Live
-URL:https://live.lcpu.dev/
+URL:https://meeting.tencent.com/dm/MWmIhQau1Yb0
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
@@ -57,9 +78,10 @@ DESCRIPTION:本讲以 Tensor Core 的硬件与编程模型为主线，贯
  代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的
  设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解
  决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低
- 精度 Tensor Core 的使用。\n\nLCPU Live: https://live.lcpu.dev/
+ 精度 Tensor Core 的使用。\n\nB站直播: https://live.bilibili.com/2
+ 2591408\nLCPU Live: https://live.lcpu.dev/
 LOCATION:腾讯会议 · B站直播 · LCPU Live
-URL:https://live.lcpu.dev/
+URL:https://live.bilibili.com/22591408
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
