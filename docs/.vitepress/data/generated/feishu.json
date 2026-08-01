@@ -51,7 +51,18 @@
         "order": 3,
         "documentId": "PG4sdbfwTooTRExxGbRcKT0Ln9c",
         "objectType": "docx",
-        "revisionId": 388
+        "revisionId": 445
+      },
+      {
+        "wikiNodeToken": "I4MTwyBzoi23o4kgqMLckdUdngg",
+        "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
+        "title": "Session 2.1 | Memory Abstraction & Hierarchy",
+        "route": "/wiki/I4MTwyBzoi23o4kgqMLckdUdngg",
+        "depth": 1,
+        "order": 4,
+        "documentId": "VfXGdbST3oebDbxv4zTcIbp5nmb",
+        "objectType": "docx",
+        "revisionId": 460
       }
     ]
   }

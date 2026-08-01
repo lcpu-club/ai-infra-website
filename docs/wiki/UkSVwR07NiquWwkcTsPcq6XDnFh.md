@@ -42,6 +42,8 @@ Tile-Level Programming 提供了一种更高层次的抽象方式。它将多个
 
 Triton 和 TileLang 都采用了 Tile-Level Programming 的思想，通过更高层次的编程模型描述 GPU 计算，将 CUDA SIMT 模型中复杂的线程管理、数据协作和硬件优化部分交由编译器处理，使开发者能够更加专注于算法结构和计算流程，同时获得接近手写 CUDA Kernel 的性能。
 
+Triton 都是 DSL（特定领域语言），是指相对于全面的 C++ 和 Python，这类语言是被设计在特定平台上完成特定任务的。CUDA 也是 DSL。
+
 ## Triton 编程模型
 
 Triton 保留数据分块的决策，将线程级映射交给编译器。
@@ -76,7 +78,7 @@ import triton.language as tl
 
 @triton.jit
 def add_kernel(x, y, z, n: tl.constexpr, BLOCK_SIZE: tl.constexpr):
-    pid = tl.program_id(0)
+    pid = tl.program_id(0) # 0是维度，是横坐标
     offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
     mask = offsets < n
 

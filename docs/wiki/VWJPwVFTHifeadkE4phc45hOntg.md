@@ -14,3 +14,4 @@ lastUpdated: false
 - [Session 1.0 | 并行计算与并行编程](/wiki/F9oKw4GUgi30lQkgWScckzjfnfd)
 - [Session 1.1｜CUDA  Programming Model](/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe)
 - [Session 1.2 | Triton / TileLang —— CTA Level Programming](/wiki/UkSVwR07NiquWwkcTsPcq6XDnFh)
+- [Session 2.1 | Memory Abstraction & Hierarchy](/wiki/I4MTwyBzoi23o4kgqMLckdUdngg)
