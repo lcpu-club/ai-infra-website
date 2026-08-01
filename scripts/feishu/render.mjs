@@ -106,10 +106,7 @@ function normalizeExternalUrl(value) {
 }
 
 function renderMetadataItem(label, valueHtml) {
-  return (
-    `<span><b>${label}</b>` +
-    `<span aria-hidden="true">·</span>${valueHtml}</span>`
-  )
+  return `<span class="session-banner-meta-item"><b>${label}：</b>${valueHtml}</span>`
 }
 
 function escapeHtml(value) {
