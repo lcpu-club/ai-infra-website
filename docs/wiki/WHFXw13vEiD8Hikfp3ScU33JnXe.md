@@ -265,9 +265,11 @@ SIMT: Single Instruction Multiple **Thread**
 
 数据是被动的，线程是主动的。从 CC 7.0 起，每个 thread 有自己的 program counter，也就可以执执行不同的指令。而 SIMD 只有一个 program counter。但是，一个 warp 里每次激活的 thread 应该有相同的 program counter。如果条件分支太多，将导致 program counter 的不同取值太多，那么 SIMT 也是低效的。最有利于 SIMT 发挥效率的编程方式仍然是 SIMD。
 
+当然也有资料会说 GPU 本身也是 SIMD 模型，因为 program counter 不本质，可以用软件模拟。
+
 ### Warp Divergence 案例
 
-下图代码中 betterKernel 尽量使得所有线程走相同的分支，即数据分布于 warp 边界对齐。
+下图代码中 betterKernel 尽量使得所有线程走相同的分支，即数据分布于 warp 边界对齐。`badKernel` 中，偶数下标走 `sqrt`，奇数下标走 `exp`，因此会出现之前所说的一个 warp 中有多个分支，导致执行效率下降。betterKernel 中，重现对 data 中的数据进行编号，使得执行一个分支的 thread 是连续的，数据实现了 warp 边界对齐。
 
 ```C++
 __global__ void badKernel(float* data, int N) {
@@ -291,9 +293,13 @@ __global__ void betterKernel(float* data, int N) {
 }
 ```
 
+在 CPU 中，上述奇偶交替的操作会被分支预测命中，从而实现更高效的指令执行；而 GPU 中没有分支预测能力，所以需要手动对齐。
+
 ### Warp-Level Primitives
 
-Warp 内可以高效地进行数据交换和同步，这段代码实现了 reduce 操作，操作后 `lane 0` 的 `val` 是操作前的32个 lane 的 `val` 只和，其他的 lane 的 `val` 未定义。
+Warp 是一个比较底层的概念，很多基础的 GPU 编程不需要在意。但是把 warp 用好才能更好地使用 GPU 的全面性能。Warp 内可以高效地进行数据交换和同步，这段代码实现了 reduce 操作，操作后 `lane 0` 的 `val` 是操作前的32个 lane 的 `val` 只和，其他的 lane 的 `val` 未定义。
+
+`__shfl_down_sync` 函数第一个参数是指一个 warp 中的32个类，哪些需要进入接下来的操作中。下图展示的 `0xffffffff` 表示32个类全部需要执行。第二个参数 val 是需要共享的变量，第三个参数是类下标（thread ID / 32的余数） 的偏移。可以借助下图理解第三个参数的作用。
 
 ```C++
 #define FULL_MASK 0xffffffff
@@ -303,6 +309,10 @@ for (int offset = 16; offset > 0; offset /= 2)
 ```
 
 <FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/9ff1f01fffa641fa42b6db5d.png" caption="warp level primitives" width="1138" height="501" transparent />
+
+需要注意的是，例如在上图第一次操作以后，lane 4会试图从 lane 8获取一个值，这样操作完成之后，lane 4的值是未定义的。因此循环结束后，只有 lane 0的值有定义（其数值是之前32个lane的数值之和）。
+
+如果在 block 层面实现 reduce，需要使用 shared memory。在 warp 层面进行这些操作更加高效。
 
 ## Thread Block
 
@@ -334,6 +344,8 @@ __global__ void syncthreads_invalid_behavior(int* input_data, int* output_data) 
 }
 ```
 
+`__syncthread` 只能在这个 block 里所有线程都会运行到的分支中进行，否则是未定义的行为。下面那个错误的函数中每个 thread `__syncthread` 的时机不一致，是未定义行为。
+
 ### Thread Block Cluster
 
 从 CC 9.0 开始，CUDA 引入了⼀个可选的中间层次：Thread Block Cluster。Cluster 中的 block 保证在同⼀个 GPC（Graphics Processing Cluster）上调度，可以实现跨 block 通信。
@@ -355,6 +367,8 @@ __global__ void syncthreads_invalid_behavior(int* input_data, int* output_data) 
 ### Shared Memory
 
 Shared Memory 与 L1 Cache 是同一块物理存储器的不同划分，可配置比例。以下代码为使用 shared memory 分块矩阵乘法。
+
+`__restrict__` 修饰符表示通过这个指针访问的内存和别的变量没有关系，指针之间不会重叠。**restrict**
 
 ```C++
 constexpr int TILE_SIZE = 32;
@@ -395,7 +409,7 @@ __global__ void gemm_gpu_tiling_kernel(
 ### SM 的内部结构——以 Blackwell Ultra 为例
 
 - SFU：Special Function Units（**近似**&ZeroWidthSpace;倒数、平方根倒数、sin……）
-- Tex：Texture
+- Tex：Texture（GPU 的本职工作，纹理相关信息，和我们的主题关系不大）
 - 共128个 CUDA Cores 用于32位及更低精度计算
 
 <FeishuGrid>
@@ -416,14 +430,14 @@ __global__ void gemm_gpu_tiling_kernel(
 
 ### Warp 调度
 
-**问题**：CUDA Core 的运算速度极快，但 Global Memory 的延迟是几百个周期。如果 warp 发了⼀个访存请求后就干等着，计算单元就空闲了。
+**问题**：CUDA Core 的运算速度极快，但 Global Memory 的延迟是几百个周期。如果 warp 发了一个访存请求后就干等着，计算单元就空闲了。
 
 **解决方案**：Warp 调度器维护着比计算单元多得多的 warp。
 
 - 当一个 warp 因为访存被阻塞时，调度器立即切换到另一个可执行的 warp
 - 硬件维护了所有 warp 的寄存器状态，上下文切换开销很低
 - 这使得计算单元和内存带宽都能尽量保持满负载
-- ⽤吞吐量掩盖延迟
+- 用吞吐量掩盖延迟
 
 <FeishuImage src="/feishu/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe/8179564db89971e053124477.png" caption="warp 调度" width="780" height="244" />
 
@@ -431,7 +445,7 @@ __global__ void gemm_gpu_tiling_kernel(
 
 CUDA 程序执行效率不仅取决于线程数量，还取决于 GPU 中资源的利用情况。GPU 的执行单位是 SM。一个 SM 可以同时驻留多个 Block、Warp 和 Thread，但是 SM 内部资源有限，因此，一个 Kernel 能同时运行多少线程受到资源限制。
 
-Occupancy 是**活动的 warp 数量**与 **SM 最大支持的 warp 数量**&ZeroWidthSpace;的比值。Occupancy 表征了 GPU 程序的实际使用率。高 Occupancy 可以隐藏 Memory Latency、提高计算资源利用率，并减少等待时间。
+Occupancy 是**活动的 warp 数量**与 **SM 最大支持的 warp 数量**&ZeroWidthSpace;的比值（0-1之间）。Occupancy 表征了 GPU 程序的实际使用率。高 Occupancy 可以隐藏 Memory Latency、提高计算资源利用率，并减少等待时间。
 
 ### SM 的资源限制
 
@@ -530,7 +544,7 @@ cudaStreamDestroy(stream2);
 
 ### 统一内存
 
-通过 cudaMallocManaged 分配统一内存，CPU 和 GPU 自动共享数据，无需手动 cudaMemcpy。也可以用 \_\_managed\_\_ 修饰变量，但存在一些限制。
+通过 `cudaMallocManaged` 分配统一内存，CPU 和 GPU 自动共享数据，无需手动 `cudaMemcpy`。也可以用 `__managed__` 修饰变量，但存在一些限制。
 
 ```C++
 float *x;
