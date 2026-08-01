@@ -40,9 +40,8 @@ DESCRIPTION:本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发
  ry bank conflict、padding、 swizzle 与 per-thread microtile，最后使
  用 Nsight Compute 完成一个 Kernel 的编写与调优。\n\nSession 2.
  1 回放: https://www.bilibili.com/video/BV1gqGA6ZEfg\nSession 2.2 回放:
-  https://www.bilibili.com/video/BV1L8GA6YEAH\nLCPU Live: https://live.lcpu
- .dev/
-LOCATION:Session 2.1 回放 · Session 2.2 回放 · LCPU Live
+  https://www.bilibili.com/video/BV1L8GA6YEAH
+LOCATION:Session 2.1 回放 · Session 2.2 回放
 URL:https://www.bilibili.com/video/BV1gqGA6ZEfg
 TRANSP:OPAQUE
 END:VEVENT

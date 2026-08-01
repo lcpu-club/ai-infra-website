@@ -91,3 +91,50 @@ __global__ void axpy_naive(scalar_t a, const scalar_t * x, scalar_t * y, int n) 
 <FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/e12449004519e9b3cb3aee9a.png" caption="提升上述三个指标都可以提升在飞字节数" width="2445" height="304" transparent />
 
 ### 提高在飞字节数——展开
+
+```C++
+__global__
+void kernel(const float * __restrict__ a,
+            const float * __restrict__ b,
+            float * __restrict__ c)
+{
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    c[idx] += a[idx] * b[idx];
+}
+```
+
+我们假设 load 指令的延迟是1000个 cycle，每个 cycle 可以发出1条指令，那么在执行完前2个 cycle 时（三个 load 指令），之后我们需要等待1000个 cycle的数据才能等到计算开始！
+
+<FeishuGrid>
+
+<FeishuGridColumn width="0.416415">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/b1830367f867129b265a230f.png" caption="指令化的 kernel" width="1475" height="675" />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.583585">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/b1830367f867129b265a230f.png" caption="我们需要等待1000个 cycle！" width="1475" height="675" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
+
+```C++
+__global__
+void kernel(const float * __restrict__ a,
+            const float * __restrict__ b,
+            float * __restrict__ c)
+{
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    int stride = blockDim.x * gridDim.x;
+
+    #pragma unroll 2
+    for (int i = 0; i < 2; i++) {
+        const int idx = tid + i * stride;
+        c[idx] += a[idx] * b[idx];
+    }
+}
+```
