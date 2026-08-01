@@ -93,10 +93,6 @@ events:
           zh: Session 2.2 回放
           en: Session 2.2 replay
         href: https://www.bilibili.com/video/BV1L8GA6YEAH
-      - label:
-          zh: LCPU Live
-          en: LCPU Live
-        href: https://live.lcpu.dev
     links: []
     assignments: []
     display:
