@@ -23,35 +23,35 @@
       {
         "wikiNodeToken": "F9oKw4GUgi30lQkgWScckzjfnfd",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.0 | 并行计算与并行编程",
+        "title": "Session 1.0 并行计算与并行编程",
         "route": "/wiki/F9oKw4GUgi30lQkgWScckzjfnfd",
         "depth": 1,
         "order": 1,
         "documentId": "XO9wdbXxJoWUDxxkRB9cEdy2nbf",
         "objectType": "docx",
-        "revisionId": 1480
+        "revisionId": 1483
       },
       {
         "wikiNodeToken": "WHFXw13vEiD8Hikfp3ScU33JnXe",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.1｜CUDA  Programming Model",
+        "title": "Session 1.1 CUDA  Programming Model",
         "route": "/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe",
         "depth": 1,
         "order": 2,
         "documentId": "H5x1dK6LzoVFmuxUzDicmuQ1nbb",
         "objectType": "docx",
-        "revisionId": 2736
+        "revisionId": 2747
       },
       {
         "wikiNodeToken": "UkSVwR07NiquWwkcTsPcq6XDnFh",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.2 | Triton / TileLang —— CTA Level Programming",
+        "title": "Session 1.0 Session 1.2 Triton / TileLang —— CTA Level Programming",
         "route": "/wiki/UkSVwR07NiquWwkcTsPcq6XDnFh",
         "depth": 1,
         "order": 3,
         "documentId": "PG4sdbfwTooTRExxGbRcKT0Ln9c",
         "objectType": "docx",
-        "revisionId": 445
+        "revisionId": 456
       },
       {
         "wikiNodeToken": "I4MTwyBzoi23o4kgqMLckdUdngg",
