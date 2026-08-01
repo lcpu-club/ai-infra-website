@@ -2805,6 +2805,8 @@ body.has-calendar-dialog {
 
 .wiki-page-banner-meta {
   display: flex;
+  padding-top: 0;
+  border-top: 0;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 8px 28px;
@@ -2815,6 +2817,12 @@ body.has-calendar-dialog {
   min-width: 0;
   align-items: baseline;
   color: var(--site-text-2);
+}
+
+.wiki-page-banner-meta .is-replay {
+  margin-left: auto;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .wiki-page-banner-meta b {

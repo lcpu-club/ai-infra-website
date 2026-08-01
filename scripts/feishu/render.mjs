@@ -44,12 +44,13 @@ export function renderWikiPage({
     ? `  <nav class="wiki-breadcrumb" aria-label="文档路径">${breadcrumb}</nav>\n`
     : ''
   const presenterItem = safePresenter
-    ? renderMetadataItem('主讲', escapeHtml(safePresenter))
+    ? renderMetadataItem('主讲', escapeHtml(safePresenter), 'presenter')
     : ''
   const replayItem = safeReplay
     ? renderMetadataItem(
         '回放',
-        `<a href="${escapeHtml(safeReplay.url)}" target="_blank" rel="noreferrer">${escapeHtml(safeReplay.label)}</a>`
+        `<a href="${escapeHtml(safeReplay.url)}" target="_blank" rel="noreferrer">${escapeHtml(safeReplay.label)}</a>`,
+        'replay'
       )
     : ''
   const metadataItems = [presenterItem, replayItem].filter(Boolean)
@@ -105,8 +106,8 @@ function normalizeExternalUrl(value) {
   return { label, url: url.href }
 }
 
-function renderMetadataItem(label, valueHtml) {
-  return `<span class="session-banner-meta-item"><b>${label}：</b>${valueHtml}</span>`
+function renderMetadataItem(label, valueHtml, kind) {
+  return `<span class="session-banner-meta-item is-${kind}"><b>${label}：</b>${valueHtml}</span>`
 }
 
 function escapeHtml(value) {
