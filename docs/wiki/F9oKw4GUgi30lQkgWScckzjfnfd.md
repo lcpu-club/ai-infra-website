@@ -10,15 +10,8 @@ lastUpdated: false
 <header class="session-banner wiki-page-banner">
   <nav class="wiki-breadcrumb" aria-label="文档路径"><a href="/wiki/">AI Infra Wiki</a><span aria-hidden="true">/</span><a href="/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 - Kernel and ML Compilers</a></nav>
   <h1>Session 1.0 | 并行计算与并行编程</h1>
+  <div class="session-banner-meta wiki-page-banner-meta"><span><b>主讲</b><span aria-hidden="true">·</span>@陈嘉骏</span><span><b>回放</b><span aria-hidden="true">·</span><a href="https://www.bilibili.com/video/BV1u83w6DEfG" target="_blank" rel="noreferrer">Session 1.0-活动简介 &amp; From HPC To AI Infra</a></span></div>
 </header>
-
----
-
-tittle: Session 1.0 | 并行计算与并行编程
-
-presenter: @陈嘉骏
-
----
 
 为什么超算和 AI Infra 息息相关？为什么随着算力增强，人工智能才能越来越强？
 
