@@ -10,7 +10,7 @@ lastUpdated: false
 <header class="session-banner wiki-page-banner">
   <nav class="wiki-breadcrumb" aria-label="文档路径"><a href="/wiki/">AI Infra Wiki</a><span aria-hidden="true">/</span><a href="/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 - Kernel and ML Compilers</a></nav>
   <h1>Session 1.1  CUDA  Programming Model</h1>
-  <div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-presenter"><b>主讲：</b>郑熠</span><span class="session-banner-meta-item is-replay"><b>回放：</b><a href="https://www.bilibili.com/video/BV1g83w6DETm/" target="_blank" rel="noreferrer">1.1-Cuda Programming Model</a></span></div>
+  <div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-replay"><b>回放：</b><a href="https://www.bilibili.com/video/BV1g83w6DETm/" target="_blank" rel="noreferrer">1.1-Cuda Programming Model</a></span><span class="session-banner-meta-item is-presenter"><b>主讲：</b>郑熠</span></div>
 </header>
 
 为什么 GPU 上的一个线程不比 CPU 更快，却能完成更大规模的并行计算？
