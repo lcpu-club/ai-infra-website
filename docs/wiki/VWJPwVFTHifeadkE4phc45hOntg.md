@@ -15,4 +15,5 @@ lastUpdated: false
 - [Session 1.1  CUDA  Programming Model](/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe)
 - [Session 1.2  Triton / TileLang —— CTA Level Programming](/wiki/UkSVwR07NiquWwkcTsPcq6XDnFh)
 - [Session 2.1  Memory Abstraction & Hierarchy](/wiki/I4MTwyBzoi23o4kgqMLckdUdngg)
+- [Session 2.2  FP32 GEMM Quick Walkthrough](/wiki/AwWTwMUDxiO5APkFt2Jc9hhknsf)
 - [Session 3  Tensor Core](/wiki/QsOcw3uHpifm10k5ouCcK6Uonee)

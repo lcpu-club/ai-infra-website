@@ -77,10 +77,11 @@ DESCRIPTION:本讲以 Tensor Core 的硬件与编程模型为主线，贯
  代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的
  设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解
  决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低
- 精度 Tensor Core 的使用。\n\nB站直播: https://live.bilibili.com/2
- 2591408\nLCPU Live: https://live.lcpu.dev/
+ 精度 Tensor Core 的使用。\n\n腾讯会议: https://meeting.tencent.c
+ om/l/r9vIJMyflfD6\nB站直播: https://live.bilibili.com/22591408\nLCPU Li
+ ve: https://live.lcpu.dev/
 LOCATION:腾讯会议 · B站直播 · LCPU Live
-URL:https://live.bilibili.com/22591408
+URL:https://meeting.tencent.com/l/r9vIJMyflfD6
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT

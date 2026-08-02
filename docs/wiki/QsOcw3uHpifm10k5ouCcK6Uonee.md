@@ -10,6 +10,7 @@ lastUpdated: false
 <header class="session-banner wiki-page-banner">
   <nav class="wiki-breadcrumb" aria-label="文档路径"><a href="/wiki/">AI Infra Wiki</a><span aria-hidden="true">/</span><a href="/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 - Kernel and ML Compilers</a></nav>
   <h1>Session 3  Tensor Core</h1>
+  <div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-presenter"><b>主讲：</b>孙远航</span></div>
 </header>
 
 ## 课前阅读

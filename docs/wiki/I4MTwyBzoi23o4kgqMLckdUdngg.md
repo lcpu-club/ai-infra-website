@@ -322,6 +322,8 @@ __global__ void kernel(Coefficients data)
 
 ### 例子：优化 reduce
 
+#### 朴素的串行相加
+
 对于给定长度 N 的数组，对其中每项进行求和：$out = \sum_{i=0}^{N-1}x_i$。我们将以这个算法为例，给大家展示如何进行优化。
 
 ```C++
@@ -352,6 +354,8 @@ __global__ void reduce_v1(
 </FeishuGridColumn>
 
 </FeishuGrid>
+
+#### 使用 shared memory 和树形优化
 
 我们可以把输入数组放到 shared memory 中，防止重复访问 global memory；每个 block 可以在内部进行一个树形的 reduce 操作，优化后的reduce：
 
@@ -396,10 +400,12 @@ __global__ void reduce_v2(
 
 </FeishuGrid>
 
+#### 使得 warp 中的线程连续
+
 再次优化后，我们让连续的线程负责相邻的相加。这样可以再次得到2倍的加速。
 
 ```C++
-__global__ void reduce_v2(
+__global__ void reduce_v3(
     const float* x, float* out, int n)
 {
     __shared__ float s[BLOCK];
@@ -423,4 +429,192 @@ __global__ void reduce_v2(
 
 ### 提高内存带宽——bank conflict 
 
-Shared memory 分为多个 bank，连续的4个 byte 是一个 bank。
+Bank 是 shared memory 中可以独立进行一次访问的最小存储分区。GPU 将 shared memory 划分为多个 bank，每个 bank 具有独立的数据通路；当一个 warp 中不同线程访问不同 bank 时，可以并行完成访问，而多个线程访问同一个 bank 时会产生 bank conflict。
+
+在  NVIDIA GPU 中，一个 SM 的 shared memory 通常划分为 32 个 bank，把 byte 地址按照4字节分块，连续的4个字节属于一个 bank，而且128个字节后的四个字节也属于这个 bank。例如下图中，地址0-3、128-121、256-259的字节属于 bank0，地址4-7、132-135、260-263属于 bank1……
+
+<FeishuGrid>
+
+<FeishuGridColumn width="0.486094">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/c73c75391df16e194439360d.png" caption="bank 的划分" width="1584" height="704" />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.513906">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/7781e78c67bdb09ebdfc1c37.png" caption="bank conflict" width="1821" height="765" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
+
+### 例子：优化 reduce
+
+#### 解决 bank conflict
+
+在刚刚的 reduce kernel 中，前面的迭代轮次里读取的字节都是连续的，不存在 bank conflict。但是靠后的轮次中，需要间隔好几个 byte 才能读取数据，造成 bank conflict，导致线程串行化。
+
+```C++
+__global__ void reduce_v4(const float* __restrict__ x, float* out, int n) {
+    __shared__ float s[BLOCK];
+    int tid = threadIdx.x;
+    int i = blockIdx.x * blockDim.x + tid;
+    s[tid] = (i < n) ? x[i] : 0.0f;
+    __syncthreads();
+
+    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+        if (tid < stride) s[tid] += s[tid + stride];
+        __syncthreads();
+    }
+
+    if (tid == 0) atomicAdd(out, s[0]);
+}
+```
+
+修改后的代码可以使得每个 warp 访问的数据都是连续的。
+
+<FeishuGrid>
+
+<FeishuGridColumn width="0.207372">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/45d2240ad20ef79a23e3ff64.png" caption="内存访问都是连续的" width="1952" height="1773" />
+
+</FeishuGridColumn>
+
+<FeishuGridColumn width="0.792628">
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/851da024ad9d3fd2ebd61154.png" width="574" height="133" />
+
+</FeishuGridColumn>
+
+</FeishuGrid>
+
+这样可以把执行效率提升到 0.78ms，344 GB/s，相对之前又加快了1.9倍。但是分析仍然表明，这样的kernel DRAM 利用率偏低，说明从之前的 memory bound 变成了 compute bound。
+
+#### 控制 block 数量
+
+分析代码可以知道，现在的 block 数量是和数据长度有关的。在执行过程中，我们因为 block 过多，执行了很多不必要的 reduce 操作，因此降低了执行效率。我们把一个 thread 执行多个操作，延迟 thread 的生命周期，并减少 block 数量，从而又进行了一次优化：
+
+```C++
+__global__ void reduce_v5(const float* __restrict__ x, float* out, int n)
+{
+    __shared__ float s[BLOCK];
+    int tid = threadIdx.x;
+    float sum = 0.0f;
+    for (int i = blockIdx.x * blockDim.x + tid; i < n; i += gridDim.x * blockDim.x)
+        sum += x[i];
+
+    s[tid] = sum;
+    __syncthreads();
+
+    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1)
+    {
+        if (tid < stride) s[tid] += s[tid + stride];
+        __syncthreads();
+    }
+
+    if (tid == 0) atomicAdd(out, s[0]);
+}
+```
+
+这让执行时间缩短到了 0.25ms，带宽提升到1074GB/s。
+
+#### 在任务规模足够小时使用寄存器
+
+如果观察到当任务折半到 stride ≤ 16时，可以发现所有 thread 都位于一个 thread，这时候实际上是不需要动用 shared memory，因为 warp 中的32个 lane 可以直接使用寄存器。例如：
+
+```C++
+__device__ __forceinline__ float warp_reduce_sum(float v) {
+#pragma unroll
+    for (int off = 16; off > 0; off >>= 1)
+        v += __shfl_xor_sync(0xffffffff, v, off);
+    return v;
+}
+```
+
+| 指令 | lane i 接收 | 用途 |
+|-|-|-|
+| `__shfl_sync` | lane: `srcLane`（可指定） | 广播 / 置换 |
+| `__shfl_up_sync` | lane: `i - delta` | Prefix sum, stencil |
+| `__shfl_down_sync` | lane: `i + delta` | Reduce（归约到 lane 0） |
+| `__shfl_xor_sync` | lane: `i xor laneMask` | Butterfly Reduce（交换到所有 lane） |
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/c59a00e3e6b1813d806fe0d5.png" caption="shuffle 指令" width="624" height="183" transparent />
+
+上面的 reduce 操作也可以使用 `__shfl_down_sync` 实现，二者效率类似。
+
+```C++
+__global__ void reduce_v6(const float* __restrict__ x, float* out, int n)
+{
+    float sum = 0.0f;
+    for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; i += gridDim.x * blockDim.x)
+        sum += x[i];
+
+    sum = warp_reduce_sum(sum);
+
+    __shared__ float warp_sum[32];
+
+    int lane = threadIdx.x & 31;
+    int wid = threadIdx.x >> 5;
+    if (lane == 0) warp_sum[wid] = sum;
+    __syncthreads();
+
+    if (wid == 0) {
+        sum = (lane < blockDim.x / 32) ? warp_sum[lane] : 0.0f;
+        sum = warp_reduce_sum(sum);
+        if (lane == 0) atomicAdd(out, sum);
+    }
+}
+```
+
+通过这样的优化，可以把执行时间为0.247ms，带宽1087GB/s。但是可以发现，这样的优化并没有带来显著的性能提升。这是因为这时 kernel 达到了 memory bound，需要进一步优化。
+
+#### 向量化访存
+
+我们通过使用 `float4` 进一步提升内存带宽：
+
+```C++
+__global__ void reduce_v7(const float* __restrict__ x4, float* out, int n4)
+{
+    float sum = 0.0f;
+    for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n4; i += gridDim.x * blockDim.x)
+    {
+        float4 v = x4[i];
+        sum += v.x + v.y + v.z + v.w;
+    }
+
+    sum = warp_reduce_sum(sum);
+
+    __shared__ float warp_sum[32];
+
+    int lane = threadIdx.x & 31;
+    int wid = threadIdx.x >> 5;
+    if (lane == 0) warp_sum[wid] = sum;
+    __syncthreads();
+
+    if (wid == 0) {
+        sum = (lane < blockDim.x / 32) ? warp_sum[lane] : 0.0f;
+        sum = warp_reduce_sum(sum);
+        if (lane == 0) atomicAdd(out, sum);
+    }
+}
+```
+
+最终把执行时间压缩到0.17ms，内存带宽可达1572GB/s。
+
+#### 小结
+
+| 版本 | 时间 | 带宽 | vs V1 | warp 指令 |
+|-|-|-|-|-|
+| V1 global atomic | 197.4 ms | 1.4 GB/s | 1× | — |
+| V2 smem，散开 | 1.67 ms | 161 GB/s | 118× | 1.55 亿 |
+| V3 连续线程 | 0.87 ms | 308 GB/s | 227× | 6167 万 |
+| V4 sequential | 0.78 ms | 344 GB/s | 253× | 5276 万 |
+| V5 grid-stride | 0.25 ms | 1074 GB/s | 790× | 560 万 |
+| V6 warp shuffle | 0.247 ms | 1087 GB/s | 799× | 460 万 |
+| **V7 + float4** | **0.17 ms** | **1572 GB/s** | **1156×** | **&ZeroWidthSpace;185 万** |
+
+<FeishuImage src="/feishu/wiki/I4MTwyBzoi23o4kgqMLckdUdngg/db13e3c60163e868c2b1e8a3.png" width="1493" height="509" transparent />
+
+可以看到优化效果明显。不过值得注意的是，如果对v5使用 `float4` 优化，其最终性能和 v7 相仿，说明使用 warp shuffle 优化效果目前不明显。
