@@ -421,4 +421,6 @@ __global__ void reduce_v2(
 }
 ```
 
-### 提高内存带宽——bank conflict
+### 提高内存带宽——bank conflict 
+
+Shared memory 分为多个 bank，连续的4个 byte 是一个 bank。
