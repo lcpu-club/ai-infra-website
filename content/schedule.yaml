@@ -125,6 +125,7 @@ events:
       - label:
           zh: 腾讯会议
           en: Tencent Meeting
+        href: https://meeting.tencent.com/l/r9vIJMyflfD6
       - label:
           zh: B站直播
           en: Bilibili Live
