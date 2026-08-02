@@ -23,46 +23,57 @@
       {
         "wikiNodeToken": "F9oKw4GUgi30lQkgWScckzjfnfd",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.0 并行计算与并行编程",
+        "title": "Session 1.0  并行计算与并行编程",
         "route": "/wiki/F9oKw4GUgi30lQkgWScckzjfnfd",
         "depth": 1,
         "order": 1,
         "documentId": "XO9wdbXxJoWUDxxkRB9cEdy2nbf",
         "objectType": "docx",
-        "revisionId": 1483
+        "revisionId": 1485
       },
       {
         "wikiNodeToken": "WHFXw13vEiD8Hikfp3ScU33JnXe",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.1 CUDA  Programming Model",
+        "title": "Session 1.1  CUDA  Programming Model",
         "route": "/wiki/WHFXw13vEiD8Hikfp3ScU33JnXe",
         "depth": 1,
         "order": 2,
         "documentId": "H5x1dK6LzoVFmuxUzDicmuQ1nbb",
         "objectType": "docx",
-        "revisionId": 2747
+        "revisionId": 2749
       },
       {
         "wikiNodeToken": "UkSVwR07NiquWwkcTsPcq6XDnFh",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 1.0 Session 1.2 Triton / TileLang —— CTA Level Programming",
+        "title": "Session 1.0  Session 1.2 Triton / TileLang —— CTA Level Programming",
         "route": "/wiki/UkSVwR07NiquWwkcTsPcq6XDnFh",
         "depth": 1,
         "order": 3,
         "documentId": "PG4sdbfwTooTRExxGbRcKT0Ln9c",
         "objectType": "docx",
-        "revisionId": 456
+        "revisionId": 458
       },
       {
         "wikiNodeToken": "I4MTwyBzoi23o4kgqMLckdUdngg",
         "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
-        "title": "Session 2.1 | Memory Abstraction & Hierarchy",
+        "title": "Session 2.1  Memory Abstraction & Hierarchy",
         "route": "/wiki/I4MTwyBzoi23o4kgqMLckdUdngg",
         "depth": 1,
         "order": 4,
         "documentId": "VfXGdbST3oebDbxv4zTcIbp5nmb",
         "objectType": "docx",
-        "revisionId": 660
+        "revisionId": 1349
+      },
+      {
+        "wikiNodeToken": "QsOcw3uHpifm10k5ouCcK6Uonee",
+        "parentWikiNodeToken": "VWJPwVFTHifeadkE4phc45hOntg",
+        "title": "Session 3  Tensor Core",
+        "route": "/wiki/QsOcw3uHpifm10k5ouCcK6Uonee",
+        "depth": 1,
+        "order": 5,
+        "documentId": "PzmFdOh3VoLEoNxjxgtchcsInKc",
+        "objectType": "docx",
+        "revisionId": 17
       }
     ]
   }

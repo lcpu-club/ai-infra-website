@@ -1,6 +1,6 @@
 ---
-title: "Session 1.0 并行计算与并行编程"
-description: "Session 1.0 并行计算与并行编程 · AI Infra Wiki"
+title: "Session 1.0  并行计算与并行编程"
+description: "Session 1.0  并行计算与并行编程 · AI Infra Wiki"
 outline: deep
 lastUpdated: false
 ---
@@ -9,7 +9,7 @@ lastUpdated: false
 
 <header class="session-banner wiki-page-banner">
   <nav class="wiki-breadcrumb" aria-label="文档路径"><a href="/wiki/">AI Infra Wiki</a><span aria-hidden="true">/</span><a href="/wiki/VWJPwVFTHifeadkE4phc45hOntg">Topic 1 - Kernel and ML Compilers</a></nav>
-  <h1>Session 1.0 并行计算与并行编程</h1>
+  <h1>Session 1.0  并行计算与并行编程</h1>
   <div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-presenter"><b>主讲：</b>陈嘉骏</span><span class="session-banner-meta-item is-replay"><b>回放：</b><a href="https://www.bilibili.com/video/BV1u83w6DEfG" target="_blank" rel="noreferrer">Session 1.0-活动简介 &amp; From HPC To AI Infra</a></span></div>
 </header>
 
