@@ -53,7 +53,7 @@ test('renders presenter metadata inside the Wiki title banner', () => {
 
   assert.match(
     output,
-    /<div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-presenter"><b>主讲：<\/b>@陈嘉骏<\/span><span class="session-banner-meta-item is-replay"><b>回放：<\/b><a href="https:\/\/www\.bilibili\.com\/video\/BV1test" target="_blank" rel="noreferrer">Session 1\.0 回放<\/a><\/span><\/div>/
+    /<div class="session-banner-meta wiki-page-banner-meta"><span class="session-banner-meta-item is-replay"><b>回放：<\/b><a href="https:\/\/www\.bilibili\.com\/video\/BV1test" target="_blank" rel="noreferrer">Session 1\.0 回放<\/a><\/span><span class="session-banner-meta-item is-presenter"><b>主讲：<\/b>@陈嘉骏<\/span><\/div>/
   )
   assert.ok(
     output.indexOf('wiki-page-banner-meta') < output.indexOf('</header>')

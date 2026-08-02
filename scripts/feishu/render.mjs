@@ -53,7 +53,7 @@ export function renderWikiPage({
         'replay'
       )
     : ''
-  const metadataItems = [presenterItem, replayItem].filter(Boolean)
+  const metadataItems = [replayItem, presenterItem].filter(Boolean)
   const metadataBlock = metadataItems.length
     ? `\n  <div class="session-banner-meta wiki-page-banner-meta">${metadataItems.join('')}</div>`
     : ''

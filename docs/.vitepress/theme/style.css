@@ -2819,7 +2819,7 @@ body.has-calendar-dialog {
   color: var(--site-text-2);
 }
 
-.wiki-page-banner-meta .is-replay {
+.wiki-page-banner-meta .is-presenter {
   margin-left: auto;
   justify-content: flex-end;
   text-align: right;
