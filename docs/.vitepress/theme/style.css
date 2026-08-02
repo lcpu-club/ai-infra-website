@@ -2821,13 +2821,15 @@ body.has-calendar-dialog {
 
 .wiki-page-banner-meta .is-presenter {
   margin-left: auto;
+  color: var(--site-brand);
+  font-weight: 650;
   justify-content: flex-end;
   text-align: right;
 }
 
 .wiki-page-banner-meta b {
-  color: var(--site-brand);
-  font-weight: 700;
+  color: var(--site-text-3);
+  font-weight: 650;
 }
 
 .takeaway-grid {
