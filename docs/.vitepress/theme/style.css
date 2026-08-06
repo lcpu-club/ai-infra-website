@@ -790,7 +790,7 @@ a {
   display: grid;
   width: min(1140px, calc(100% - 48px));
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
   align-items: stretch;
   gap: 28px;
 }
@@ -879,14 +879,12 @@ a {
 .home-credits-panel {
   padding-left: 28px;
   border-left: 1px solid var(--site-line);
-  text-align: right;
 }
 
 .home-credits-logos {
   display: flex;
   min-height: 46px;
   align-items: center;
-  justify-content: flex-end;
   flex-wrap: wrap;
   gap: 10px 14px;
 }
@@ -1035,11 +1033,6 @@ a {
     padding-left: 0;
     border-top: 1px solid var(--site-line);
     border-left: 0;
-    text-align: left;
-  }
-
-  .home-credits-logos {
-    justify-content: flex-start;
   }
 
   .home-section-heading-row {
