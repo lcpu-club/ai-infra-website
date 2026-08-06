@@ -853,6 +853,24 @@ a {
   object-fit: contain;
 }
 
+.home-support-logo-card.has-text-wordmark {
+  gap: 8px;
+}
+
+.home-support-logo-card img.home-support-logo-mark {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.home-support-text-wordmark {
+  color: #020c22;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
 .dark .home-support-logo-card {
   border-color: transparent;
   background: #f1f1f2;

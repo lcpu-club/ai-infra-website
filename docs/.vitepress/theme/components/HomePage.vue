@@ -23,7 +23,14 @@ const partners = [
   {
     name: 'vLLM',
     logo: '/partners/vllm.svg',
-    href: 'https://vllm.ai/'
+    href: 'https://vllm.ai/',
+    wordmark: ''
+  },
+  {
+    name: 'Verda',
+    logo: '/partners/verda-mark.svg',
+    href: 'https://verda.com/',
+    wordmark: 'Verda'
   }
 ]
 
@@ -240,6 +247,7 @@ const hrefFor = href
               v-for="partner in partners"
               :key="partner.name"
               class="home-support-logo-card"
+              :class="{ 'has-text-wordmark': partner.wordmark }"
               :href="partner.href"
               target="_blank"
               rel="noopener noreferrer"
@@ -248,8 +256,12 @@ const hrefFor = href
               <img
                 :src="withBase(partner.logo)"
                 :alt="`${partner.name}${home.logoSuffix}`"
+                :class="{ 'home-support-logo-mark': partner.wordmark }"
                 loading="lazy"
               >
+              <span v-if="partner.wordmark" class="home-support-text-wordmark">
+                {{ partner.wordmark }}
+              </span>
             </a>
           </div>
         </div>
