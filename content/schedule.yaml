@@ -123,17 +123,9 @@ events:
           en: Yuanhang Sun
     locations:
       - label:
-          zh: 腾讯会议
-          en: Tencent Meeting
-        href: https://meeting.tencent.com/l/r9vIJMyflfD6
-      - label:
-          zh: B站直播
-          en: Bilibili Live
-        href: https://live.bilibili.com/22591408
-      - label:
-          zh: LCPU Live
-          en: LCPU Live
-        href: https://live.lcpu.dev
+          zh: Session 3 回放
+          en: Session 3 replay
+        href: https://www.bilibili.com/video/BV1LxM96eE43
     links: []
     assignments: []
     display:
@@ -163,17 +155,9 @@ events:
           en: Haoran Kong
     locations:
       - label:
-          zh: 腾讯会议
-          en: Tencent Meeting
-        href: https://meeting.tencent.com/dm/MWmIhQau1Yb0
-      - label:
-          zh: B站直播
-          en: Bilibili Live
-        href: https://live.bilibili.com/22591408
-      - label:
-          zh: LCPU Live
-          en: LCPU Live
-        href: https://live.lcpu.dev
+          zh: Workshop 1 回放
+          en: Workshop 1 replay
+        href: https://www.bilibili.com/video/BV1rhMD6YEKM
     links: []
     assignments: []
     display:
