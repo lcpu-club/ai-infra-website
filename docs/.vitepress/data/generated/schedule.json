@@ -241,6 +241,66 @@
         "calendar": true,
         "accent": "kernel"
       }
+    },
+    {
+      "eventId": "topic-1-session-04",
+      "type": "lecture",
+      "topic": "kernel",
+      "sessionIds": [
+        "04"
+      ],
+      "title": {
+        "zh": "Topic 1, Session 4：Pipeline Ordering: Data Orchestration",
+        "en": "Topic 1, Session 4：Pipeline Ordering: Data Orchestration"
+      },
+      "description": {
+        "zh": "硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。 单个操作 latency 的改善已经远慢于系统 throughput 的增长，现代体 系结构从“降低 latency”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、Warp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速增长，计算与数 据供给能力之间的差距进一步扩大。以 cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先很大程度由硬件自动完成的 latency hiding，暴露为程序员和编译器需 要显式组织的 Pipeline。更进一步的，我们甚至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 而是主动固定不同执行资源的职责，并显式安排工作的空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data Orchestration，即如何组织数据、处理计算。 在最新的硬件上，上述内容已成为发挥硬件极限性能、实现极致性能算子的关键核心与重中之重。 本节课，我们将在有限的时间内，对上述内容进行综合性的介绍。"
+      },
+      "date": "2026-08-09",
+      "endDate": "2026-08-09",
+      "startAt": "2026-08-09T11:30:00Z",
+      "endAt": "2026-08-09T13:30:00Z",
+      "allDay": false,
+      "timeLabel": "19:30–21:30",
+      "timezone": "Asia/Shanghai",
+      "status": "tentative",
+      "speakers": [
+        {
+          "name": {
+            "zh": "卢怡霏",
+            "en": "Yifei Lu"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          },
+          "href": "https://live.bilibili.com/22591408"
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
     }
   ],
   "assignments": [

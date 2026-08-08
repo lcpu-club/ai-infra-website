@@ -83,6 +83,37 @@ URL:https://www.bilibili.com/video/BV1LxM96eE43
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:event-topic-1-session-04@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260809T113000Z
+SUMMARY:Topic 1\, Session 4：Pipeline Ordering: Data Orchestration
+STATUS:TENTATIVE
+CATEGORIES:AI INFRA,lecture,kernel
+DTSTART:20260809T113000Z
+DTEND:20260809T133000Z
+DESCRIPTION:硬件发展过程中，计算能力、内存带宽提升的同
+ 时，频率提升稍显缓慢。 单个操作 latency 的改善已经远
+ 慢于系统 throughput 的增长，现代体 系结构从“降低 latenc
+ y”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency
+ 。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、W
+ arp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和
+ 演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速
+ 增长，计算与数 据供给能力之间的差距进一步扩大。以
+  cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先
+ 很大程度由硬件自动完成的 latency hiding，暴露为程序员
+ 和编译器需 要显式组织的 Pipeline。更进一步的，我们甚
+ 至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 
+ 而是主动固定不同执行资源的职责，并显式安排工作的
+ 空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data 
+ Orchestration，即如何组织数据、处理计算。 在最新的硬件
+ 上，上述内容已成为发挥硬件极限性能、实现极致性能
+ 算子的关键核心与重中之重。 本节课，我们将在有限的
+ 时间内，对上述内容进行综合性的介绍。\n\nB站直播: http
+ s://live.bilibili.com/22591408\nLCPU Live: https://live.lcpu.dev/
+LOCATION:腾讯会议 · B站直播 · LCPU Live
+URL:https://live.bilibili.com/22591408
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:assignment-A01@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260808T155900Z
 SUMMARY:[DDL] A01 · Assignment 01 · GPU 与 GPU 编程
