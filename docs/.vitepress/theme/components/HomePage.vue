@@ -25,12 +25,6 @@ const partners = [
     logo: '/partners/vllm.svg',
     href: 'https://vllm.ai/',
     wordmark: ''
-  },
-  {
-    name: 'Verda',
-    logo: '/partners/verda-mark.svg',
-    href: 'https://verda.com/',
-    wordmark: 'Verda'
   }
 ]
 
