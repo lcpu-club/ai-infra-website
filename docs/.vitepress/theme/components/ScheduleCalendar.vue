@@ -346,12 +346,13 @@ onBeforeUnmount(() => {
   </section>
 
   <Teleport to="body">
-    <div
-      v-if="selectedEvent"
-      class="calendar-dialog-backdrop"
-      role="presentation"
-      @click.self="closeDialog"
-    >
+    <Transition name="calendar-dialog">
+      <div
+        v-if="selectedEvent"
+        class="calendar-dialog-backdrop"
+        role="presentation"
+        @click.self="closeDialog"
+      >
       <section
         class="calendar-dialog"
         role="dialog"
@@ -457,6 +458,7 @@ onBeforeUnmount(() => {
           </div>
         </footer>
       </section>
-    </div>
+      </div>
+    </Transition>
   </Teleport>
 </template>

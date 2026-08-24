@@ -130,6 +130,36 @@
 
 /* Micro-interactions */
 
+/* Event detail dialog (Transition name="calendar-dialog") */
+
+.calendar-dialog-enter-active,
+.calendar-dialog-leave-active {
+  transition: opacity 240ms ease;
+}
+
+.calendar-dialog-enter-from,
+.calendar-dialog-leave-to {
+  opacity: 0;
+}
+
+.calendar-dialog-enter-active .calendar-dialog {
+  transition:
+    opacity 280ms cubic-bezier(0.22, 0.61, 0.21, 1),
+    transform 280ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+
+.calendar-dialog-leave-active .calendar-dialog {
+  transition:
+    opacity 180ms ease-in,
+    transform 180ms ease-in;
+}
+
+.calendar-dialog-enter-from .calendar-dialog,
+.calendar-dialog-leave-to .calendar-dialog {
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+}
+
 .home-schedule-arrow {
   transition: transform 200ms cubic-bezier(0.22, 0.61, 0.21, 1);
 }
@@ -173,6 +203,18 @@
 
   .home-schedule-card:hover .home-schedule-arrow,
   .home-support-logo-card:hover img {
+    transform: none;
+  }
+
+  .calendar-dialog-enter-active,
+  .calendar-dialog-leave-active,
+  .calendar-dialog-enter-active .calendar-dialog,
+  .calendar-dialog-leave-active .calendar-dialog {
+    transition: none;
+  }
+
+  .calendar-dialog-enter-from .calendar-dialog,
+  .calendar-dialog-leave-to .calendar-dialog {
     transform: none;
   }
 }

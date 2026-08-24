@@ -31,14 +31,38 @@ onBeforeUnmount(() => {
   if (clock !== undefined) window.clearInterval(clock)
 })
 
-function toggleExpanded(eventId: string) {
+function toggleExpanded(eventId: string, e: MouseEvent) {
   const next = new Set(expanded.value)
-  if (next.has(eventId)) {
-    next.delete(eventId)
-  } else {
+  const expanding = !next.has(eventId)
+  if (expanding) {
     next.add(eventId)
+  } else {
+    next.delete(eventId)
   }
   expanded.value = next
+
+  // Pin the current height inline, then release it to the target height
+  // so the max-height transition has concrete start and end values.
+  const button = e.currentTarget as HTMLElement | null
+  const text = button
+    ?.closest('.schedule-event')
+    ?.querySelector<HTMLElement>('.schedule-event-desc-text')
+  if (!text) return
+  text.style.maxHeight = `${text.offsetHeight}px`
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      text.style.maxHeight = expanding ? `${text.scrollHeight}px` : ''
+    })
+  })
+  if (expanding) {
+    text.addEventListener(
+      'transitionend',
+      () => {
+        text.style.maxHeight = ''
+      },
+      { once: true }
+    )
+  }
 }
 
 function inclusiveEndDate(event: CalendarEvent) {
@@ -200,7 +224,7 @@ function openDetails(event: CalendarEvent) {
           class="schedule-event-desc-toggle"
           type="button"
           :aria-expanded="expanded.has(event.eventId)"
-          @click="toggleExpanded(event.eventId)"
+          @click="toggleExpanded(event.eventId, $event)"
         >
           {{
             expanded.has(event.eventId)
@@ -265,9 +289,8 @@ function openDetails(event: CalendarEvent) {
             :key="assignment.id"
             class="schedule-event-assignment"
             :href="href(assignment.href)"
-            :title="assignment.title"
           >
-            {{ copy.schedule.assignmentTag }}: {{ assignment.id }}
+            {{ assignment.id }}: {{ assignment.title }}
           </a>
         </div>
       </div>
