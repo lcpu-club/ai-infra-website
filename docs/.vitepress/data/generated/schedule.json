@@ -100,7 +100,8 @@
         "en": "Topic 1, Session 2: Memory Abstraction & Hierarchy"
       },
       "description": {
-        "zh": "本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、 coalescing、latency hiding、shared memory bank conflict、padding、 swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个 Kernel 的编写与调优。"
+        "zh": "本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、 coalescing、latency hiding、shared memory bank conflict、padding、 swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个 Kernel 的编写与调优。",
+        "en": "This session follows CUDA Core FP32 GEMM to develop an intuition for data reuse and the abstraction of the memory hierarchy. We start from a strawman GEMM, evolve it through tiling, and use the Roofline Model to analyze data reuse. From the hardware perspective, we then study SMs, warp execution, coalescing, latency hiding, shared-memory bank conflicts, padding, swizzle, and per-thread microtiles. Finally, we write and tune a kernel with Nsight Compute."
       },
       "date": "2026-07-30",
       "endDate": "2026-07-30",
@@ -160,7 +161,8 @@
         "en": "Topic 1, Workshop 1: Parallel Programming with TileLang"
       },
       "description": {
-        "zh": "本次 Workshop，我们将介绍：TileLang 语法、 如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。"
+        "zh": "本次 Workshop，我们将介绍：TileLang 语法、 如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。",
+        "en": "In this workshop, we introduce TileLang syntax, writing kernels with TileLang, CTA-to-thread mapping and layout inference, latency hiding, DSL JIT compilation, and host-side integration. We also cover operator optimization in TileLang and several related tools."
       },
       "date": "2026-08-01",
       "endDate": "2026-08-01",
@@ -207,7 +209,8 @@
         "en": "Topic 1, Session 3: Tensor Core"
       },
       "description": {
-        "zh": "本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低精度 Tensor Core 的使用。"
+        "zh": "本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低精度 Tensor Core 的使用。",
+        "en": "This session explores the hardware and programming model of Tensor Cores, tracing the evolution of mma.sync on Ampere, wgmma on Hopper, and tcgen05 on Blackwell. We derive the design logic of Tensor Cores from data movement and issue bandwidth, study fragment layouts, and learn how layouts and swizzles can resolve bank conflicts. We conclude with the use of low-precision Tensor Cores through FP8 fine-grained scaling."
       },
       "date": "2026-08-02",
       "endDate": "2026-08-02",
@@ -254,7 +257,8 @@
         "en": "Topic 1, Session 4：Pipeline Ordering: Data Orchestration"
       },
       "description": {
-        "zh": "硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。 单个操作 latency 的改善已经远慢于系统 throughput 的增长，现代体 系结构从“降低 latency”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、Warp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速增长，计算与数 据供给能力之间的差距进一步扩大。以 cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先很大程度由硬件自动完成的 latency hiding，暴露为程序员和编译器需 要显式组织的 Pipeline。更进一步的，我们甚至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 而是主动固定不同执行资源的职责，并显式安排工作的空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data Orchestration，即如何组织数据、处理计算。 在最新的硬件上，上述内容已成为发挥硬件极限性能、实现极致性能算子的关键核心与重中之重。 本节课，我们将在有限的时间内，对上述内容进行综合性的介绍。"
+        "zh": "硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。 单个操作 latency 的改善已经远慢于系统 throughput 的增长，现代体 系结构从“降低 latency”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、Warp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速增长，计算与数 据供给能力之间的差距进一步扩大。以 cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先很大程度由硬件自动完成的 latency hiding，暴露为程序员和编译器需 要显式组织的 Pipeline。更进一步的，我们甚至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 而是主动固定不同执行资源的职责，并显式安排工作的空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data Orchestration，即如何组织数据、处理计算。 在最新的硬件上，上述内容已成为发挥硬件极限性能、实现极致性能算子的关键核心与重中之重。 本节课，我们将在有限的时间内，对上述内容进行综合性的介绍。",
+        "en": "As hardware has evolved, compute capability and memory bandwidth have grown rapidly while clock frequency has improved more slowly. Improvements in the latency of individual operations have lagged behind system throughput, so modern architectures increasingly rely on parallelism to tolerate and hide latency. We trace this evolution from instruction-level parallelism and out-of-order execution to memory-level parallelism, warp scheduling, and TLP. As specialized units such as Tensor Cores continue to raise throughput, the gap between computation and data supply grows wider. Mechanisms such as cp.async and TMA expose latency hiding as an explicit pipeline that must be organized by programmers and compilers. We will synthesize these ideas as Pipeline Ordering: Data Orchestration, a key to reaching the performance limits of modern hardware and optimized operators."
       },
       "date": "2026-08-09",
       "endDate": "2026-08-09",
