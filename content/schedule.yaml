@@ -213,6 +213,114 @@ events:
       calendar: true
       accent: kernel
 
+  - id: topic-2-session-05
+    type: lecture
+    topic: comm
+    sessions: ["05"]
+    title:
+      zh: "Session 05 | Towards Modern Networking System"
+      en: "Session 05 | Towards Modern Networking System"
+    description:
+      zh: >-
+        随着计算量的不断增加，单个计算单元已无法满足更大的计算需求，这要求我们必须采用某些方式将计算单元连接起来。
+        历史上，总线、PCIe、TCP/IP、Ethernet 等，都从不同方面不同层次对互联中关键的问题进行了回答。
+        AI 时代，为了承载 HPC/AI Workload 中大规模并行计算所需要的通信和互联，我们需要更大的带宽、更低的延迟、更高的可靠性，
+        迫使我们不断设计和改进网络系统。本节课，我们将从通信需求的产生开始，试图从第一性原理出发，逐步解释现代网络系统的组成与设计。
+        本次活动无课前阅读。
+      en: >-
+        As computational demands continue to grow, a single compute unit is no longer enough;
+        we need ways to connect compute units together. Historically, buses, PCIe, TCP/IP, and Ethernet
+        have answered key interconnect questions at different layers. In the AI era, large-scale HPC/AI
+        workloads demand higher bandwidth, lower latency, and greater reliability, driving the evolution
+        of network systems. Starting from the origin of communication requirements, this session explains
+        the composition and design of modern network systems from first principles. No pre-reading is required.
+    start: "2026-08-17T19:30:00+08:00"
+    end: "2026-08-17T21:30:00+08:00"
+    confirmation: confirmed
+    speakers:
+      - name:
+          zh: 王志豪
+          en: Zhihao Wang
+        role:
+          zh: 信息科学技术学院 20 级微电子科学与工程方向本科生、中国科学院计算技术研究所博士研究生、北京大学学生 Linux 俱乐部骨干
+          en: Undergraduate in Microelectronics Science and Engineering, School of Computer Science; PhD student at ICT, CAS; LCPU core member
+    locations:
+      - label:
+          zh: 腾讯会议
+          en: Tencent Meeting
+      - label:
+          zh: 腾讯会议直播
+          en: Tencent Meeting Live
+      - label:
+          zh: B站直播
+          en: Bilibili Live
+      - label:
+          zh: LCPU Livestream
+          en: LCPU Livestream
+        href: https://live.lcpu.dev
+    links: []
+    assignments: []
+    display:
+      homepage: true
+      calendar: true
+      accent: comm
+
+  - id: topic-2-session-06
+    type: lecture
+    topic: comm
+    sessions: ["06"]
+    title:
+      zh: "Session 06 | AI Communication Stack"
+      en: "Session 06 | AI Communication Stack"
+    description:
+      zh: >-
+        Pipeline 背后真正的问题是：谁来决定什么工作在什么时候、在哪个资源上执行？谁负责维护依赖、推进执行，并判断一个阶段何时真正完成？
+        这其中涉及到一组连续的设计 trade-off：硬件与软件的责任划分、编程复杂度与硬件复杂度、静态与动态调度、显式控制与自动管理、
+        灵活性与可预测性，以及细粒度重叠带来的性能收益与状态和同步开销。在单 GPU 内部，这些责任可以由 Compiler、Warp Scheduler、
+        Scoreboard、Pipeline、Barrier、Copy Engine 和 Memory Hierarchy 共同承担。我们关注数据如何在 Register、Shared Mem、片上专用存储和 HBM 之间流动并保证计算正确推进。
+        今天，我们把同一个问题扩展到 GPU-to-GPU 高速互联。此时数据的 Producer 和 Consumer 不再位于同一块 GPU 上，数据可能需要跨越 GPU Fabric、
+        NVLink / NVSwitch、PCIe、RNIC、RDMA Transport 和交换网络。原本局限在单 GPU 内部的 Readiness、Ordering、Completion 和 Visibility，
+        现在必须跨越不同的设备、地址域、队列、协议乃至故障域继续成立。我们今天讨论这些状态和控制责任应该放在哪里，并介绍 Workload 中对通信的要求以及工业界一些经典的解决方案。
+        本次活动无课前阅读。
+      en: >-
+        The central question behind a pipeline is: who decides what work runs, when it runs, and on which resource?
+        Who maintains dependencies, advances execution, and determines when a stage has truly completed?
+        These questions involve trade-offs between hardware and software responsibility, programming and hardware complexity,
+        static and dynamic scheduling, explicit control and automation, flexibility and predictability, and the performance gains
+        of fine-grained overlap versus its state and synchronization costs. Inside a single GPU, Compiler, Warp Scheduler,
+        Scoreboard, Pipeline, Barrier, Copy Engine, and Memory Hierarchy share these responsibilities. We study how data moves
+        among Registers, Shared Memory, on-chip specialized storage, and HBM while computation progresses correctly.
+        We then extend the same problem to high-speed GPU-to-GPU interconnects, where Producer and Consumer may reside on different GPUs
+        and data may cross GPU Fabric, NVLink / NVSwitch, PCIe, RNIC, RDMA Transport, and switching networks. This session examines
+        where Readiness, Ordering, Completion, and Visibility responsibilities should live across devices, address domains, queues,
+        protocols, and failure domains, and introduces communication requirements in workloads and classic industry solutions.
+        No pre-reading is required.
+    start: "2026-08-23T19:30:00+08:00"
+    end: "2026-08-23T21:30:00+08:00"
+    confirmation: confirmed
+    speakers:
+      - name:
+          zh: 孔昊然
+          en: Haoran Kong
+    locations:
+      - label:
+          zh: 腾讯会议
+          en: Tencent Meeting
+      - label:
+          zh: B站直播
+          en: Bilibili Live
+        href: https://live.bilibili.com/22591408
+      - label:
+          zh: LCPU Live
+          en: LCPU Live
+        href: https://live.lcpu.dev
+    links: []
+    assignments: []
+    display:
+      homepage: true
+      calendar: true
+      accent: comm
+
 # 活动模板：复制下面整段，移除每行开头的 "# " 后填写。
 # type 可用 lecture、guest-lecture、workshop、office-hours 或 other；
 # assignments 只填写已存在的作业 ID。
