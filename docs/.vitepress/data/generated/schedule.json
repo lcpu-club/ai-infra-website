@@ -231,7 +231,7 @@
             "zh": "Session 3 回放",
             "en": "Session 3 replay"
           },
-          "href": "https://www.bilibili.com/video/BV1LxM96eE43"
+          "href": "https://www.bilibili.com/video/BV1LxM96eE43/"
         }
       ],
       "links": [],
@@ -273,6 +273,13 @@
         }
       ],
       "locations": [
+        {
+          "label": {
+            "zh": "Session 4 回放",
+            "en": "Session 4 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1NRuX6UEwJ"
+        },
         {
           "label": {
             "zh": "腾讯会议",
@@ -334,6 +341,13 @@
         }
       ],
       "locations": [
+        {
+          "label": {
+            "zh": "Session 5 回放",
+            "en": "Session 5 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1Xg836FE7G"
+        },
         {
           "label": {
             "zh": "腾讯会议",

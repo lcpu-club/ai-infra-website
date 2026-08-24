@@ -125,7 +125,7 @@ events:
       - label:
           zh: Session 3 回放
           en: Session 3 replay
-        href: https://www.bilibili.com/video/BV1LxM96eE43
+        href: https://www.bilibili.com/video/BV1LxM96eE43/
     links: []
     assignments: []
     display:
@@ -196,6 +196,10 @@ events:
           en: Yifei Lu
     locations:
       - label:
+          zh: Session 4 回放
+          en: Session 4 replay
+        href: https://www.bilibili.com/video/BV1NRuX6UEwJ
+      - label:
           zh: 腾讯会议
           en: Tencent Meeting
       - label:
@@ -242,6 +246,10 @@ events:
           zh: 王志豪
           en: Zhihao Wang
     locations:
+      - label:
+          zh: Session 5 回放
+          en: Session 5 replay
+        href: https://www.bilibili.com/video/BV1Xg836FE7G
       - label:
           zh: 腾讯会议
           en: Tencent Meeting

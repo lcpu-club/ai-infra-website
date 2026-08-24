@@ -77,9 +77,9 @@ DESCRIPTION:本讲以 Tensor Core 的硬件与编程模型为主线，贯
  设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解
  决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低
  精度 Tensor Core 的使用。\n\nSession 3 回放: https://www.bilibili.
- com/video/BV1LxM96eE43
+ com/video/BV1LxM96eE43/
 LOCATION:Session 3 回放
-URL:https://www.bilibili.com/video/BV1LxM96eE43
+URL:https://www.bilibili.com/video/BV1LxM96eE43/
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
@@ -107,10 +107,11 @@ DESCRIPTION:硬件发展过程中，计算能力、内存带宽提升的同
  Orchestration，即如何组织数据、处理计算。 在最新的硬件
  上，上述内容已成为发挥硬件极限性能、实现极致性能
  算子的关键核心与重中之重。 本节课，我们将在有限的
- 时间内，对上述内容进行综合性的介绍。\n\nB站直播: http
- s://live.bilibili.com/22591408\nLCPU Live: https://live.lcpu.dev/
-LOCATION:腾讯会议 · B站直播 · LCPU Live
-URL:https://live.bilibili.com/22591408
+ 时间内，对上述内容进行综合性的介绍。\n\nSession 4 回放
+ : https://www.bilibili.com/video/BV1NRuX6UEwJ\nB站直播: https://live.bi
+ libili.com/22591408\nLCPU Live: https://live.lcpu.dev/
+LOCATION:Session 4 回放 · 腾讯会议 · B站直播 · LCPU Live
+URL:https://www.bilibili.com/video/BV1NRuX6UEwJ
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
@@ -130,10 +131,11 @@ DESCRIPTION:随着计算量的不断增加，单个计算单元已无法满
  迟、更高的可靠性， 迫使我们不断设计和改进网络系统
  。本节课，我们将从通信需求的产生开始，试图从第一
  性原理出发，逐步解释现代网络系统的组成与设计。 本
- 次活动无课前阅读。\n\nLCPU Livestream: https://live.lcpu.dev/
-LOCATION:腾讯会议 · 腾讯会议直播 · B站直播 · LCPU Livestrea
- m
-URL:https://live.lcpu.dev/
+ 次活动无课前阅读。\n\nSession 5 回放: https://www.bilibili.com/
+ video/BV1Xg836FE7G\nLCPU Livestream: https://live.lcpu.dev/
+LOCATION:Session 5 回放 · 腾讯会议 · 腾讯会议直播 · B站直
+ 播 · LCPU Livestream
+URL:https://www.bilibili.com/video/BV1Xg836FE7G
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
