@@ -13,13 +13,15 @@ STATUS:TENTATIVE
 CATEGORIES:AI INFRA,lecture,kernel
 DTSTART:20260726T100000Z
 DTEND:20260726T123000Z
-DESCRIPTION:Session 1.0 从 HPC 到 AI Infra：并行计算与并行编程\
- nSession 1.1 CUDA 编程模型\nSession 1.2 Triton/TileLang Tile Level 编
- 程\n介绍活动整体安排、内容设计、评测与算力资源。\n\
- nSession 1.0 回放: https://www.bilibili.com/video/BV1u83w6DEfG\nSession 
- 1.1 回放: https://www.bilibili.com/video/BV1g83w6DETm\nSession 1.2 回
- 放: https://www.bilibili.com/video/BV1Sb3w6nE8v\n\nTopic 1 讲义: https:
- //ai-infra-website.leavelet.workers.dev/wiki/VWJPwVFTHifeadkE4phc45hOntg
+DESCRIPTION:Topic 1\, Session 1.0 | 从 HPC 到 AI Infra：并行计算与
+ 并行编程\nTopic 1\, Session 1.1 | CUDA 编程模型\nTopic 1\, Session
+  1.2 | Triton/TileLang Tile Level 编程\n介绍活动整体安排、内
+ 容设计、评测与算力资源。\n\nSession 1.0 回放: https://www.bi
+ libili.com/video/BV1u83w6DEfG\nSession 1.1 回放: https://www.bilibili.co
+ m/video/BV1g83w6DETm\nSession 1.2 回放: https://www.bilibili.com/video/B
+ V1Sb3w6nE8v\n\nTopic 1 讲义: https://ai-infra-website.leavelet.workers.d
+ ev/wiki/VWJPwVFTHifeadkE4phc45hOntg\nTopic 1 演示文稿（PDF）: https:
+ //ai-infra-website.leavelet.workers.dev/slides/session01.pdf
 LOCATION:Session 1.0 回放 · Session 1.1 回放 · Session 1.2 回放
 URL:https://ai-infra-website.leavelet.workers.dev/wiki/VWJPwVFTHifeadkE4phc
  45hOntg
@@ -28,7 +30,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:event-topic-1-session-02@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260730T113000Z
-SUMMARY:Topic 1\, Session 2：Memory Abstraction & Hierarchy
+SUMMARY:Topic 1\, Session 2 | Memory Abstraction & Hierarchy
 STATUS:CONFIRMED
 CATEGORIES:AI INFRA,lecture,kernel
 DTSTART:20260730T113000Z
@@ -40,15 +42,18 @@ DESCRIPTION:本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发
  ry bank conflict、padding、 swizzle 与 per-thread microtile，最后使
  用 Nsight Compute 完成一个 Kernel 的编写与调优。\n\nSession 2.
  1 回放: https://www.bilibili.com/video/BV1gqGA6ZEfg\nSession 2.2 回放:
-  https://www.bilibili.com/video/BV1L8GA6YEAH
+  https://www.bilibili.com/video/BV1L8GA6YEAH\n\nSession 2.1 演示文稿
+ （PDF）: https://ai-infra-website.leavelet.workers.dev/slides/session020
+ 1.pdf\nSession 2.2 演示文稿（PDF）: https://ai-infra-website.leavele
+ t.workers.dev/slides/session0202.pdf
 LOCATION:Session 2.1 回放 · Session 2.2 回放
-URL:https://www.bilibili.com/video/BV1gqGA6ZEfg
+URL:https://ai-infra-website.leavelet.workers.dev/slides/session0201.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:event-topic-1-workshop-01@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260801T113000Z
-SUMMARY:Topic 1\, Workshop 1：Parallel Programming with TileLang
+SUMMARY:Topic 1\, Workshop 1 | Parallel Programming with TileLang
 STATUS:CONFIRMED
 CATEGORIES:AI INFRA,workshop,kernel
 DTSTART:20260801T113000Z
@@ -58,15 +63,17 @@ DESCRIPTION:本次 Workshop，我们将介绍：TileLang 语法、 如何
  ut Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 
  JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 Ti
  leLang 下如何做算子优化以及一些相关的工具。\n\nWorkshop 
- 1 回放: https://www.bilibili.com/video/BV1rhMD6YEKM
+ 1 回放: https://www.bilibili.com/video/BV1rhMD6YEKM\n\nWorkshop 1 演示
+ 文稿（PDF）: https://ai-infra-website.leavelet.workers.dev/slides/work
+ shop01.pdf
 LOCATION:Workshop 1 回放
-URL:https://www.bilibili.com/video/BV1rhMD6YEKM
+URL:https://ai-infra-website.leavelet.workers.dev/slides/workshop01.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:event-topic-1-session-03@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260802T110000Z
-SUMMARY:Topic 1\, Session 3：Tensor Core
+SUMMARY:Topic 1\, Session 3 | Tensor Core
 STATUS:CONFIRMED
 CATEGORIES:AI INFRA,lecture,kernel
 DTSTART:20260802T110000Z
@@ -77,15 +84,16 @@ DESCRIPTION:本讲以 Tensor Core 的硬件与编程模型为主线，贯
  设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解
  决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低
  精度 Tensor Core 的使用。\n\nSession 3 回放: https://www.bilibili.
- com/video/BV1LxM96eE43/
+ com/video/BV1LxM96eE43/\n\nSession 3 演示文稿（PDF）: https://ai-inf
+ ra-website.leavelet.workers.dev/slides/session03.pdf
 LOCATION:Session 3 回放
-URL:https://www.bilibili.com/video/BV1LxM96eE43/
+URL:https://ai-infra-website.leavelet.workers.dev/slides/session03.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:event-topic-1-session-04@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260809T113000Z
-SUMMARY:Topic 1\, Session 4：Pipeline Ordering: Data Orchestration
+SUMMARY:Topic 1\, Session 4 | Pipeline Ordering: Data Orchestration
 STATUS:TENTATIVE
 CATEGORIES:AI INFRA,lecture,kernel
 DTSTART:20260809T113000Z
@@ -109,15 +117,17 @@ DESCRIPTION:硬件发展过程中，计算能力、内存带宽提升的同
  算子的关键核心与重中之重。 本节课，我们将在有限的
  时间内，对上述内容进行综合性的介绍。\n\nSession 4 回放
  : https://www.bilibili.com/video/BV1NRuX6UEwJ\nB站直播: https://live.bi
- libili.com/22591408\nLCPU Live: https://live.lcpu.dev/
+ libili.com/22591408\nLCPU Live: https://live.lcpu.dev/\n\nSession 4 演示
+ 文稿（PDF）: https://ai-infra-website.leavelet.workers.dev/slides/sess
+ ion04.pdf
 LOCATION:Session 4 回放 · 腾讯会议 · B站直播 · LCPU Live
-URL:https://www.bilibili.com/video/BV1NRuX6UEwJ
+URL:https://ai-infra-website.leavelet.workers.dev/slides/session04.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:event-topic-2-session-05@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260817T113000Z
-SUMMARY:Session 05 | Towards Modern Networking System
+SUMMARY:Topic 2\, Session 5 | Towards Modern Networking System
 STATUS:CONFIRMED
 CATEGORIES:AI INFRA,lecture,comm
 DTSTART:20260817T113000Z
@@ -132,18 +142,20 @@ DESCRIPTION:随着计算量的不断增加，单个计算单元已无法满
  。本节课，我们将从通信需求的产生开始，试图从第一
  性原理出发，逐步解释现代网络系统的组成与设计。 本
  次活动无课前阅读。\n\nSession 5 回放: https://www.bilibili.com/
- video/BV1Xg836FE7G\nLCPU Livestream: https://live.lcpu.dev/
+ video/BV1Xg836FE7G\nLCPU Livestream: https://live.lcpu.dev/\n\nSession 5 
+ 演示文稿（PDF）: https://ai-infra-website.leavelet.workers.dev/slide
+ s/session05.pdf
 LOCATION:Session 5 回放 · 腾讯会议 · 腾讯会议直播 · B站直
  播 · LCPU Livestream
-URL:https://www.bilibili.com/video/BV1Xg836FE7G
+URL:https://ai-infra-website.leavelet.workers.dev/slides/session05.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
-UID:event-topic-2-session-06@ai-infra-seminars.lcpu.dev
+UID:event-topic-2-workshop-02@ai-infra-seminars.lcpu.dev
 DTSTAMP:20260823T113000Z
-SUMMARY:Session 06 | AI Communication Stack
+SUMMARY:Topic 2\, Workshop 2 | AI Communication Stack
 STATUS:CONFIRMED
-CATEGORIES:AI INFRA,lecture,comm
+CATEGORIES:AI INFRA,workshop,comm
 DTSTART:20260823T113000Z
 DTEND:20260823T133000Z
 DESCRIPTION:Pipeline 背后真正的问题是：谁来决定什么工作在
@@ -165,9 +177,10 @@ DESCRIPTION:Pipeline 背后真正的问题是：谁来决定什么工作在
  们今天讨论这些状态和控制责任应该放在哪里，并介绍 W
  orkload 中对通信的要求以及工业界一些经典的解决方案。
   本次活动无课前阅读。\n\nB站直播: https://live.bilibili.com/2
- 2591408\nLCPU Live: https://live.lcpu.dev/
+ 2591408\nLCPU Live: https://live.lcpu.dev/\n\nWorkshop 2 演示文稿（PD
+ F）: https://ai-infra-website.leavelet.workers.dev/slides/workshop02.pdf
 LOCATION:腾讯会议 · B站直播 · LCPU Live
-URL:https://live.bilibili.com/22591408
+URL:https://ai-infra-website.leavelet.workers.dev/slides/workshop02.pdf
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
@@ -180,6 +193,18 @@ DTSTART:20260808T155900Z
 DURATION:PT15M
 URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
  rs/blob/main/assignment01/README.md
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:assignment-A02@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260829T155900Z
+SUMMARY:[DDL] A02 · Assignment 02 · Tensor Core 与 Pipeline
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,ASSIGNMENT,DEADLINE
+DTSTART:20260829T155900Z
+DURATION:PT15M
+URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
+ rs/blob/main/assignment02/README.md
 TRANSP:TRANSPARENT
 END:VEVENT
 END:VCALENDAR
