@@ -321,9 +321,9 @@ events:
         href: https://live.lcpu.dev
     links: 
       - label:
-          zh: Session 5 演示文稿（PPTX）
-          en: Session 5 slides (PPTX)
-          href: /slides/session05.pptx
+          zh: Session 5 演示文稿（PDF）
+          en: Session 5 slides (PDF)
+          href: /slides/session05.pdf
     assignments: []
     display:
       homepage: true

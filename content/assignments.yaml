@@ -31,7 +31,7 @@ assignments:
         label:
           zh: GitHub 文档
           en: GitHub documentation
-        href:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment02/README.md
+        href: https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment02/README.md
       - type: submission
         label:
           zh: HPC Game 平台
