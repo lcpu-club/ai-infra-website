@@ -75,7 +75,7 @@ const schedulePreview = computed<SchedulePreviewItem[]>(() =>
       href: event.href,
       label: previewEventLabel(event.type)
     }))
-    .sort((left, right) => left.date.localeCompare(right.date))
+    .sort((left, right) => right.date.localeCompare(left.date))
     .slice(0, 5)
 )
 

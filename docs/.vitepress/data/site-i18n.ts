@@ -144,6 +144,9 @@ export const siteCopy = {
       },
       dialogClose: '关闭日程详情',
       location: '地点',
+      speakers: '主讲',
+      details: '详情',
+      noEventsOnDay: '这一天没有安排',
       viewNotes: '查看讲义',
       joinMeeting: '进入会议 ↗',
       assignments: '查看作业'
@@ -278,6 +281,9 @@ export const siteCopy = {
       },
       dialogClose: 'Close event details',
       location: 'Location',
+      speakers: 'Speakers',
+      details: 'Details',
+      noEventsOnDay: 'Nothing scheduled for this day',
       viewNotes: 'View notes',
       joinMeeting: 'Join meeting ↗',
       assignments: 'View assignments'

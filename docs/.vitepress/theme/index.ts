@@ -7,7 +7,7 @@ import FeishuImage from './components/FeishuImage.vue'
 import HomePage from './components/HomePage.vue'
 import ScheduleBoard from './components/ScheduleBoard.vue'
 import SessionHeader from './components/SessionHeader.vue'
-import '@schedule-x/theme-default/dist/index.css'
+import './tailwind.css'
 import './style.css'
 
 export default {

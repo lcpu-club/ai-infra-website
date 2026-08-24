@@ -1,3 +1,5 @@
+import { fileURLToPath, URL } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig, type DefaultTheme } from 'vitepress'
 import feishuSnapshot from './data/generated/feishu.json'
 
@@ -259,8 +261,11 @@ export default defineConfig({
     }
   },
   vite: {
-    ssr: {
-      noExternal: ['@schedule-x/vue']
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./theme', import.meta.url))
+      }
     }
   },
   head: [

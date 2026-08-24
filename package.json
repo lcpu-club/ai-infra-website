@@ -18,15 +18,22 @@
   },
   "devDependencies": {
     "markdown-it-mathjax3": "^4.3.2",
+    "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
     "vue": "^3.5.13",
     "yaml": "^2.9.0"
   },
   "dependencies": {
+    "@internationalized/date": "^3.12.3",
     "@larksuiteoapi/node-sdk": "^1.71.1",
-    "@schedule-x/calendar": "^4.6.1",
-    "@schedule-x/theme-default": "^4.6.1",
-    "@schedule-x/vue": "^4.1.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vueuse/core": "^14.4.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.577.0",
+    "reka-ui": "^2.10.3",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.3",
     "temporal-polyfill": "^0.3.0"
   },
   "trustedDependencies": [

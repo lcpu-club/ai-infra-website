@@ -2,7 +2,7 @@
 import { withBase } from 'vitepress'
 import { scheduleEventCount } from '../../data/schedule'
 import { useSiteLocale } from '../../data/site-i18n'
-import CalendarTimeline from './CalendarTimeline.vue'
+import ScheduleCalendar from './ScheduleCalendar.vue'
 import ScheduleTable from './ScheduleTable.vue'
 
 const { copy } = useSiteLocale()
@@ -30,11 +30,15 @@ function openFirstEvent() {
       </div>
     </header>
 
-    <section id="full-schedule" class="calendar-list-section">
-      <h2>{{ copy.schedule.allEvents }}</h2>
-      <ScheduleTable />
-    </section>
+    <div class="schedule-layout">
+      <aside v-if="scheduleEventCount" class="schedule-calendar-aside">
+        <ScheduleCalendar />
+      </aside>
 
-    <CalendarTimeline v-if="scheduleEventCount" />
+      <section id="full-schedule" class="calendar-list-section">
+        <h2>{{ copy.schedule.allEvents }}</h2>
+        <ScheduleTable />
+      </section>
+    </div>
   </main>
 </template>
