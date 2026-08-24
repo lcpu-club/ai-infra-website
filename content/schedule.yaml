@@ -108,11 +108,11 @@ events:
       - label:
           zh: Session 2.1 演示文稿（PDF）
           en: Session 2.1 slides (PDF)
-          href: /slides/session0201.pdf
+        href: /slides/session0201.pdf
       - label:
           zh: Session 2.2 演示文稿（PDF）
           en: Session 2.2 slides (PDF)
-          href: /slides/session0202.pdf
+        href: /slides/session0202.pdf
     assignments: []
     display:
       homepage: true
@@ -152,11 +152,11 @@ events:
           zh: Session 3 回放
           en: Session 3 replay
         href: https://www.bilibili.com/video/BV1LxM96eE43/
-    links: 
+    links:
       - label:
           zh: Session 3 演示文稿（PDF）
           en: Session 3 slides (PDF)
-          href: /slides/session03.pdf
+        href: /slides/session03.pdf
     assignments: [A02]
     display:
       homepage: true
@@ -193,11 +193,11 @@ events:
           zh: Workshop 1 回放
           en: Workshop 1 replay
         href: https://www.bilibili.com/video/BV1rhMD6YEKM
-    links: 
+    links:
       - label:
           zh: Workshop 1 演示文稿（PDF）
           en: Workshop 1 slides (PDF)
-          href: /slides/workshop01.pdf
+        href: /slides/workshop01.pdf
     assignments: []
     display:
       homepage: true
@@ -262,11 +262,11 @@ events:
           zh: LCPU Live
           en: LCPU Live
         href: https://live.lcpu.dev
-    links: 
+    links:
       - label:
           zh: Session 4 演示文稿（PDF）
           en: Session 4 slides (PDF)
-          href: /slides/session04.pdf
+        href: /slides/session04.pdf
     assignments: []
     display:
       homepage: true
@@ -319,11 +319,11 @@ events:
           zh: LCPU Livestream
           en: LCPU Livestream
         href: https://live.lcpu.dev
-    links: 
+    links:
       - label:
           zh: Session 5 演示文稿（PDF）
           en: Session 5 slides (PDF)
-          href: /slides/session05.pdf
+        href: /slides/session05.pdf
     assignments: []
     display:
       homepage: true
@@ -379,11 +379,11 @@ events:
           zh: LCPU Live
           en: LCPU Live
         href: https://live.lcpu.dev
-    links: 
+    links:
       - label:
           zh: Workshop 2 演示文稿（PDF）
           en: Workshop 2 slides (PDF)
-          href: /slides/workshop02.pdf
+        href: /slides/workshop02.pdf
     assignments: []
     display:
       homepage: true
