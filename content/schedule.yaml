@@ -13,14 +13,14 @@ events:
       en: "Topic 1: Kernel & ML Compiler — First Seminar"
     description:
       zh: |-
-        Session 1.0 从 HPC 到 AI Infra：并行计算与并行编程
-        Session 1.1 CUDA 编程模型
-        Session 1.2 Triton/TileLang Tile Level 编程
+        Topic 1, Session 1.0 | 从 HPC 到 AI Infra：并行计算与并行编程
+        Topic 1, Session 1.1 | CUDA 编程模型
+        Topic 1, Session 1.2 | Triton/TileLang Tile Level 编程
         介绍活动整体安排、内容设计、评测与算力资源。
       en: |-
-        Session 1.0 From HPC to AI Infra: Parallel Computing and Parallel Programming
-        Session 1.1 CUDA Programming Model
-        Session 1.2 Triton/TileLang Tile Level Programming
+        Topic 1, Session 1.0 | From HPC to AI Infra: Parallel Computing and Parallel Programming
+        Topic 1, Session 1.1 | CUDA Programming Model
+        Topic 1, Session 1.2 | Triton/TileLang Tile Level Programming
         Seminar overview, curriculum design, evaluation, and computing resources.
     start: "2026-07-26T18:00:00+08:00"
     end: "2026-07-26T20:30:00+08:00"
@@ -53,6 +53,10 @@ events:
           zh: Topic 1 讲义
           en: Topic 1 notes
         href: /wiki/VWJPwVFTHifeadkE4phc45hOntg
+      - label:
+          zh: Topic 1 演示文稿（PDF）
+          en: Topic 1 slides (PDF)
+        href: /slides/session01.pdf
     assignments: [A01]
     display:
       homepage: true
@@ -64,8 +68,8 @@ events:
     topic: kernel
     sessions: ["02"]
     title:
-      zh: "Topic 1, Session 2：Memory Abstraction & Hierarchy"
-      en: "Topic 1, Session 2: Memory Abstraction & Hierarchy"
+      zh: "Topic 1, Session 2 | Memory Abstraction & Hierarchy"
+      en: "Topic 1, Session 2 | Memory Abstraction & Hierarchy"
     description:
       zh: >-
         本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse
@@ -100,7 +104,15 @@ events:
           zh: Session 2.2 回放
           en: Session 2.2 replay
         href: https://www.bilibili.com/video/BV1L8GA6YEAH
-    links: []
+    links:
+      - label:
+          zh: Session 2.1 演示文稿（PDF）
+          en: Session 2.1 slides (PDF)
+          href: /slides/session0201.pdf
+      - label:
+          zh: Session 2.2 演示文稿（PDF）
+          en: Session 2.2 slides (PDF)
+          href: /slides/session0202.pdf
     assignments: []
     display:
       homepage: true
@@ -112,8 +124,8 @@ events:
     topic: kernel
     sessions: ["03"]
     title:
-      zh: "Topic 1, Session 3：Tensor Core"
-      en: "Topic 1, Session 3: Tensor Core"
+      zh: "Topic 1, Session 3 | Tensor Core"
+      en: "Topic 1, Session 3 | Tensor Core"
     description:
       zh: >-
         本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、
@@ -140,8 +152,12 @@ events:
           zh: Session 3 回放
           en: Session 3 replay
         href: https://www.bilibili.com/video/BV1LxM96eE43/
-    links: []
-    assignments: []
+    links: 
+      - label:
+          zh: Session 3 演示文稿（PDF）
+          en: Session 3 slides (PDF)
+          href: /slides/session03.pdf
+    assignments: [A02]
     display:
       homepage: true
       calendar: true
@@ -150,10 +166,10 @@ events:
   - id: topic-1-workshop-01
     type: workshop
     topic: kernel
-    sessions: ["02"]
+    sessions: ["01"]
     title:
-      zh: "Topic 1, Workshop 1：Parallel Programming with TileLang"
-      en: "Topic 1, Workshop 1: Parallel Programming with TileLang"
+      zh: "Topic 1, Workshop 1 | Parallel Programming with TileLang"
+      en: "Topic 1, Workshop 1 | Parallel Programming with TileLang"
     description:
       zh: >-
         本次 Workshop，我们将介绍：TileLang 语法、
@@ -177,7 +193,11 @@ events:
           zh: Workshop 1 回放
           en: Workshop 1 replay
         href: https://www.bilibili.com/video/BV1rhMD6YEKM
-    links: []
+    links: 
+      - label:
+          zh: Workshop 1 演示文稿（PDF）
+          en: Workshop 1 slides (PDF)
+          href: /slides/workshop01.pdf
     assignments: []
     display:
       homepage: true
@@ -189,8 +209,8 @@ events:
     topic: kernel
     sessions: ["04"]
     title:
-      zh: "Topic 1, Session 4：Pipeline Ordering: Data Orchestration"
-      en: "Topic 1, Session 4：Pipeline Ordering: Data Orchestration"
+      zh: "Topic 1, Session 4 | Pipeline Ordering: Data Orchestration"
+      en: "Topic 1, Session 4 | Pipeline Ordering: Data Orchestration"
     description:
       zh: >-
         硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。
@@ -242,7 +262,11 @@ events:
           zh: LCPU Live
           en: LCPU Live
         href: https://live.lcpu.dev
-    links: []
+    links: 
+      - label:
+          zh: Session 4 演示文稿（PDF）
+          en: Session 4 slides (PDF)
+          href: /slides/session04.pdf
     assignments: []
     display:
       homepage: true
@@ -254,8 +278,8 @@ events:
     topic: comm
     sessions: ["05"]
     title:
-      zh: "Session 05 | Towards Modern Networking System"
-      en: "Session 05 | Towards Modern Networking System"
+      zh: "Topic 2, Session 5 | Towards Modern Networking System"
+      en: "Topic 2, Session 5 | Towards Modern Networking System"
     description:
       zh: >-
         随着计算量的不断增加，单个计算单元已无法满足更大的计算需求，这要求我们必须采用某些方式将计算单元连接起来。
@@ -295,20 +319,24 @@ events:
           zh: LCPU Livestream
           en: LCPU Livestream
         href: https://live.lcpu.dev
-    links: []
+    links: 
+      - label:
+          zh: Session 5 演示文稿（PPTX）
+          en: Session 5 slides (PPTX)
+          href: /slides/session05.pptx
     assignments: []
     display:
       homepage: true
       calendar: true
       accent: comm
 
-  - id: topic-2-session-06
-    type: lecture
+  - id: topic-2-workshop-02
+    type: workshop
     topic: comm
-    sessions: ["06"]
+    sessions: ["02"]
     title:
-      zh: "Session 06 | AI Communication Stack"
-      en: "Session 06 | AI Communication Stack"
+      zh: "Topic 2, Workshop 2 | AI Communication Stack"
+      en: "Topic 2, Workshop 2 | AI Communication Stack"
     description:
       zh: >-
         Pipeline 背后真正的问题是：谁来决定什么工作在什么时候、在哪个资源上执行？谁负责维护依赖、推进执行，并判断一个阶段何时真正完成？
@@ -351,7 +379,11 @@ events:
           zh: LCPU Live
           en: LCPU Live
         href: https://live.lcpu.dev
-    links: []
+    links: 
+      - label:
+          zh: Workshop 2 演示文稿（PDF）
+          en: Workshop 2 slides (PDF)
+          href: /slides/workshop02.pdf
     assignments: []
     display:
       homepage: true
