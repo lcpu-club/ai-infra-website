@@ -133,9 +133,10 @@ function openDetails(event: CalendarEvent) {
 <template>
   <div v-if="displayedEvents.length" class="schedule-event-list">
     <article
-      v-for="event in displayedEvents"
+      v-for="(event, index) in displayedEvents"
       :id="`event-${event.eventId}`"
       :key="event.eventId"
+      v-reveal="Math.min(index, 8) * 50"
       class="schedule-event"
       :class="`is-phase-${phaseFor(event)}`"
     >

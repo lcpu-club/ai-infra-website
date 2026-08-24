@@ -1,0 +1,178 @@
+/*
+ * Site motion: entrance, scroll-reveal and ambient animations.
+ * Everything degrades to instant, fully-visible content under
+ * `prefers-reduced-motion: reduce` and without client JS.
+ */
+
+/* Scroll reveal (driven by the v-reveal directive) */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 620ms cubic-bezier(0.22, 0.61, 0.21, 1),
+    transform 620ms cubic-bezier(0.22, 0.61, 0.21, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero load sequence */
+
+@keyframes site-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.home-hero .home-chip {
+  animation: site-hero-enter 720ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+}
+
+.home-hero h1 {
+  animation: site-hero-enter 720ms cubic-bezier(0.22, 0.61, 0.21, 1) 90ms both;
+}
+
+.home-hero .home-subtitle {
+  animation: site-hero-enter 720ms cubic-bezier(0.22, 0.61, 0.21, 1) 180ms both;
+}
+
+.home-hero .home-lead {
+  animation: site-hero-enter 720ms cubic-bezier(0.22, 0.61, 0.21, 1) 270ms both;
+}
+
+.home-hero .home-actions {
+  animation: site-hero-enter 720ms cubic-bezier(0.22, 0.61, 0.21, 1) 360ms both;
+}
+
+/* Ambient hero glow */
+
+@keyframes site-aurora {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: translate3d(48px, 20px, 0) scale(1.12);
+  }
+}
+
+.home-hero {
+  position: relative;
+}
+
+.home-hero::before {
+  position: absolute;
+  z-index: -1;
+  top: -140px;
+  left: -120px;
+  width: min(560px, 80vw);
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    var(--site-brand-soft),
+    transparent
+  );
+  content: '';
+  filter: blur(10px);
+  pointer-events: none;
+  animation: site-aurora 12s ease-in-out infinite;
+}
+
+/* Page-to-page fade for markdown (wiki) pages.
+   VitePress swaps the doc subtree on SPA navigation, so the
+   animation replays on every route change. */
+
+@keyframes site-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.vp-doc {
+  animation: site-page-enter 420ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+}
+
+/* Home / schedule / assignments use custom components with their own
+   entrance animations — skip the generic page fade there. */
+
+.home-page .vp-doc,
+.schedule-page .vp-doc,
+.assignment-page .vp-doc {
+  animation: none;
+}
+
+/* Session banner entrance */
+
+.session-banner {
+  animation: site-hero-enter 640ms cubic-bezier(0.22, 0.61, 0.21, 1) both;
+}
+
+/* Micro-interactions */
+
+.home-schedule-arrow {
+  transition: transform 200ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+
+.home-schedule-card:hover .home-schedule-arrow {
+  transform: translateX(5px);
+}
+
+.home-support-logo-card img {
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.21, 1);
+}
+
+.home-support-logo-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Reduced motion: show everything instantly */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .home-hero .home-chip,
+  .home-hero h1,
+  .home-hero .home-subtitle,
+  .home-hero .home-lead,
+  .home-hero .home-actions,
+  .home-hero::before,
+  .vp-doc,
+  .session-banner {
+    animation: none;
+  }
+
+  .home-schedule-arrow,
+  .home-support-logo-card img {
+    transition: none;
+  }
+
+  .home-schedule-card:hover .home-schedule-arrow,
+  .home-support-logo-card:hover img {
+    transform: none;
+  }
+}

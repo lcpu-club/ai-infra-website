@@ -10,7 +10,7 @@ const { copy } = useSiteLocale()
 
 <template>
   <main class="course-site schedule-page-shell">
-    <header class="schedule-page-header">
+    <header v-reveal class="schedule-page-header">
       <h1>{{ copy.schedule.title }}</h1>
       <div class="schedule-page-actions">
         <a :href="withBase('/calendar.ics')" download>
@@ -20,7 +20,7 @@ const { copy } = useSiteLocale()
     </header>
 
     <div class="schedule-layout">
-      <aside v-if="scheduleEventCount" class="schedule-calendar-aside">
+      <aside v-if="scheduleEventCount" v-reveal="100" class="schedule-calendar-aside">
         <ScheduleCalendar />
       </aside>
 

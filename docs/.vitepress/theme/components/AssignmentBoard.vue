@@ -92,7 +92,7 @@ function isExternal(value: string) {
 
 <template>
   <main class="course-site assignment-page-shell">
-    <header class="assignment-page-header">
+    <header v-reveal class="assignment-page-header">
       <h1>{{ copy.assignments.title }}</h1>
       <a :href="withBase('/assignments.ics')" download>
         {{ copy.assignments.downloadDeadlines }}
@@ -114,9 +114,10 @@ function isExternal(value: string) {
         </thead>
         <tbody>
           <tr
-            v-for="assignment in assignments"
+            v-for="(assignment, index) in assignments"
             :id="`assignment-${assignment.id}`"
             :key="assignment.id"
+            v-reveal="Math.min(index, 8) * 50"
           >
             <td :data-label="copy.assignments.headers[0]">
               <strong class="assignment-id">{{ assignment.id }}</strong>
