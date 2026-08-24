@@ -124,8 +124,8 @@ export const siteCopy = {
       },
       dateRangeSeparator: '至',
       noDescription: '暂无活动说明',
-      expandContent: '展开完整内容',
-      collapseContent: '收起完整内容',
+      expandContent: '展开全文',
+      collapseContent: '收起',
       speakerTbd: '待定',
       emptyTitle: '暂时没有公开活动',
       emptyDescription:
@@ -147,6 +147,7 @@ export const siteCopy = {
       speakers: '主讲',
       details: '详情',
       noEventsOnDay: '这一天没有安排',
+      assignmentTag: '作业',
       viewNotes: '查看讲义',
       joinMeeting: '进入会议 ↗',
       assignments: '查看作业'
@@ -261,8 +262,8 @@ export const siteCopy = {
       },
       dateRangeSeparator: 'to',
       noDescription: 'No description',
-      expandContent: 'Show full description',
-      collapseContent: 'Collapse description',
+      expandContent: 'Read more',
+      collapseContent: 'Show less',
       speakerTbd: 'TBA',
       emptyTitle: 'There are no public events yet',
       emptyDescription:
@@ -284,6 +285,7 @@ export const siteCopy = {
       speakers: 'Speakers',
       details: 'Details',
       noEventsOnDay: 'Nothing scheduled for this day',
+      assignmentTag: 'Assignment',
       viewNotes: 'View notes',
       joinMeeting: 'Join meeting ↗',
       assignments: 'View assignments'

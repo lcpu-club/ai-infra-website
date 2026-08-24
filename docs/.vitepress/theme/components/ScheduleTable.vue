@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Temporal } from 'temporal-polyfill'
-import { MapPin, UserRound } from 'lucide-vue-next'
+import { CalendarDays, ChevronDown, MapPin, UserRound } from 'lucide-vue-next'
 import {
   localizedCalendarEvents,
   type CalendarEvent
@@ -14,6 +14,7 @@ const displayedEvents = computed(() =>
   localizedCalendarEvents(locale.value)
 )
 const now = ref(Date.now())
+const expanded = ref(new Set<string>())
 let clock: number | undefined
 
 onMounted(() => {
@@ -26,6 +27,16 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (clock !== undefined) window.clearInterval(clock)
 })
+
+function toggleExpanded(eventId: string) {
+  const next = new Set(expanded.value)
+  if (next.has(eventId)) {
+    next.delete(eventId)
+  } else {
+    next.add(eventId)
+  }
+  expanded.value = next
+}
 
 function inclusiveEndDate(event: CalendarEvent) {
   if (!event.allDay || event.endDate <= event.date) return event.date
@@ -40,18 +51,13 @@ function dateRangeLabel(event: CalendarEvent) {
   return `${event.date} ${copy.value.schedule.dateRangeSeparator} ${endDate}`
 }
 
-function dateParts(event: CalendarEvent) {
-  const date = new Date(`${event.date}T12:00:00Z`)
-  const parts = new Intl.DateTimeFormat(
-    locale.value === 'en' ? 'en-US' : 'zh-CN',
-    { timeZone: 'UTC', month: 'short', weekday: 'short' }
-  ).formatToParts(date)
-  const month = parts.find((part) => part.type === 'month')?.value ?? ''
-  const weekday = parts.find((part) => part.type === 'weekday')?.value ?? ''
-  return {
-    day: String(date.getUTCDate()).padStart(2, '0'),
-    caption: `${month} · ${weekday}`
-  }
+function readableDate(date: string) {
+  return new Intl.DateTimeFormat(locale.value === 'en' ? 'en-US' : 'zh-CN', {
+    timeZone: 'UTC',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short'
+  }).format(new Date(`${date}T12:00:00Z`))
 }
 
 function eventBoundary(event: CalendarEvent, boundary: 'start' | 'end') {
@@ -94,13 +100,6 @@ function speakersLabel(event: CalendarEvent) {
   return (event.speakers ?? []).join(locale.value === 'en' ? ', ' : '、')
 }
 
-function descriptionPreview(description: string) {
-  const normalized = description.replace(/\s+/g, ' ').trim()
-  return normalized.length > 120
-    ? `${normalized.slice(0, 120).trimEnd()}…`
-    : normalized
-}
-
 function isLongDescription(description: string) {
   return description.replace(/\s+/g, ' ').trim().length > 120
 }
@@ -129,100 +128,100 @@ function openDetails(event: CalendarEvent) {
       class="schedule-event"
       :class="`is-phase-${phaseFor(event)}`"
     >
-      <div class="schedule-event-date">
-        <strong>{{ dateParts(event).day }}</strong>
-        <span>{{ dateParts(event).caption }}</span>
-        <span class="schedule-event-time">{{ event.timeLabel }}</span>
-        <span v-if="dateRangeLabel(event)" class="schedule-event-range">
-          {{ dateRangeLabel(event) }}
+      <div class="schedule-event-tags">
+        <span class="schedule-event-type" :class="typeClass(event)">
+          {{ typeLabel(event) }}
+        </span>
+        <span class="schedule-phase" :class="`is-${phaseFor(event)}`">
+          {{ phaseLabel(event) }}
+        </span>
+        <button
+          class="schedule-event-details"
+          type="button"
+          @click="openDetails(event)"
+        >
+          {{ copy.schedule.details }} →
+        </button>
+      </div>
+
+      <h3 class="schedule-event-title">
+        <button type="button" @click="openDetails(event)">
+          {{ event.summary }}
+        </button>
+      </h3>
+
+      <div class="schedule-event-meta">
+        <span class="schedule-event-meta-item">
+          <CalendarDays :size="13" aria-hidden="true" />
+          {{ readableDate(event.date) }}
+          <template v-if="dateRangeLabel(event)">
+            （{{ dateRangeLabel(event) }}）
+          </template>
+          <template v-if="event.timeLabel"> · {{ event.timeLabel }}</template>
+        </span>
+        <span v-if="event.locations.length" class="schedule-event-meta-item">
+          <MapPin :size="13" aria-hidden="true" />
+          <EventLocation :locations="event.locations" />
+        </span>
+        <span v-if="event.speakers?.length" class="schedule-event-meta-item">
+          <UserRound :size="13" aria-hidden="true" />
+          {{ speakersLabel(event) }}
         </span>
       </div>
 
-      <div class="schedule-event-main">
-        <div class="schedule-event-tags">
-          <span class="schedule-event-type" :class="typeClass(event)">
-            {{ typeLabel(event) }}
-          </span>
-          <span class="schedule-phase" :class="`is-${phaseFor(event)}`">
-            {{ phaseLabel(event) }}
-          </span>
-          <button
-            class="schedule-event-details"
-            type="button"
-            @click="openDetails(event)"
-          >
-            {{ copy.schedule.details }} →
-          </button>
-        </div>
-
-        <h3 class="schedule-event-title">
-          <button type="button" @click="openDetails(event)">
-            {{ event.summary }}
-          </button>
-        </h3>
-
+      <template v-if="event.description">
         <div
-          v-if="event.locations.length || event.speakers?.length"
-          class="schedule-event-meta"
+          class="schedule-event-desc"
+          :class="{
+            'is-clamped':
+              isLongDescription(event.description) &&
+                !expanded.has(event.eventId)
+          }"
         >
-          <span v-if="event.locations.length" class="schedule-event-meta-item">
-            <MapPin :size="14" aria-hidden="true" />
-            <EventLocation :locations="event.locations" />
-          </span>
-          <span v-if="event.speakers?.length" class="schedule-event-meta-item">
-            <UserRound :size="14" aria-hidden="true" />
-            {{ speakersLabel(event) }}
-          </span>
+          <p class="schedule-event-desc-text">{{ event.description }}</p>
         </div>
-
-        <details
-          v-if="event.description && isLongDescription(event.description)"
-          class="schedule-description"
+        <button
+          v-if="isLongDescription(event.description)"
+          class="schedule-event-desc-toggle"
+          type="button"
+          :aria-expanded="expanded.has(event.eventId)"
+          @click="toggleExpanded(event.eventId)"
         >
-          <summary>
-            <span class="schedule-description-preview">
-              {{ descriptionPreview(event.description) }}
-            </span>
-            <span
-              class="schedule-description-action schedule-description-expand"
-            >
-              {{ copy.schedule.expandContent }}
-            </span>
-            <span
-              class="schedule-description-action schedule-description-collapse"
-            >
-              {{ copy.schedule.collapseContent }}
-            </span>
-          </summary>
-          <p>{{ event.description }}</p>
-        </details>
-        <p v-else-if="event.description" class="schedule-event-description">
-          {{ event.description }}
-        </p>
+          {{
+            expanded.has(event.eventId)
+              ? copy.schedule.collapseContent
+              : copy.schedule.expandContent
+          }}
+          <ChevronDown
+            :size="13"
+            aria-hidden="true"
+            :class="{ 'is-flipped': expanded.has(event.eventId) }"
+          />
+        </button>
+      </template>
 
-        <div
-          v-if="event.links.length || event.assignments.length"
-          class="schedule-event-links"
+      <div
+        v-if="event.links.length || event.assignments.length"
+        class="schedule-event-links"
+      >
+        <a
+          v-for="link in event.links"
+          :key="`${event.eventId}-${link.href}`"
+          :href="linkHref(link.href)"
+          :target="isExternal(link.href) ? '_blank' : undefined"
+          :rel="isExternal(link.href) ? 'noreferrer' : undefined"
         >
-          <a
-            v-for="link in event.links"
-            :key="`${event.eventId}-${link.href}`"
-            :href="linkHref(link.href)"
-            :target="isExternal(link.href) ? '_blank' : undefined"
-            :rel="isExternal(link.href) ? 'noreferrer' : undefined"
-          >
-            {{ link.label }}
-          </a>
-          <a
-            v-for="assignment in event.assignments"
-            :key="assignment.id"
-            class="schedule-event-assignment"
-            :href="href(assignment.href)"
-            :title="assignment.title"
-          >
-            {{ assignment.id }}
-          </a>
-        </div>
+          {{ link.label }}
+        </a>
+        <a
+          v-for="assignment in event.assignments"
+          :key="assignment.id"
+          class="schedule-event-assignment"
+          :href="href(assignment.href)"
+          :title="assignment.title"
+        >
+          {{ copy.schedule.assignmentTag }}: {{ assignment.id }}
+        </a>
       </div>
     </article>
   </div>
