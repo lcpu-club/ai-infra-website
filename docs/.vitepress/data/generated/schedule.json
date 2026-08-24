@@ -16,8 +16,8 @@
         "en": "Topic 1: Kernel & ML Compiler — First Seminar"
       },
       "description": {
-        "zh": "Session 1.0 从 HPC 到 AI Infra：并行计算与并行编程\nSession 1.1 CUDA 编程模型\nSession 1.2 Triton/TileLang Tile Level 编程\n介绍活动整体安排、内容设计、评测与算力资源。",
-        "en": "Session 1.0 From HPC to AI Infra: Parallel Computing and Parallel Programming\nSession 1.1 CUDA Programming Model\nSession 1.2 Triton/TileLang Tile Level Programming\nSeminar overview, curriculum design, evaluation, and computing resources."
+        "zh": "Topic 1, Session 1.0 | 从 HPC 到 AI Infra：并行计算与并行编程\nTopic 1, Session 1.1 | CUDA 编程模型\nTopic 1, Session 1.2 | Triton/TileLang Tile Level 编程\n介绍活动整体安排、内容设计、评测与算力资源。",
+        "en": "Topic 1, Session 1.0 | From HPC to AI Infra: Parallel Computing and Parallel Programming\nTopic 1, Session 1.1 | CUDA Programming Model\nTopic 1, Session 1.2 | Triton/TileLang Tile Level Programming\nSeminar overview, curriculum design, evaluation, and computing resources."
       },
       "date": "2026-07-26",
       "endDate": "2026-07-26",
@@ -77,6 +77,13 @@
             "en": "Topic 1 notes"
           },
           "href": "/wiki/VWJPwVFTHifeadkE4phc45hOntg"
+        },
+        {
+          "label": {
+            "zh": "Topic 1 演示文稿（PDF）",
+            "en": "Topic 1 slides (PDF)"
+          },
+          "href": "/slides/session01.pdf"
         }
       ],
       "assignmentIds": [
@@ -96,11 +103,12 @@
         "02"
       ],
       "title": {
-        "zh": "Topic 1, Session 2：Memory Abstraction & Hierarchy",
-        "en": "Topic 1, Session 2: Memory Abstraction & Hierarchy"
+        "zh": "Topic 1, Session 2 | Memory Abstraction & Hierarchy",
+        "en": "Topic 1, Session 2 | Memory Abstraction & Hierarchy"
       },
       "description": {
-        "zh": "本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、 coalescing、latency hiding、shared memory bank conflict、padding、 swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个 Kernel 的编写与调优。"
+        "zh": "本讲以 CUDA Core FP32 GEMM 为主线，从计算语义出发理解 data reuse 与 memory hierarchy 的抽象；从 strawman GEMM 演进到 tiling，并使用 Roofline Model 分析数据复用；再从硬件视角理解 SM、warp 执行、 coalescing、latency hiding、shared memory bank conflict、padding、 swizzle 与 per-thread microtile，最后使用 Nsight Compute 完成一个 Kernel 的编写与调优。",
+        "en": "This session follows CUDA Core FP32 GEMM to develop an intuition for data reuse and the abstraction of the memory hierarchy. We start from a strawman GEMM, evolve it through tiling, and use the Roofline Model to analyze data reuse. From the hardware perspective, we then study SMs, warp execution, coalescing, latency hiding, shared-memory bank conflicts, padding, swizzle, and per-thread microtiles. Finally, we write and tune a kernel with Nsight Compute."
       },
       "date": "2026-07-30",
       "endDate": "2026-07-30",
@@ -140,7 +148,22 @@
           "href": "https://www.bilibili.com/video/BV1L8GA6YEAH"
         }
       ],
-      "links": [],
+      "links": [
+        {
+          "label": {
+            "zh": "Session 2.1 演示文稿（PDF）",
+            "en": "Session 2.1 slides (PDF)"
+          },
+          "href": "/slides/session0201.pdf"
+        },
+        {
+          "label": {
+            "zh": "Session 2.2 演示文稿（PDF）",
+            "en": "Session 2.2 slides (PDF)"
+          },
+          "href": "/slides/session0202.pdf"
+        }
+      ],
       "assignmentIds": [],
       "display": {
         "homepage": true,
@@ -153,14 +176,15 @@
       "type": "workshop",
       "topic": "kernel",
       "sessionIds": [
-        "02"
+        "01"
       ],
       "title": {
-        "zh": "Topic 1, Workshop 1：Parallel Programming with TileLang",
-        "en": "Topic 1, Workshop 1: Parallel Programming with TileLang"
+        "zh": "Topic 1, Workshop 1 | Parallel Programming with TileLang",
+        "en": "Topic 1, Workshop 1 | Parallel Programming with TileLang"
       },
       "description": {
-        "zh": "本次 Workshop，我们将介绍：TileLang 语法、 如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。"
+        "zh": "本次 Workshop，我们将介绍：TileLang 语法、 如何用 TileLang 写 Kernel、TileLang 中的 CTA 到 Thread 的映射与 Layout Inference、 如何在 TileLang 中做 Latency Hiding，以及 DSL 的 JIT 编译和 Host 侧的相关内容； 最后，我们还将介绍在 TileLang 下如何做算子优化以及一些相关的工具。",
+        "en": "In this workshop, we introduce TileLang syntax, writing kernels with TileLang, CTA-to-thread mapping and layout inference, latency hiding, DSL JIT compilation, and host-side integration. We also cover operator optimization in TileLang and several related tools."
       },
       "date": "2026-08-01",
       "endDate": "2026-08-01",
@@ -187,7 +211,15 @@
           "href": "https://www.bilibili.com/video/BV1rhMD6YEKM"
         }
       ],
-      "links": [],
+      "links": [
+        {
+          "label": {
+            "zh": "Workshop 1 演示文稿（PDF）",
+            "en": "Workshop 1 slides (PDF)"
+          },
+          "href": "/slides/workshop01.pdf"
+        }
+      ],
       "assignmentIds": [],
       "display": {
         "homepage": true,
@@ -203,11 +235,12 @@
         "03"
       ],
       "title": {
-        "zh": "Topic 1, Session 3：Tensor Core",
-        "en": "Topic 1, Session 3: Tensor Core"
+        "zh": "Topic 1, Session 3 | Tensor Core",
+        "en": "Topic 1, Session 3 | Tensor Core"
       },
       "description": {
-        "zh": "本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低精度 Tensor Core 的使用。"
+        "zh": "本讲以 Tensor Core 的硬件与编程模型为主线，贯穿 mma.sync（Ampere）、 wgmma（Hopper）和 tcgen05（Blackwell）三代指令的演进，从数据搬运与 发射带宽推导 Tensor Core 的设计逻辑，理解 fragment 布局以及使用 layout 与 swizzle 解决 bank conflict 的方法，最后以 FP8 fine-grained scaling 介绍低精度 Tensor Core 的使用。",
+        "en": "This session explores the hardware and programming model of Tensor Cores, tracing the evolution of mma.sync on Ampere, wgmma on Hopper, and tcgen05 on Blackwell. We derive the design logic of Tensor Cores from data movement and issue bandwidth, study fragment layouts, and learn how layouts and swizzles can resolve bank conflicts. We conclude with the use of low-precision Tensor Cores through FP8 fine-grained scaling."
       },
       "date": "2026-08-02",
       "endDate": "2026-08-02",
@@ -231,11 +264,21 @@
             "zh": "Session 3 回放",
             "en": "Session 3 replay"
           },
-          "href": "https://www.bilibili.com/video/BV1LxM96eE43"
+          "href": "https://www.bilibili.com/video/BV1LxM96eE43/"
         }
       ],
-      "links": [],
-      "assignmentIds": [],
+      "links": [
+        {
+          "label": {
+            "zh": "Session 3 演示文稿（PDF）",
+            "en": "Session 3 slides (PDF)"
+          },
+          "href": "/slides/session03.pdf"
+        }
+      ],
+      "assignmentIds": [
+        "A02"
+      ],
       "display": {
         "homepage": true,
         "calendar": true,
@@ -250,11 +293,12 @@
         "04"
       ],
       "title": {
-        "zh": "Topic 1, Session 4：Pipeline Ordering: Data Orchestration",
-        "en": "Topic 1, Session 4：Pipeline Ordering: Data Orchestration"
+        "zh": "Topic 1, Session 4 | Pipeline Ordering: Data Orchestration",
+        "en": "Topic 1, Session 4 | Pipeline Ordering: Data Orchestration"
       },
       "description": {
-        "zh": "硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。 单个操作 latency 的改善已经远慢于系统 throughput 的增长，现代体 系结构从“降低 latency”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、Warp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速增长，计算与数 据供给能力之间的差距进一步扩大。以 cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先很大程度由硬件自动完成的 latency hiding，暴露为程序员和编译器需 要显式组织的 Pipeline。更进一步的，我们甚至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 而是主动固定不同执行资源的职责，并显式安排工作的空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data Orchestration，即如何组织数据、处理计算。 在最新的硬件上，上述内容已成为发挥硬件极限性能、实现极致性能算子的关键核心与重中之重。 本节课，我们将在有限的时间内，对上述内容进行综合性的介绍。"
+        "zh": "硬件发展过程中，计算能力、内存带宽提升的同时，频率提升稍显缓慢。 单个操作 latency 的改善已经远慢于系统 throughput 的增长，现代体 系结构从“降低 latency”逐渐转为越来越依赖于通过并行性容忍和隐藏 latency。 从指令并行 ILP，乱序执行 OoO，到内存层级并行 MLP、Warp 调度与 TLP， 追寻自动 latency hiding 的方法不断发展和演进，然而， 随着 Tensor Core 等专用计算单元的吞吐快速增长，计算与数 据供给能力之间的差距进一步扩大。以 cp.async、TMA 为代表的异步数据搬运机制， 逐渐将原先很大程度由硬件自动完成的 latency hiding，暴露为程序员和编译器需 要显式组织的 Pipeline。更进一步的，我们甚至不再完全依赖通用的 Warp Scheduling 来自动隐藏延迟， 而是主动固定不同执行资源的职责，并显式安排工作的空间和时间结构。这些，都可以 算是 Pipeline Ordering: Data Orchestration，即如何组织数据、处理计算。 在最新的硬件上，上述内容已成为发挥硬件极限性能、实现极致性能算子的关键核心与重中之重。 本节课，我们将在有限的时间内，对上述内容进行综合性的介绍。",
+        "en": "As hardware has evolved, compute capability and memory bandwidth have grown rapidly while clock frequency has improved more slowly. Improvements in the latency of individual operations have lagged behind system throughput, so modern architectures increasingly rely on parallelism to tolerate and hide latency. We trace this evolution from instruction-level parallelism and out-of-order execution to memory-level parallelism, warp scheduling, and TLP. As specialized units such as Tensor Cores continue to raise throughput, the gap between computation and data supply grows wider. Mechanisms such as cp.async and TMA expose latency hiding as an explicit pipeline that must be organized by programmers and compilers. We will synthesize these ideas as Pipeline Ordering: Data Orchestration, a key to reaching the performance limits of modern hardware and optimized operators."
       },
       "date": "2026-08-09",
       "endDate": "2026-08-09",
@@ -269,6 +313,163 @@
           "name": {
             "zh": "卢怡霏",
             "en": "Yifei Lu"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "Session 4 回放",
+            "en": "Session 4 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1NRuX6UEwJ"
+        },
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          },
+          "href": "https://live.bilibili.com/22591408"
+        },
+        {
+          "label": {
+            "zh": "LCPU Live",
+            "en": "LCPU Live"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [
+        {
+          "label": {
+            "zh": "Session 4 演示文稿（PDF）",
+            "en": "Session 4 slides (PDF)"
+          },
+          "href": "/slides/session04.pdf"
+        }
+      ],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "kernel"
+      }
+    },
+    {
+      "eventId": "topic-2-session-05",
+      "type": "lecture",
+      "topic": "comm",
+      "sessionIds": [
+        "05"
+      ],
+      "title": {
+        "zh": "Topic 2, Session 5 | Towards Modern Networking System",
+        "en": "Topic 2, Session 5 | Towards Modern Networking System"
+      },
+      "description": {
+        "zh": "随着计算量的不断增加，单个计算单元已无法满足更大的计算需求，这要求我们必须采用某些方式将计算单元连接起来。 历史上，总线、PCIe、TCP/IP、Ethernet 等，都从不同方面不同层次对互联中关键的问题进行了回答。 AI 时代，为了承载 HPC/AI Workload 中大规模并行计算所需要的通信和互联，我们需要更大的带宽、更低的延迟、更高的可靠性， 迫使我们不断设计和改进网络系统。本节课，我们将从通信需求的产生开始，试图从第一性原理出发，逐步解释现代网络系统的组成与设计。 本次活动无课前阅读。",
+        "en": "As computational demands continue to grow, a single compute unit is no longer enough; we need ways to connect compute units together. Historically, buses, PCIe, TCP/IP, and Ethernet have answered key interconnect questions at different layers. In the AI era, large-scale HPC/AI workloads demand higher bandwidth, lower latency, and greater reliability, driving the evolution of network systems. Starting from the origin of communication requirements, this session explains the composition and design of modern network systems from first principles. No pre-reading is required."
+      },
+      "date": "2026-08-17",
+      "endDate": "2026-08-17",
+      "startAt": "2026-08-17T11:30:00Z",
+      "endAt": "2026-08-17T13:30:00Z",
+      "allDay": false,
+      "timeLabel": "19:30–21:30",
+      "timezone": "Asia/Shanghai",
+      "status": "confirmed",
+      "speakers": [
+        {
+          "name": {
+            "zh": "王志豪",
+            "en": "Zhihao Wang"
+          }
+        }
+      ],
+      "locations": [
+        {
+          "label": {
+            "zh": "Session 5 回放",
+            "en": "Session 5 replay"
+          },
+          "href": "https://www.bilibili.com/video/BV1Xg836FE7G"
+        },
+        {
+          "label": {
+            "zh": "腾讯会议",
+            "en": "Tencent Meeting"
+          }
+        },
+        {
+          "label": {
+            "zh": "腾讯会议直播",
+            "en": "Tencent Meeting Live"
+          }
+        },
+        {
+          "label": {
+            "zh": "B站直播",
+            "en": "Bilibili Live"
+          }
+        },
+        {
+          "label": {
+            "zh": "LCPU Livestream",
+            "en": "LCPU Livestream"
+          },
+          "href": "https://live.lcpu.dev/"
+        }
+      ],
+      "links": [
+        {
+          "label": {
+            "zh": "Session 5 演示文稿（PDF）",
+            "en": "Session 5 slides (PDF)"
+          },
+          "href": "/slides/session05.pdf"
+        }
+      ],
+      "assignmentIds": [],
+      "display": {
+        "homepage": true,
+        "calendar": true,
+        "accent": "comm"
+      }
+    },
+    {
+      "eventId": "topic-2-workshop-02",
+      "type": "workshop",
+      "topic": "comm",
+      "sessionIds": [
+        "02"
+      ],
+      "title": {
+        "zh": "Topic 2, Workshop 2 | AI Communication Stack",
+        "en": "Topic 2, Workshop 2 | AI Communication Stack"
+      },
+      "description": {
+        "zh": "Pipeline 背后真正的问题是：谁来决定什么工作在什么时候、在哪个资源上执行？谁负责维护依赖、推进执行，并判断一个阶段何时真正完成？ 这其中涉及到一组连续的设计 trade-off：硬件与软件的责任划分、编程复杂度与硬件复杂度、静态与动态调度、显式控制与自动管理、 灵活性与可预测性，以及细粒度重叠带来的性能收益与状态和同步开销。在单 GPU 内部，这些责任可以由 Compiler、Warp Scheduler、 Scoreboard、Pipeline、Barrier、Copy Engine 和 Memory Hierarchy 共同承担。我们关注数据如何在 Register、Shared Mem、片上专用存储和 HBM 之间流动并保证计算正确推进。 今天，我们把同一个问题扩展到 GPU-to-GPU 高速互联。此时数据的 Producer 和 Consumer 不再位于同一块 GPU 上，数据可能需要跨越 GPU Fabric、 NVLink / NVSwitch、PCIe、RNIC、RDMA Transport 和交换网络。原本局限在单 GPU 内部的 Readiness、Ordering、Completion 和 Visibility， 现在必须跨越不同的设备、地址域、队列、协议乃至故障域继续成立。我们今天讨论这些状态和控制责任应该放在哪里，并介绍 Workload 中对通信的要求以及工业界一些经典的解决方案。 本次活动无课前阅读。",
+        "en": "The central question behind a pipeline is: who decides what work runs, when it runs, and on which resource? Who maintains dependencies, advances execution, and determines when a stage has truly completed? These questions involve trade-offs between hardware and software responsibility, programming and hardware complexity, static and dynamic scheduling, explicit control and automation, flexibility and predictability, and the performance gains of fine-grained overlap versus its state and synchronization costs. Inside a single GPU, Compiler, Warp Scheduler, Scoreboard, Pipeline, Barrier, Copy Engine, and Memory Hierarchy share these responsibilities. We study how data moves among Registers, Shared Memory, on-chip specialized storage, and HBM while computation progresses correctly. We then extend the same problem to high-speed GPU-to-GPU interconnects, where Producer and Consumer may reside on different GPUs and data may cross GPU Fabric, NVLink / NVSwitch, PCIe, RNIC, RDMA Transport, and switching networks. This session examines where Readiness, Ordering, Completion, and Visibility responsibilities should live across devices, address domains, queues, protocols, and failure domains, and introduces communication requirements in workloads and classic industry solutions. No pre-reading is required."
+      },
+      "date": "2026-08-23",
+      "endDate": "2026-08-23",
+      "startAt": "2026-08-23T11:30:00Z",
+      "endAt": "2026-08-23T13:30:00Z",
+      "allDay": false,
+      "timeLabel": "19:30–21:30",
+      "timezone": "Asia/Shanghai",
+      "status": "confirmed",
+      "speakers": [
+        {
+          "name": {
+            "zh": "孔昊然",
+            "en": "Haoran Kong"
           }
         }
       ],
@@ -294,12 +495,20 @@
           "href": "https://live.lcpu.dev/"
         }
       ],
-      "links": [],
+      "links": [
+        {
+          "label": {
+            "zh": "Workshop 2 演示文稿（PDF）",
+            "en": "Workshop 2 slides (PDF)"
+          },
+          "href": "/slides/workshop02.pdf"
+        }
+      ],
       "assignmentIds": [],
       "display": {
         "homepage": true,
         "calendar": true,
-        "accent": "kernel"
+        "accent": "comm"
       }
     }
   ],
@@ -336,6 +545,40 @@
       ],
       "eventIds": [
         "topic-1-opening"
+      ]
+    },
+    {
+      "id": "A02",
+      "title": {
+        "zh": "Assignment 02 · Tensor Core 与 Pipeline",
+        "en": "Assignment 02 · Tensor Core & Pipeline"
+      },
+      "due": {
+        "allDay": false,
+        "date": "2026-08-29",
+        "at": "2026-08-29T15:59:00Z",
+        "boundaryAt": "2026-08-29T15:59:00Z"
+      },
+      "links": [
+        {
+          "type": "spec",
+          "label": {
+            "zh": "GitHub 文档",
+            "en": "GitHub documentation"
+          },
+          "href": "https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment02/README.md"
+        },
+        {
+          "type": "submission",
+          "label": {
+            "zh": "HPC Game 平台",
+            "en": "HPC Game platform"
+          },
+          "href": "https://hpcgame.pku.edu.cn/"
+        }
+      ],
+      "eventIds": [
+        "topic-1-session-03"
       ]
     }
   ]

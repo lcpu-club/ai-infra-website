@@ -17,4 +17,16 @@ URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
  rs/blob/main/assignment01/README.md
 TRANSP:TRANSPARENT
 END:VEVENT
+BEGIN:VEVENT
+UID:assignment-A02@ai-infra-seminars.lcpu.dev
+DTSTAMP:20260829T155900Z
+SUMMARY:[DDL] A02 · Assignment 02 · Tensor Core 与 Pipeline
+STATUS:CONFIRMED
+CATEGORIES:AI INFRA,ASSIGNMENT,DEADLINE
+DTSTART:20260829T155900Z
+DURATION:PT15M
+URL:https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-semina
+ rs/blob/main/assignment02/README.md
+TRANSP:TRANSPARENT
+END:VEVENT
 END:VCALENDAR

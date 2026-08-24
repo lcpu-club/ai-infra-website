@@ -21,6 +21,23 @@ assignments:
           en: HPC Game platform
         href: https://hpcgame.pku.edu.cn/
 
+  - id: A02
+    title:
+      zh: "Assignment 02 · Tensor Core 与 Pipeline"
+      en: "Assignment 02 · Tensor Core & Pipeline"
+    due: "2026-08-29T23:59:00+08:00"
+    links:
+      - type: spec
+        label:
+          zh: GitHub 文档
+          en: GitHub documentation
+        href: https://github.com/lcpu-club/wmhpc-training-camp-x-lcpu-ai-infra-seminars/blob/main/assignment02/README.md
+      - type: submission
+        label:
+          zh: HPC Game 平台
+          en: HPC Game platform
+        href: https://hpcgame.pku.edu.cn/
+
 # 作业模板：复制下面整段，移除每行开头的 "# " 后填写。
 # ID 必须唯一，并在对应活动的 assignments 列表中引用。
 #
