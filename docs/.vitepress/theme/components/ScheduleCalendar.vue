@@ -8,10 +8,13 @@ import {
 } from '@internationalized/date'
 import { CalendarRoot } from 'reka-ui'
 import {
+  isReplayLinkLabel,
   localizedAssignments,
   localizedCalendarEvents,
+  visibleLocations,
   type CalendarEvent,
-  type CourseAssignment
+  type CourseAssignment,
+  type ScheduleResourceLink
 } from '../../data/schedule'
 import { useSiteLocale } from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
@@ -38,6 +41,8 @@ const displayedAssignments = localizedAssignments(locale.value).filter(
 
 const selectedEvent = ref<CalendarEvent | null>(null)
 const mounted = ref(false)
+const now = ref(Date.now())
+let clock: number | undefined
 
 type DotKind = 'lecture' | 'guest-lecture' | 'workshop' | 'assignment'
 
@@ -111,6 +116,12 @@ const selectedDay = computed(
   () => dayMap.get(selectedDate.value.toString()) ?? null
 )
 
+const selectedEventLocations = computed(() =>
+  selectedEvent.value
+    ? visibleLocations(selectedEvent.value, now.value)
+    : []
+)
+
 const selectedDayLabel = computed(() =>
   new Intl.DateTimeFormat(locale.value === 'en' ? 'en-US' : 'zh-CN', {
     timeZone: 'UTC',
@@ -145,6 +156,14 @@ function speakersLabel(event: CalendarEvent) {
   return (event.speakers ?? []).join(locale.value === 'en' ? ', ' : '、')
 }
 
+function materialLinks(event: CalendarEvent): ScheduleResourceLink[] {
+  return event.links.filter((link) => !isReplayLinkLabel(link.label))
+}
+
+function replayLinks(event: CalendarEvent): ScheduleResourceLink[] {
+  return event.links.filter((link) => isReplayLinkLabel(link.label))
+}
+
 function linkHref(value: string) {
   return href(value)
 }
@@ -154,6 +173,7 @@ function isExternal(value: string) {
 }
 
 function openDialog(event: CalendarEvent) {
+  now.value = Date.now()
   selectedEvent.value = event
 }
 
@@ -163,10 +183,6 @@ function closeDialog() {
 
 function onKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') closeDialog()
-}
-
-function openFirstEvent() {
-  selectedEvent.value = displayedEvents[0] ?? null
 }
 
 function openEvent(event: Event) {
@@ -180,14 +196,17 @@ watch(selectedEvent, (event) => {
 
 onMounted(() => {
   mounted.value = true
+  now.value = Date.now()
+  clock = window.setInterval(() => {
+    now.value = Date.now()
+  }, 30_000)
   document.addEventListener('keydown', onKeydown)
-  window.addEventListener('calendar:open-first', openFirstEvent)
   window.addEventListener('calendar:open-event', openEvent)
 })
 
 onBeforeUnmount(() => {
+  if (clock !== undefined) window.clearInterval(clock)
   document.removeEventListener('keydown', onKeydown)
-  window.removeEventListener('calendar:open-first', openFirstEvent)
   window.removeEventListener('calendar:open-event', openEvent)
   document.body.classList.remove('has-calendar-dialog')
 })
@@ -367,13 +386,13 @@ onBeforeUnmount(() => {
         </p>
 
         <dl
-          v-if="selectedEvent.locations.length || selectedEvent.speakers?.length"
+          v-if="selectedEventLocations.length || selectedEvent.speakers?.length"
           class="calendar-dialog-details"
         >
-          <div v-if="selectedEvent.locations.length">
+          <div v-if="selectedEventLocations.length">
             <dt>{{ copy.schedule.location }}</dt>
             <dd>
-              <EventLocation :locations="selectedEvent.locations" />
+              <EventLocation :locations="selectedEventLocations" />
             </dd>
           </div>
           <div v-if="selectedEvent.speakers?.length">
@@ -386,23 +405,56 @@ onBeforeUnmount(() => {
           v-if="selectedEvent.links.length || selectedEvent.assignments.length"
           class="calendar-dialog-actions"
         >
-          <a
-            v-for="link in selectedEvent.links"
-            :key="link.href"
-            :href="linkHref(link.href)"
-            :target="isExternal(link.href) ? '_blank' : undefined"
-            :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+          <div
+            v-if="materialLinks(selectedEvent).length"
+            class="calendar-dialog-action-row"
           >
-            {{ link.label }}
-          </a>
-          <a
-            v-for="assignment in selectedEvent.assignments"
-            :key="assignment.id"
-            class="calendar-dialog-assignment"
-            :href="href(assignment.href)"
+            <span class="calendar-dialog-action-label">
+              {{ copy.schedule.linkGroups.materials }}
+            </span>
+            <a
+              v-for="link in materialLinks(selectedEvent)"
+              :key="link.href"
+              :href="linkHref(link.href)"
+              :target="isExternal(link.href) ? '_blank' : undefined"
+              :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+            >
+              {{ link.label }}
+            </a>
+          </div>
+          <div
+            v-if="replayLinks(selectedEvent).length"
+            class="calendar-dialog-action-row"
           >
-            {{ assignment.id }} · {{ assignment.title }}
-          </a>
+            <span class="calendar-dialog-action-label">
+              {{ copy.schedule.linkGroups.replays }}
+            </span>
+            <a
+              v-for="link in replayLinks(selectedEvent)"
+              :key="link.href"
+              :href="linkHref(link.href)"
+              :target="isExternal(link.href) ? '_blank' : undefined"
+              :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+            >
+              {{ link.label }}
+            </a>
+          </div>
+          <div
+            v-if="selectedEvent.assignments.length"
+            class="calendar-dialog-action-row"
+          >
+            <span class="calendar-dialog-action-label">
+              {{ copy.schedule.linkGroups.assignments }}
+            </span>
+            <a
+              v-for="assignment in selectedEvent.assignments"
+              :key="assignment.id"
+              class="calendar-dialog-assignment"
+              :href="href(assignment.href)"
+            >
+              {{ assignment.id }} · {{ assignment.title }}
+            </a>
+          </div>
         </footer>
       </section>
     </div>

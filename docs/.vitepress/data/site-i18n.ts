@@ -104,7 +104,6 @@ export const siteCopy = {
     ],
     schedule: {
       title: '课程日历',
-      firstEvent: '回到首场活动',
       allEvents: '全部安排',
       calendarView: '日历视图',
       calendarAria: '交互式课程日历',
@@ -148,6 +147,11 @@ export const siteCopy = {
       details: '详情',
       noEventsOnDay: '这一天没有安排',
       assignmentTag: '作业',
+      linkGroups: {
+        materials: '资料',
+        replays: '回放',
+        assignments: '作业'
+      },
       viewNotes: '查看讲义',
       joinMeeting: '进入会议 ↗',
       assignments: '查看作业'
@@ -242,7 +246,6 @@ export const siteCopy = {
     ],
     schedule: {
       title: 'Seminar Schedule',
-      firstEvent: 'Jump to the first event',
       allEvents: 'All Events',
       calendarView: 'Calendar',
       calendarAria: 'Interactive seminar calendar',
@@ -286,6 +289,11 @@ export const siteCopy = {
       details: 'Details',
       noEventsOnDay: 'Nothing scheduled for this day',
       assignmentTag: 'Assignment',
+      linkGroups: {
+        materials: 'Materials',
+        replays: 'Replays',
+        assignments: 'Assignments'
+      },
       viewNotes: 'View notes',
       joinMeeting: 'Join meeting ↗',
       assignments: 'View assignments'

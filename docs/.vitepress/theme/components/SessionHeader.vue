@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { sessions, topicFor } from '../../data/program'
-import { localizedCalendarEvents } from '../../data/schedule'
+import {
+  localizedCalendarEvents,
+  visibleLocations
+} from '../../data/schedule'
 import {
   localizedTopics,
   useSiteLocale
@@ -34,6 +37,11 @@ const sessionDate = computed(() => calendarEvent.value?.date ?? session.date)
 const sessionDateLabel = computed(() =>
   sessionDate.value.slice(5).replace('-', '.')
 )
+const sessionLocations = computed(() =>
+  calendarEvent.value
+    ? visibleLocations(calendarEvent.value, Date.now())
+    : []
+)
 
 onMounted(() => {
   today.value = dateFormatter.format(new Date())
@@ -64,9 +72,9 @@ const topic = computed(
     <div class="session-banner-meta">
       <span>{{ copy.session.status }} · {{ status }}</span>
       <span>{{ copy.session.speakers }} · {{ session.owners.join(' · ') }}</span>
-      <span v-if="calendarEvent?.locations.length">
+      <span v-if="sessionLocations.length">
         {{ copy.session.location }} ·
-        <EventLocation :locations="calendarEvent.locations" />
+        <EventLocation :locations="sessionLocations" />
       </span>
       <span v-else>{{ copy.session.format }} · {{ copy.session.formatValue }}</span>
     </div>

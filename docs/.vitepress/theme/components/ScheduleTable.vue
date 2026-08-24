@@ -3,8 +3,11 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Temporal } from 'temporal-polyfill'
 import { CalendarDays, ChevronDown, MapPin, UserRound } from 'lucide-vue-next'
 import {
+  isReplayLinkLabel,
   localizedCalendarEvents,
-  type CalendarEvent
+  visibleLocations,
+  type CalendarEvent,
+  type ScheduleResourceLink
 } from '../../data/schedule'
 import { useSiteLocale } from '../../data/site-i18n'
 import EventLocation from './EventLocation.vue'
@@ -104,6 +107,14 @@ function isLongDescription(description: string) {
   return description.replace(/\s+/g, ' ').trim().length > 120
 }
 
+function materialLinks(event: CalendarEvent): ScheduleResourceLink[] {
+  return event.links.filter((link) => !isReplayLinkLabel(link.label))
+}
+
+function replayLinks(event: CalendarEvent): ScheduleResourceLink[] {
+  return event.links.filter((link) => isReplayLinkLabel(link.label))
+}
+
 function linkHref(link: string) {
   return href(link)
 }
@@ -159,9 +170,12 @@ function openDetails(event: CalendarEvent) {
           </template>
           <template v-if="event.timeLabel"> · {{ event.timeLabel }}</template>
         </span>
-        <span v-if="event.locations.length" class="schedule-event-meta-item">
+        <span
+          v-if="visibleLocations(event, now).length"
+          class="schedule-event-meta-item"
+        >
           <MapPin :size="13" aria-hidden="true" />
-          <EventLocation :locations="event.locations" />
+          <EventLocation :locations="visibleLocations(event, now)" />
         </span>
         <span v-if="event.speakers?.length" class="schedule-event-meta-item">
           <UserRound :size="13" aria-hidden="true" />
@@ -204,24 +218,57 @@ function openDetails(event: CalendarEvent) {
         v-if="event.links.length || event.assignments.length"
         class="schedule-event-links"
       >
-        <a
-          v-for="link in event.links"
-          :key="`${event.eventId}-${link.href}`"
-          :href="linkHref(link.href)"
-          :target="isExternal(link.href) ? '_blank' : undefined"
-          :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+        <div
+          v-if="materialLinks(event).length"
+          class="schedule-event-link-row"
         >
-          {{ link.label }}
-        </a>
-        <a
-          v-for="assignment in event.assignments"
-          :key="assignment.id"
-          class="schedule-event-assignment"
-          :href="href(assignment.href)"
-          :title="assignment.title"
+          <span class="schedule-event-link-label">
+            {{ copy.schedule.linkGroups.materials }}
+          </span>
+          <a
+            v-for="link in materialLinks(event)"
+            :key="`${event.eventId}-${link.href}`"
+            :href="linkHref(link.href)"
+            :target="isExternal(link.href) ? '_blank' : undefined"
+            :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+          >
+            {{ link.label }}
+          </a>
+        </div>
+        <div
+          v-if="replayLinks(event).length"
+          class="schedule-event-link-row"
         >
-          {{ copy.schedule.assignmentTag }}: {{ assignment.id }}
-        </a>
+          <span class="schedule-event-link-label">
+            {{ copy.schedule.linkGroups.replays }}
+          </span>
+          <a
+            v-for="link in replayLinks(event)"
+            :key="`${event.eventId}-${link.href}`"
+            :href="linkHref(link.href)"
+            :target="isExternal(link.href) ? '_blank' : undefined"
+            :rel="isExternal(link.href) ? 'noreferrer' : undefined"
+          >
+            {{ link.label }}
+          </a>
+        </div>
+        <div
+          v-if="event.assignments.length"
+          class="schedule-event-link-row"
+        >
+          <span class="schedule-event-link-label">
+            {{ copy.schedule.linkGroups.assignments }}
+          </span>
+          <a
+            v-for="assignment in event.assignments"
+            :key="assignment.id"
+            class="schedule-event-assignment"
+            :href="href(assignment.href)"
+            :title="assignment.title"
+          >
+            {{ copy.schedule.assignmentTag }}: {{ assignment.id }}
+          </a>
+        </div>
       </div>
     </article>
   </div>

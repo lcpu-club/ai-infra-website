@@ -2092,8 +2092,24 @@ a {
 .calendar-dialog-actions {
   display: flex;
   margin-top: 24px;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  flex-direction: column;
   gap: 10px;
+}
+
+.calendar-dialog-action-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-dialog-action-label {
+  min-width: 30px;
+  color: var(--site-text-3);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .calendar-dialog-actions a {
@@ -2434,9 +2450,24 @@ body.has-calendar-dialog {
 .schedule-event-links {
   display: flex;
   margin-top: 10px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.schedule-event-link-row {
+  display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.schedule-event-link-label {
+  min-width: 26px;
+  color: var(--site-text-3);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .schedule-event-links a {

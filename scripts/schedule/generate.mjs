@@ -32,6 +32,14 @@ const ASSIGNMENT_LINK_TYPES = new Set([
   'solution',
   'other'
 ])
+const REPLAY_LABEL_PATTERN = /回放|录播|replay|recording/i
+
+function isReplayLabel(label) {
+  return (
+    REPLAY_LABEL_PATTERN.test(label.zh) ||
+    (label.en ? REPLAY_LABEL_PATTERN.test(label.en) : false)
+  )
+}
 
 export async function generateScheduleContent({
   repoRoot = defaultRepoRoot
@@ -260,6 +268,18 @@ function normalizeEvent(value, context, timezone) {
     (link, index) =>
       normalizeEventLink(link, `${context}.links[${index}]`)
   )
+  // Replay/recording entries are materials, not venues: move them from
+  // locations into links so the UI and the ICS feed treat them as resources.
+  const regularLocations = []
+  for (const location of locations) {
+    if (location.href && isReplayLabel(location.label)) {
+      if (!links.some((link) => link.href === location.href)) {
+        links.push({ label: location.label, href: location.href })
+      }
+    } else {
+      regularLocations.push(location)
+    }
+  }
   const assignmentIds = optionalArray(
     event.assignments,
     `${context}.assignments`
@@ -284,7 +304,7 @@ function normalizeEvent(value, context, timezone) {
     timezone,
     status,
     ...(speakers.length ? { speakers } : {}),
-    locations,
+    locations: regularLocations,
     links,
     assignmentIds,
     display,

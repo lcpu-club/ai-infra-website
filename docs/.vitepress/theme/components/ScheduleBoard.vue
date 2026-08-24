@@ -6,10 +6,6 @@ import ScheduleCalendar from './ScheduleCalendar.vue'
 import ScheduleTable from './ScheduleTable.vue'
 
 const { copy } = useSiteLocale()
-
-function openFirstEvent() {
-  window.dispatchEvent(new CustomEvent('calendar:open-first'))
-}
 </script>
 
 <template>
@@ -20,13 +16,6 @@ function openFirstEvent() {
         <a :href="withBase('/calendar.ics')" download>
           {{ copy.schedule.downloadCalendar }}
         </a>
-        <button
-          v-if="scheduleEventCount"
-          type="button"
-          @click="openFirstEvent"
-        >
-          {{ copy.schedule.firstEvent }}
-        </button>
       </div>
     </header>
 
