@@ -63,10 +63,11 @@ test('normalizes events and links assignment ids', () => {
   assert.deepEqual(generated.events[0].locations[0], {
     label: { zh: '腾讯会议', en: 'Tencent Meeting' }
   })
-  assert.equal(
-    generated.events[0].locations[2].href,
-    'https://example.com/replay'
-  )
+  assert.equal(generated.events[0].locations.length, 2)
+  assert.deepEqual(generated.events[0].links[1], {
+    label: { zh: '课程回放' },
+    href: 'https://example.com/replay'
+  })
   assert.deepEqual(generated.events[0].links[0], {
     label: { zh: '课程讲义', en: 'Course notes' },
     href: '/wiki/session-01'
@@ -122,7 +123,7 @@ test('generates course and assignment ICS feeds with stable deadline events', ()
   assert.match(calendar, /UID:assignment-A01@/)
   assert.match(calendar, /SUMMARY:\[DDL\] A01 · CUDA 练习/)
   assert.match(calendar, /DTSTART:20260807T155900Z/)
-  assert.match(calendar, /LOCATION:腾讯会议 · LCPU Live · 课程回放/)
+  assert.match(calendar, /LOCATION:腾讯会议 · LCPU Live/)
   assert.match(unfoldedCalendar, /LCPU Live: https:\/\/live\.lcpu\.dev/)
   assert.match(
     unfoldedCalendar,

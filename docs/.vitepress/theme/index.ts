@@ -7,12 +7,15 @@ import FeishuImage from './components/FeishuImage.vue'
 import HomePage from './components/HomePage.vue'
 import ScheduleBoard from './components/ScheduleBoard.vue'
 import SessionHeader from './components/SessionHeader.vue'
-import '@schedule-x/theme-default/dist/index.css'
+import { vReveal } from './directives/reveal'
+import './tailwind.css'
 import './style.css'
+import './motion.css'
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
+    app.component('AssignmentBoard', AssignmentBoard)
     app.component('AssignmentBoard', AssignmentBoard)
     app.component('FeishuGrid', FeishuGrid)
     app.component('FeishuGridColumn', FeishuGridColumn)
@@ -20,5 +23,6 @@ export default {
     app.component('HomePage', HomePage)
     app.component('ScheduleBoard', ScheduleBoard)
     app.component('SessionHeader', SessionHeader)
+    app.directive('reveal', vReveal)
   }
 } satisfies Theme

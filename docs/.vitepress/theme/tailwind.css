@@ -1,0 +1,63 @@
+/*
+ * Tailwind v4 entry for the vendored shadcn-vue components.
+ * Preflight is intentionally not imported: the site has its own design
+ * tokens and resets in style.css, and a global reset would fight them.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.625rem;
+  --background: var(--site-surface);
+  --foreground: var(--site-text);
+  --card: var(--site-surface);
+  --card-foreground: var(--site-text);
+  --popover: var(--site-surface);
+  --popover-foreground: var(--site-text);
+  --primary: var(--site-brand-action);
+  --primary-foreground: var(--site-brand-contrast);
+  --secondary: var(--site-surface-2);
+  --secondary-foreground: var(--site-text);
+  --muted: var(--site-surface-2);
+  --muted-foreground: var(--site-text-3);
+  --accent: var(--site-brand-soft);
+  --accent-foreground: var(--site-brand);
+  --destructive: #c73527;
+  --destructive-foreground: #ffffff;
+  --border: var(--site-line);
+  --input: var(--site-line-strong);
+  --ring: var(--site-brand);
+}
+
+.dark {
+  --destructive: #e5685c;
+  --destructive-foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}

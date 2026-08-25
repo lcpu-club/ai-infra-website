@@ -75,7 +75,7 @@ const schedulePreview = computed<SchedulePreviewItem[]>(() =>
       href: event.href,
       label: previewEventLabel(event.type)
     }))
-    .sort((left, right) => left.date.localeCompare(right.date))
+    .sort((left, right) => right.date.localeCompare(left.date))
     .slice(0, 5)
 )
 
@@ -132,7 +132,7 @@ const hrefFor = href
     </header>
 
     <section class="home-section home-schedule-section" aria-labelledby="home-schedule-title">
-      <div class="home-section-heading home-section-heading-row">
+      <div v-reveal class="home-section-heading home-section-heading-row">
         <div>
           <h2 id="home-schedule-title">{{ home.upcoming }}</h2>
         </div>
@@ -141,8 +141,9 @@ const hrefFor = href
 
       <div v-if="schedulePreview.length" class="home-schedule-list">
         <a
-          v-for="item in schedulePreview"
+          v-for="(item, index) in schedulePreview"
           :key="item.key"
+          v-reveal="Math.min(index, 6) * 70"
           class="home-schedule-card"
           :href="scheduleHref(item.href)"
         >
@@ -157,21 +158,22 @@ const hrefFor = href
           <span class="home-schedule-arrow" aria-hidden="true">→</span>
         </a>
       </div>
-      <div v-else class="home-schedule-empty">
+      <div v-else v-reveal class="home-schedule-empty">
         <strong>{{ home.noUpcoming }}</strong>
         <span>{{ home.stayTuned }}</span>
       </div>
     </section>
 
     <section class="home-section" aria-labelledby="home-topics-title">
-      <div class="home-section-heading">
+      <div v-reveal class="home-section-heading">
         <h2 id="home-topics-title">{{ home.topicsTitle }}</h2>
       </div>
 
       <div class="home-topic-list">
         <article
-          v-for="topic in displayedTopics"
+          v-for="(topic, index) in displayedTopics"
           :key="topic.key"
+          v-reveal="Math.min(index, 6) * 70"
           class="home-topic-card"
           :class="`home-topic-${topic.key}`"
         >
@@ -191,12 +193,17 @@ const hrefFor = href
     </section>
 
     <section class="home-section" aria-labelledby="home-format-title">
-      <div class="home-section-heading">
+      <div v-reveal class="home-section-heading">
         <h2 id="home-format-title">{{ home.formatTitle }}</h2>
       </div>
 
       <ol class="home-format-grid">
-        <li v-for="step in formatSteps" :key="step.number" class="home-format-card">
+        <li
+          v-for="(step, index) in formatSteps"
+          :key="step.number"
+          v-reveal="Math.min(index, 6) * 70"
+          class="home-format-card"
+        >
           <span>{{ step.number }}</span>
           <h3>{{ step.title }}</h3>
           <p>{{ step.description }}</p>
@@ -208,6 +215,7 @@ const hrefFor = href
   <footer class="home-support-footer" :aria-label="home.supportAria">
     <div class="home-support-inner">
       <section
+        v-reveal
         class="home-support-panel"
         aria-labelledby="home-sponsors-title home-partners-title"
       >
@@ -261,7 +269,7 @@ const hrefFor = href
         </div>
       </section>
 
-      <section class="home-credits-panel" aria-labelledby="home-credits-title">
+      <section v-reveal="120" class="home-credits-panel" aria-labelledby="home-credits-title">
         <h2 id="home-credits-title" class="home-support-heading">{{ home.coOrganizers }}</h2>
 
         <div class="home-credits-logos">

@@ -1,3 +1,4 @@
+import { Temporal } from 'temporal-polyfill'
 import scheduleSnapshot from './generated/schedule.json'
 
 export type ScheduleLocale = 'zh' | 'en'
@@ -151,6 +152,37 @@ export const calendarTimezone = snapshot.timezone
 export const scheduleSiteUrl = snapshot.siteUrl
 export const scheduleEventCount = snapshot.events.length
 export const assignmentCount = snapshot.assignments.length
+
+const LIVE_LOCATION_PATTERN = /直播|live|meeting|会议/i
+const REPLAY_LINK_PATTERN = /回放|录播|replay|recording/i
+
+export function isLiveLocationLabel(label: string) {
+  return LIVE_LOCATION_PATTERN.test(label)
+}
+
+export function isReplayLinkLabel(label: string) {
+  return REPLAY_LINK_PATTERN.test(label)
+}
+
+export function eventEndEpochMs(event: CalendarEvent) {
+  if (event.allDay) {
+    return Temporal.PlainDate.from(event.endDate)
+      .add({ days: 1 })
+      .toZonedDateTime(event.timezone).epochMilliseconds
+  }
+  return Temporal.Instant.from(event.endAt).epochMilliseconds
+}
+
+/**
+ * Live/meeting locations only make sense before an event ends; once it is
+ * over, drop them so only permanent venues stay visible.
+ */
+export function visibleLocations(event: CalendarEvent, now: number) {
+  if (now <= eventEndEpochMs(event)) return event.locations
+  return event.locations.filter(
+    (location) => !isLiveLocationLabel(location.label)
+  )
+}
 
 export function localizedCalendarEvents(
   locale: ScheduleLocale
